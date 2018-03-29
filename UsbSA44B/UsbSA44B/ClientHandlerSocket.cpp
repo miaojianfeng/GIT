@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "ClientHandlerSocket.h"
 
-#include "AVLZollnerDoc.h"
 #include "GlobalDisplayMessage.h"
 #include "SocketServerThread.h"
 
@@ -18,8 +17,8 @@ IMPLEMENT_DYNAMIC(CClientHandlerSocket, CThreadSafeSocket)
 // CClientHandlerSocket
 
 CClientHandlerSocket::CClientHandlerSocket() :
-CThreadSafeSocket(typeMsg2090EmulatorSocket),
-m_2090Protocol(*this)
+CThreadSafeSocket(typeMsgSaEmulatorSocket),
+m_SaProtocol(*this)
 {
 }
 
@@ -83,12 +82,12 @@ void CClientHandlerSocket::LogPacket(bool bInput, const unsigned char* lpInputAr
       strLogMsg += _T("\"");
    }
 
-   LogMsg(bInput ? typeMsg2090EmulatorSocketInput : typeMsg2090EmulatorSocketOutput, m_2090Protocol.GetDeviceNumber(), strLogMsg);
+   LogMsg(bInput ? typeMsgSaEmulatorSocketInput : typeMsgSaEmulatorSocketOutput, m_SaProtocol.GetDeviceNumber(), strLogMsg);
 }
 
 void CClientHandlerSocket::OnReceive(int nErrorCode)
 {
-   //LogMsg(typeMsg2090EmulatorSocket,m_2090Protocol.GetDeviceNumber(),_T("::OnReceive"));
+   //LogMsg(typeMsgSaEmulatorSocket,m_SaProtocol.GetDeviceNumber(),_T("::OnReceive"));
 
     CString strDisplayMsg;
     CString strErrorMsg;
@@ -107,13 +106,13 @@ void CClientHandlerSocket::OnReceive(int nErrorCode)
    switch (nRead)
    {
       case SOCKET_ERROR:
-         LogMsg(typeMsg2090EmulatorSocketInput,m_2090Protocol.GetDeviceNumber(),_T("::OnReceive - Socket Error detected"),typeMsgLevelError);
+         LogMsg(typeMsgSaEmulatorSocketInput,m_SaProtocol.GetDeviceNumber(),_T("::OnReceive - Socket Error detected"),typeMsgLevelError);
          //if (GetLastError() != WSAEWOULDBLOCK) 
          //AfxMessageBox (_T("Socket Error detected")); // display error message
          Close(); // on error, or on zero byte read, close, which will kill thread
          break;
       case 0:
-         LogMsg(typeMsg2090EmulatorSocketInput,m_2090Protocol.GetDeviceNumber(),_T("::OnReceive - NULL bytes detected"),typeMsgLevelError);
+         LogMsg(typeMsgSaEmulatorSocketInput,m_SaProtocol.GetDeviceNumber(),_T("::OnReceive - NULL bytes detected"),typeMsgLevelError);
          Close(); // on error, or on zero byte read, close, which will kill thread
          break;
 
@@ -125,7 +124,7 @@ void CClientHandlerSocket::OnReceive(int nErrorCode)
          CSocketServerThread::MessageReadyForParser();
 
          //if (!m_msgSCPI.m_strText.IsEmpty())
-         //   LogMsg(typeMsg2090EmulatorSocketInput,m_2090Protocol.GetDeviceNumber(),_T("::OnReceive - Split packet detected"),typeMsgLevelWarning);
+         //   LogMsg(typeMsgSaEmulatorSocketInput,m_SaProtocol.GetDeviceNumber(),_T("::OnReceive - Split packet detected"),typeMsgLevelWarning);
    }
 
    CThreadSafeSocket::OnReceive(nErrorCode);
@@ -135,7 +134,7 @@ void CClientHandlerSocket::OnClose(int nErrorCode)
 {
    // Client may have initate close, so close
 
-   LogMsg(typeMsg2090EmulatorSocket,m_2090Protocol.GetDeviceNumber(),_T("::OnClose"));
+   LogMsg(typeMsgSaEmulatorSocket,m_SaProtocol.GetDeviceNumber(),_T("::OnClose"));
 
    CThreadSafeSocket::OnClose(nErrorCode);
    //m_buffer.clear(); // we closed it, so there is no point to keeping the unprocessed incomming data
@@ -158,7 +157,7 @@ void CClientHandlerSocket::DoParseMessage()
    {
       auto& msg = m_msgSCPI.m_msgQueue.front();
 
-      auto Error = m_2090Protocol.Parse(msg);
+      auto Error = m_SaProtocol.Parse(msg);
 
       m_msgSCPI.m_msgQueue.pop();
    }

@@ -33,7 +33,7 @@ BOOL CSocketServerThread::InitInstance()
 {
    CWinThread::InitInstance();
 
-   LogMsg(m_bClientHandler ? typeMsg2090EmulatorClientThread : typeMsg2090EmulatorListenThread, m_socket.GetDeviceNumber(), _T("::InitInstance"));
+   LogMsg(m_bClientHandler ? typeMsgSaEmulatorClientThread : typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), _T("::InitInstance"));
 
    if (!AfxSocketInit())
    {
@@ -52,7 +52,7 @@ int CSocketServerThread::ExitInstance()
    // Find in our static list, remove it
    m_listClientThreadHandle.remove(this);
 
-   LogMsg(m_bClientHandler ? typeMsg2090EmulatorClientThread : typeMsg2090EmulatorListenThread, m_socket.GetDeviceNumber(), _T("::ExitInstance"));
+   LogMsg(m_bClientHandler ? typeMsgSaEmulatorClientThread : typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), _T("::ExitInstance"));
 
    if (m_socket.m_hSocket!=INVALID_SOCKET)
    {
@@ -65,7 +65,7 @@ int CSocketServerThread::ExitInstance()
 
 void CSocketServerThread::StartListening(int nPort)
 {
-   LogMsg(typeMsg2090EmulatorThread, 0, _T("::StartListening - Create Listen Thread"));
+   LogMsg(typeMsgSaEmulatorThread, 0, _T("::StartListening - Create Listen Thread"));
 
    // Start the listener 
    PostThreadMessage(msgStartListenServer, nPort, 0);
@@ -73,7 +73,7 @@ void CSocketServerThread::StartListening(int nPort)
 
 void CSocketServerThread::StopThread(CSocketServerThread* pThread)
 {
-   LogMsg(typeMsg2090EmulatorThread, pThread->m_socket.GetDeviceNumber(), _T("::StopThread"));
+   LogMsg(typeMsgSaEmulatorThread, pThread->m_socket.GetDeviceNumber(), _T("::StopThread"));
 
    pThread->m_bAttemptingToShutdownThread = true;
 
@@ -164,7 +164,7 @@ void CSocketServerThread::StopThread(CSocketServerThread* pThread)
    if (dwExitCode==STILL_ACTIVE)
    {
       ASSERT(FALSE);
-      LogMsg(typeMsg2090EmulatorThread, nDeviceNumber, _T("Abnormal Cleanup - TerminateThread called!"));
+      LogMsg(typeMsgSaEmulatorThread, nDeviceNumber, _T("Abnormal Cleanup - TerminateThread called!"));
       // Force thread to exit - NOTE: this may result in memory leaks
 		TerminateThread(hTheadHandle,3);
       WaitForSingleObject(hTheadHandle, INFINITE);
@@ -184,7 +184,7 @@ void CSocketServerThread::OnStartListening(WPARAM wParam, LPARAM lParam)
 {
    ASSERT(!m_bClientHandler); // should not be a client handler
 
-   LogMsg(typeMsg2090EmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Entering"));
+   LogMsg(typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Entering"));
 
    const int nPort = (int)wParam;
 
@@ -193,7 +193,7 @@ void CSocketServerThread::OnStartListening(WPARAM wParam, LPARAM lParam)
 
    CString strMsg;
    strMsg.Format(_T("::OnStartListening - Create Socket & Listen on Port %d"),nPort);
-   LogMsg(typeMsg2090EmulatorListenThread, m_socket.GetDeviceNumber(), strMsg);
+   LogMsg(typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), strMsg);
 
    if(m_socket.Create(nPort)==0)
 	{
@@ -218,26 +218,26 @@ void CSocketServerThread::OnStartListening(WPARAM wParam, LPARAM lParam)
    bool bWaitInListenLoop = true;
 	while(bWaitInListenLoop)
 	{
-      auto pAcceptSock = new CThreadSafeSocket(typeMsgAVLSocket);
+      auto pAcceptSock = new CThreadSafeSocket(typeMsgNone);
 
-      LogMsg(typeMsg2090EmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Execute Socket Accept()"));
+      LogMsg(typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Execute Socket Accept()"));
 
       // Blocking call, which is why we are running in a thread
 		if(m_socket.Accept(*pAcceptSock)) // wait for someone to accept
 		{
-         LogMsg(typeMsg2090EmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Accept() sucessful"));
+         LogMsg(typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Accept() sucessful"));
 
          // Setup params for new thread to deal with client
   			auto hSocketHandle = pAcceptSock->Detach();
             
-         LogMsg(typeMsg2090EmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Create Client Thread"));
+         LogMsg(typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Create Client Thread"));
 
          // Create Suspended, so we get a chance to set auto delete & duplicate the thread handle
          auto pThread = AfxBeginThread(RUNTIME_CLASS(CSocketServerThread),THREAD_PRIORITY_NORMAL,0,CREATE_SUSPENDED);
          auto pSocketThread = dynamic_cast<CSocketServerThread*>(pThread);
          if (!pSocketThread)
          {
-            LogMsg(typeMsg2090EmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - AfxBeginThread failed"));
+            LogMsg(typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - AfxBeginThread failed"));
             bWaitInListenLoop = true;
             bErrorExit = true;
             delete pThread;
@@ -253,7 +253,7 @@ void CSocketServerThread::OnStartListening(WPARAM wParam, LPARAM lParam)
       {
          if (!m_bAttemptingToShutdownThread)
          {
-            LogMsg(typeMsg2090EmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Accept() failed"));
+            LogMsg(typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Accept() failed"));
             bErrorExit = true;
             bWaitInListenLoop = false; // exit as soon as possible
          }
@@ -269,7 +269,7 @@ void CSocketServerThread::OnStartListening(WPARAM wParam, LPARAM lParam)
 
    m_socket.ShutDown(); // send out FIN Packet to any listeners
 
-   LogMsg(typeMsg2090EmulatorListenThread, m_socket.GetDeviceNumber(), _T("Thread::OnStartListening - Exiting"));
+   LogMsg(typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), _T("Thread::OnStartListening - Exiting"));
 
    //AfxEndThread(bErrorExit ? 1 : 0);
    //PostQuitMessage(bErrorExit ? 1 : 0);
@@ -280,7 +280,7 @@ void CSocketServerThread::OnStartListening(WPARAM wParam, LPARAM lParam)
 
 void CSocketServerThread::OnStartClient(WPARAM wParam, LPARAM lParam)
 {
-   LogMsg(typeMsg2090EmulatorClientThread, m_socket.GetDeviceNumber(), _T("::OnStartClient"));
+   LogMsg(typeMsgSaEmulatorClientThread, m_socket.GetDeviceNumber(), _T("::OnStartClient"));
 
    // This socket will be a client handler
    m_bClientHandler = true;
@@ -291,7 +291,7 @@ void CSocketServerThread::OnStartClient(WPARAM wParam, LPARAM lParam)
 
 void CSocketServerThread::OnStopClient(WPARAM wParam, LPARAM lParam)
 {
-   LogMsg(typeMsg2090EmulatorClientThread, m_socket.GetDeviceNumber(), _T("::OnStopClient"));
+   LogMsg(typeMsgSaEmulatorClientThread, m_socket.GetDeviceNumber(), _T("::OnStopClient"));
 
    if (m_socket.IsBlocking())
       m_socket.CancelBlockingCall();

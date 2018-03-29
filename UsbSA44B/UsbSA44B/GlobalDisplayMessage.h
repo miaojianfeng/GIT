@@ -3,13 +3,13 @@
 #include <afxstr.h>
 
 enum enumTypeMsg {
-   typeMsgScpiEmulatorThread,
-   typeMsgScpiEmulatorListenThread,
-   typeMsgScpiEmulatorClientThread,
-   typeMsgScpiEmulatorParser,
-   typeMsgScpiEmulatorSocket,
-   typeMsgScpiEmulatorSocketInput,
-   typeMsgScpiEmulatorSocketOutput,
+   typeMsgSaEmulatorThread,
+   typeMsgSaEmulatorListenThread,
+   typeMsgSaEmulatorClientThread,
+   typeMsgSaEmulatorParser,
+   typeMsgSaEmulatorSocket,
+   typeMsgSaEmulatorSocketInput,
+   typeMsgSaEmulatorSocketOutput,
    typeMsgNone
 } ;
 

@@ -1,8 +1,8 @@
-// C2090Protocol.cpp : implementation file
+// CSaProtocol.cpp : implementation file
 //
 
 #include "stdafx.h"
-#include "C2090Protocol.h"
+#include "CSaProtocol.h"
 #include "cmds.h"
 #include "scpi.h"
 
@@ -12,17 +12,17 @@
 
 #include "TVirtualDevice.h"
 
-// C2090Protocol
+// CSaProtocol
 
-bool C2090Protocol::m_bEnableSimulation = false;
+bool CSaProtocol::m_bEnableSimulation = false;
 
-C2090Protocol::C2090Protocol(CThreadSafeSocket& socket) :
+CSaProtocol::CSaProtocol(CThreadSafeSocket& socket) :
 m_socket(socket),
 m_pVirtualDevice(new TVirtualDevice(*this))
 {
 }
 
-C2090Protocol::~C2090Protocol()
+CSaProtocol::~CSaProtocol()
 {
    if (m_pVirtualDevice)
       delete m_pVirtualDevice;
@@ -30,18 +30,18 @@ C2090Protocol::~C2090Protocol()
 }
 
 
-int C2090Protocol::GetDeviceNumber()
+int CSaProtocol::GetDeviceNumber()
 {
    return m_pVirtualDevice ? m_pVirtualDevice->GetDeviceNumber() : 0;
 }
 
-void C2090Protocol::Send(std::string& s)
+void CSaProtocol::Send(std::string& s)
 {
    m_socket.Send(s.c_str(),s.length());
 }
 
 
-UCHAR C2090Protocol::Parse(std::vector<unsigned char>& msg)
+UCHAR CSaProtocol::Parse(std::vector<unsigned char>& msg)
 {
    const int nBufferSize = 256;
    char SInput[nBufferSize]; // Copy of command line
@@ -64,7 +64,7 @@ UCHAR C2090Protocol::Parse(std::vector<unsigned char>& msg)
    strLogMsg += SInput;
    strLogMsg += _T("\"");
 
-   LogMsg(::typeMsg2090EmulatorParser,GetDeviceNumber(),strLogMsg);
+   LogMsg(::typeMsgSaEmulatorParser,GetDeviceNumber(),strLogMsg);
 
 
    // Parsing Loop
@@ -81,16 +81,16 @@ UCHAR C2090Protocol::Parse(std::vector<unsigned char>& msg)
       case SCPI_ERR_NONE:
          nExecute++;
          strLogMsg.Format(_T("Command Found #%d"),CmdNum);
-         LogMsg(typeMsg2090EmulatorParser,GetDeviceNumber(),strLogMsg);
+         LogMsg(typeMsgSaEmulatorParser,GetDeviceNumber(),strLogMsg);
 
          strLogMsg.Format(_T("Start Execute (SEQ #%ld)"),nExecute);
-         LogMsg(typeMsg2090EmulatorParser,GetDeviceNumber(),strLogMsg);
+         LogMsg(typeMsgSaEmulatorParser,GetDeviceNumber(),strLogMsg);
 
          if (m_pVirtualDevice)
             m_pVirtualDevice->Execute(CmdNum, sParams, NumSufCnt, uiNumSuf);
 
          strLogMsg.Format(_T("End Execute (SEQ #%ld)"),nExecute);
-         LogMsg(typeMsg2090EmulatorParser,GetDeviceNumber(),strLogMsg);
+         LogMsg(typeMsgSaEmulatorParser,GetDeviceNumber(),strLogMsg);
          break;
       case SCPI_ERR_TOO_MANY_NUM_SUF:
          // handle too many numeric suffices in command;
@@ -135,7 +135,7 @@ UCHAR C2090Protocol::Parse(std::vector<unsigned char>& msg)
       }
 
       if (Err!=SCPI_ERR_NONE)
-         LogMsg(typeMsg2090EmulatorParser,GetDeviceNumber(),strLogMsg,typeMsgLevelError);
+         LogMsg(typeMsgSaEmulatorParser,GetDeviceNumber(),strLogMsg,typeMsgLevelError);
 
       if (bResetCmdTree) // Don’t reset command tree
          bResetCmdTree = FALSE; // after first command in line

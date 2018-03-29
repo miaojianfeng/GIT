@@ -168,26 +168,26 @@ void CUsbSA44BApp::LogMsg(enumTypeMsg typeMsg, int nInstance, LPCTSTR lpszText, 
 
 	switch (typeMsg)
 	{
-	case typeMsgScpiEmulatorThread:
-		strMsg.Format(_T("ScpiEmulator::Thread(%d)"), nInstance);
+	case typeMsgSaEmulatorThread:
+		strMsg.Format(_T("SaEmulator::Thread(%d)"), nInstance);
 		break;
-	case typeMsgScpiEmulatorListenThread:
-		strMsg.Format(_T("ScpiEmulator::ListenThread(%d)"), nInstance);
+	case typeMsgSaEmulatorListenThread:
+		strMsg.Format(_T("SaEmulator::ListenThread(%d)"), nInstance);
 		break;
-	case typeMsgScpiEmulatorClientThread:
-		strMsg.Format(_T("ScpiEmulator::ClientThread(%d)"), nInstance);
+	case typeMsgSaEmulatorClientThread:
+		strMsg.Format(_T("SaEmulator::ClientThread(%d)"), nInstance);
 		break;
-	case typeMsgScpiEmulatorParser:
-		strMsg.Format(_T("ScpiEmulator::Parser(%d) "), nInstance);
+	case typeMsgSaEmulatorParser:
+		strMsg.Format(_T("SaEmulator::Parser(%d) "), nInstance);
 		break;
-	case typeMsgScpiEmulatorSocket:
-		strMsg.Format(_T("ScpiEmulator::Socket(%d) "), nInstance);
+	case typeMsgSaEmulatorSocket:
+		strMsg.Format(_T("SaEmulator::Socket(%d) "), nInstance);
 		break;
-	case typeMsgScpiEmulatorSocketInput:
-		strMsg.Format(_T("ScpiEmulator::Socket(%d)<-"), nInstance);
+	case typeMsgSaEmulatorSocketInput:
+		strMsg.Format(_T("SaEmulator::Socket(%d)<-"), nInstance);
 		break;
-	case typeMsgScpiEmulatorSocketOutput:
-		strMsg.Format(_T("ScpiEmulator::Socket(%d)->"), nInstance);
+	case typeMsgSaEmulatorSocketOutput:
+		strMsg.Format(_T("SaEmulator::Socket(%d)->"), nInstance);
 		break;	
 	}
 

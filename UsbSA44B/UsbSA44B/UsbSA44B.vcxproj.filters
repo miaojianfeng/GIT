@@ -69,6 +69,24 @@
     <ClInclude Include="CSaProtocol.h">
       <Filter>SCPISocket Server\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TSignalAnalyzerEngine.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcl.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cmds.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scpi.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TVirtualDevice.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketServerThreadManager.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UsbSA44B.cpp">
@@ -99,6 +117,27 @@
       <Filter>SCPISocket Server\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SCPIMsg.cpp">
+      <Filter>SCPISocket Server\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vcl.cpp">
+      <Filter>SCPISocket Server\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TSignalAnalyzerEngine.cpp">
+      <Filter>SCPISocket Server\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSaProtocol.cpp">
+      <Filter>SCPISocket Server\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scpi.c">
+      <Filter>SCPISocket Server\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cmds.c">
+      <Filter>SCPISocket Server\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TVirtualDevice.cpp">
+      <Filter>SCPISocket Server\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketServerThreadManager.cpp">
       <Filter>SCPISocket Server\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

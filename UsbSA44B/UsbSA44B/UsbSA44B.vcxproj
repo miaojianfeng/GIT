@@ -181,27 +181,37 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cmds.h" />
     <ClInclude Include="CSaProtocol.h" />
     <ClInclude Include="ClientHandlerSocket.h" />
     <ClInclude Include="GlobalDisplayMessage.h" />
     <ClInclude Include="LimitSingleInstance.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="scpi.h" />
     <ClInclude Include="SCPIMsg.h" />
     <ClInclude Include="SocketServerThread.h" />
+    <ClInclude Include="SocketServerThreadManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThreadSafeSocket.h" />
+    <ClInclude Include="TSignalAnalyzerEngine.h" />
+    <ClInclude Include="TVirtualDevice.h" />
     <ClInclude Include="UsbSA44B.h" />
     <ClInclude Include="UsbSA44BDoc.h" />
     <ClInclude Include="UsbSA44BView.h" />
+    <ClInclude Include="vcl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientHandlerSocket.cpp" />
+    <ClCompile Include="cmds.c" />
+    <ClCompile Include="CSaProtocol.cpp" />
     <ClCompile Include="GlobalDisplayMessage.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="scpi.c" />
     <ClCompile Include="SCPIMsg.cpp" />
     <ClCompile Include="SocketServerThread.cpp" />
+    <ClCompile Include="SocketServerThreadManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -209,9 +219,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ThreadSafeSocket.cpp" />
+    <ClCompile Include="TSignalAnalyzerEngine.cpp" />
+    <ClCompile Include="TVirtualDevice.cpp" />
     <ClCompile Include="UsbSA44B.cpp" />
     <ClCompile Include="UsbSA44BDoc.cpp" />
     <ClCompile Include="UsbSA44BView.cpp" />
+    <ClCompile Include="vcl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UsbSA44B.rc" />

@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "ThreadSafeSocket.h"
-#include "C2090Protocol.h"
+#include "CSaProtocol.h"
 #include "SCPIMsg.h"
 
 class CAVLZollnerDoc;
@@ -17,7 +17,7 @@ class CClientHandlerSocket : public CThreadSafeSocket
 public:
    CClientHandlerSocket();
    virtual ~CClientHandlerSocket();
-   int GetDeviceNumber() { return m_2090Protocol.GetDeviceNumber(); }
+   int GetDeviceNumber() { return m_SaProtocol.GetDeviceNumber(); }
    void DoParseMessage();
 
 protected:
@@ -30,6 +30,6 @@ private:
 
 private:
    std::vector<unsigned char> m_buffer;
-   C2090Protocol m_2090Protocol;
+   CSaProtocol m_SaProtocol;
    CSCPIMsg m_msgSCPI;
 };
