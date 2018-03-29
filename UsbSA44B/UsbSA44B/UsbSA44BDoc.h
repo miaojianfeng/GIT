@@ -1,18 +1,3 @@
-// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface 
-// (the "Fluent UI") and is provided only as referential material to supplement the 
-// Microsoft Foundation Classes Reference and related electronic documentation 
-// included with the MFC C++ library software.  
-// License terms to copy, use or distribute the Fluent UI are available separately.  
-// To learn more about our Fluent UI licensing program, please visit 
-// http://go.microsoft.com/fwlink/?LinkId=238214.
-//
-// Copyright (C) Microsoft Corporation
-// All rights reserved.
-
-// UsbSA44BDoc.h : interface of the CUsbSA44BDoc class
-//
-
-
 #pragma once
 
 
@@ -31,7 +16,8 @@ public:
 // Overrides
 public:
 	virtual BOOL OnNewDocument();
-	virtual void Serialize(CArchive& ar);
+	virtual void Serialize(CArchive& ar);	
+
 	virtual CRichEditCntrItem* CreateClientItem(REOBJECT* preo) const;
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();

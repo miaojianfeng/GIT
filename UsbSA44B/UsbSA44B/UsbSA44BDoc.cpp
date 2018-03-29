@@ -20,8 +20,6 @@
 #endif
 
 #include "UsbSA44BDoc.h"
-#include "CntrItem.h"
-
 #include <propkey.h>
 
 #ifdef _DEBUG
@@ -66,11 +64,9 @@ BOOL CUsbSA44BDoc::OnNewDocument()
 
 CRichEditCntrItem* CUsbSA44BDoc::CreateClientItem(REOBJECT* preo) const
 {
-	return new CUsbSA44BCntrItem(preo, const_cast<CUsbSA44BDoc*>(this));
+	// cast away constness of this
+	return NULL;
 }
-
-
-
 
 // CUsbSA44BDoc serialization
 

@@ -1,16 +1,3 @@
-// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface 
-// (the "Fluent UI") and is provided only as referential material to supplement the 
-// Microsoft Foundation Classes Reference and related electronic documentation 
-// included with the MFC C++ library software.  
-// License terms to copy, use or distribute the Fluent UI are available separately.  
-// To learn more about our Fluent UI licensing program, please visit 
-// http://go.microsoft.com/fwlink/?LinkId=238214.
-//
-// Copyright (C) Microsoft Corporation
-// All rights reserved.
-
-// UsbSA44B.h : main header file for the UsbSA44B application
-//
 #pragma once
 
 #ifndef __AFXWIN_H__
@@ -18,6 +5,8 @@
 #endif
 
 #include "resource.h"       // main symbols
+#include "GlobalDisplayMessage.h"
+#include <queue>
 
 
 // CUsbSA44BApp:
@@ -29,6 +18,20 @@ class CUsbSA44BApp : public CWinAppEx
 public:
 	CUsbSA44BApp();
 
+	CUsbSA44BApp* m_pDoc;
+	static const UINT m_msgLogMsg;
+
+	CMutex m_mutexNewLogMsg;
+	std::queue<CAppendToLogParams*> m_newLogMsg;
+
+private: 
+	const DWORD m_dwThreadID;
+
+public:
+	void LogMsg(enumTypeMsg typeMsg, int nInstance, LPCTSTR lpszText, enumTypeMsgLevel typeMsgLevel = typeMsgLevelNormal);
+
+private:
+	void AppendToLog(LPCTSTR lpszTime, LPCTSTR lpszMessage, enumTypeMsgLevel typeMsgLevel = typeMsgLevelNormal);
 
 // Overrides
 public:
@@ -40,8 +43,9 @@ public:
 	virtual void PreLoadState();
 	virtual void LoadCustomState();
 	virtual void SaveCustomState();
-
+	
 	afx_msg void OnAppAbout();
+	afx_msg void OnRegisteredLogMsg(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 };
 

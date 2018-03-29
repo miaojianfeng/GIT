@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="SCPISocket Server">
+      <UniqueIdentifier>{a7e3bead-aa4c-41a5-8940-51b00d5f8a71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SCPISocket Server\Header Files">
+      <UniqueIdentifier>{fa2eadd3-099f-4fff-9c9e-07c6c092db6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SCPISocket Server\Source Files">
+      <UniqueIdentifier>{e4786932-a70a-455b-b3ec-ce2f8d50944b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -36,10 +45,16 @@
     <ClInclude Include="UsbSA44BView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CntrItem.h">
+    <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
+    <ClInclude Include="ScpiSocketServer\ThreadSafeSocket.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalDisplayMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LimitSingleInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,7 +74,7 @@
     <ClCompile Include="UsbSA44BView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CntrItem.cpp">
+    <ClCompile Include="GlobalDisplayMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -181,9 +181,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CntrItem.h" />
+    <ClInclude Include="GlobalDisplayMessage.h" />
+    <ClInclude Include="LimitSingleInstance.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ScpiSocketServer\ThreadSafeSocket.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UsbSA44B.h" />
@@ -191,7 +193,7 @@
     <ClInclude Include="UsbSA44BView.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CntrItem.cpp" />
+    <ClCompile Include="GlobalDisplayMessage.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

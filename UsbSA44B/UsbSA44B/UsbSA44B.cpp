@@ -1,14 +1,3 @@
-// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface 
-// (the "Fluent UI") and is provided only as referential material to supplement the 
-// Microsoft Foundation Classes Reference and related electronic documentation 
-// included with the MFC C++ library software.  
-// License terms to copy, use or distribute the Fluent UI are available separately.  
-// To learn more about our Fluent UI licensing program, please visit 
-// http://go.microsoft.com/fwlink/?LinkId=238214.
-//
-// Copyright (C) Microsoft Corporation
-// All rights reserved.
-
 // UsbSA44B.cpp : Defines the class behaviors for the application.
 //
 
@@ -20,11 +9,19 @@
 
 #include "UsbSA44BDoc.h"
 #include "UsbSA44BView.h"
+#include "LimitSingleInstance.h" 
+
+#include <strstream>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+// The one and only CLimitSingleInstance object
+// Change what is passed to constructor. GUIDGEN Tool may be of help.
+CLimitSingleInstance g_SingleInstanceObj(TEXT("{CBD67201-BB4F-4A01-B092-FE48737C46EA}"));
+
+const UINT CUsbSA44BApp::m_msgLogMsg = ::RegisterWindowMessage(_T("msgLogMsg"));
 
 // CUsbSA44BApp
 
@@ -33,18 +30,20 @@ BEGIN_MESSAGE_MAP(CUsbSA44BApp, CWinAppEx)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
-	// Standard print setup command
-	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
+	ON_REGISTERED_THREAD_MESSAGE(m_msgLogMsg, &OnRegisteredLogMsg)	
 END_MESSAGE_MAP()
 
 
 // CUsbSA44BApp construction
 
-CUsbSA44BApp::CUsbSA44BApp()
+CUsbSA44BApp::CUsbSA44BApp():
+	m_pDoc(NULL),
+	m_mutexNewLogMsg(FALSE),
+	m_dwThreadID(GetThreadId(AfxGetThread()->m_hThread))
 {
 	// TODO: replace application ID string below with unique ID string; recommended
 	// format for string is CompanyName.ProductName.SubProduct.VersionInformation
-	SetAppID(_T("UsbSA44B.AppID.NoVersion"));
+	//SetAppID(_T("UsbSA44B.AppID.NoVersion"));
 
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
@@ -59,6 +58,15 @@ CUsbSA44BApp theApp;
 
 BOOL CUsbSA44BApp::InitInstance()
 {
+	if (g_SingleInstanceObj.IsAnotherInstanceRunning())
+		return FALSE; // sorry only one is allowed
+
+	if (!AfxSocketInit())
+	{
+		AfxMessageBox(IDP_SOCKETS_INIT_FAILED);
+		return FALSE;
+	}
+
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
@@ -93,7 +101,7 @@ BOOL CUsbSA44BApp::InitInstance()
 	// Change the registry key under which our settings are stored
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+	SetRegistryKey(_T("ETS-Lindgren"));
 	LoadStdProfileSettings(0);  // Load standard INI file options (including MRU)
 
 
@@ -120,12 +128,9 @@ BOOL CUsbSA44BApp::InitInstance()
 	pDocTemplate->SetContainerInfo(IDR_CNTR_INPLACE);
 	AddDocTemplate(pDocTemplate);
 
-
 	// Parse command line for standard shell commands, DDE, file open
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
-
-
 
 	// Dispatch commands specified on the command line.  Will return FALSE if
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
@@ -146,6 +151,113 @@ int CUsbSA44BApp::ExitInstance()
 	return CWinAppEx::ExitInstance();
 }
 
+void CUsbSA44BApp::LogMsg(enumTypeMsg typeMsg, int nInstance, LPCTSTR lpszText, enumTypeMsgLevel typeMsgLevel /*= typeMsgLevelNormal*/)
+{
+	// First record time(NOTE: locking may move things arround)
+	TCHAR szTime[128];
+	_tstrtime_s(szTime);
+
+	CString strMsg;
+
+	switch (typeMsg)
+	{
+	case typeMsgScpiEmulatorThread:
+		strMsg.Format(_T("ScpiEmulator::Thread(%d)"), nInstance);
+		break;
+	case typeMsgScpiEmulatorListenThread:
+		strMsg.Format(_T("ScpiEmulator::ListenThread(%d)"), nInstance);
+		break;
+	case typeMsgScpiEmulatorClientThread:
+		strMsg.Format(_T("ScpiEmulator::ClientThread(%d)"), nInstance);
+		break;
+	case typeMsgScpiEmulatorParser:
+		strMsg.Format(_T("ScpiEmulator::Parser(%d) "), nInstance);
+		break;
+	case typeMsgScpiEmulatorSocket:
+		strMsg.Format(_T("ScpiEmulator::Socket(%d) "), nInstance);
+		break;
+	case typeMsgScpiEmulatorSocketInput:
+		strMsg.Format(_T("ScpiEmulator::Socket(%d)<-"), nInstance);
+		break;
+	case typeMsgScpiEmulatorSocketOutput:
+		strMsg.Format(_T("ScpiEmulator::Socket(%d)->"), nInstance);
+		break;	
+	}
+
+	// Append the text
+	strMsg += lpszText;
+
+	AppendToLog(szTime, strMsg, typeMsgLevel);
+}
+
+void CUsbSA44BApp::AppendToLog(LPCTSTR szTime, LPCTSTR lpszMessage, enumTypeMsgLevel typeMsgLevel /*= typeMsgLevelNormal*/)
+{
+	// This is designed so multiple threads can updte the log
+	// avoids threading issues
+
+	// We need to post the request to the GUI thread
+	const auto pAppendToLogParams = new CAppendToLogParams(); // NOTE: this could result in a small memory leak! - depends on timeing of message loop shutdown
+	pAppendToLogParams->strTime = szTime;
+	pAppendToLogParams->strMessage = lpszMessage;
+	pAppendToLogParams->typeMsgLevel = typeMsgLevel;
+
+	CSingleLock sl(&m_mutexNewLogMsg, TRUE);
+
+	const auto nMsgCount = m_newLogMsg.size(); // must be locked when we check empty status
+	m_newLogMsg.push(pAppendToLogParams); // must be locked when we push
+
+	sl.Unlock(); // must release lock/ aka unlock outside of try/catch block
+
+	if (m_dwThreadID == GetThreadId(AfxGetThread()->m_hThread))
+	{
+		OnRegisteredLogMsg(0, 0); // we are in the right thread, no need to post
+		return;
+	}
+
+	// If there are messages in the quque, then the AppendToLog is running
+	if (nMsgCount > 1 && nMsgCount < 10)
+		return; // no need to kick start the append
+
+	const auto bSuccess = ::PostThreadMessage(m_dwThreadID, CUsbSA44BApp::m_msgLogMsg, 0, 0);
+	if (!bSuccess)
+	{
+		ASSERT(FALSE);
+		if (GetLastError() == ERROR_NOT_ENOUGH_QUOTA)
+			Sleep(500); // slow the calling thread down, our message quque is full!
+	}
+}
+
+void CUsbSA44BApp::OnRegisteredLogMsg(WPARAM wParam, LPARAM lParam)
+{
+	auto pos = GetFirstDocTemplatePosition();
+	if (!pos)
+		return;
+
+	auto pTemplate = GetNextDocTemplate(pos);
+	if (!pTemplate)
+		return;
+
+	auto posDoc = pTemplate->GetFirstDocPosition();
+	if (!posDoc)
+		return;
+
+	auto pDoc = dynamic_cast<CUsbSA44BDoc*>(pTemplate->GetNextDoc(posDoc));
+	if (!pDoc)
+		return;
+
+	for (POSITION pos = pDoc->GetFirstViewPosition(); pos != NULL;)
+	{
+		CView* pView = pDoc->GetNextView(pos);
+		auto pAVLZollnerView = dynamic_cast<CUsbSA44BView*>(pView);
+
+		if (!pAVLZollnerView)
+			continue;
+
+		pAVLZollnerView->DoAppendToLog(m_mutexNewLogMsg, m_newLogMsg);
+		break;
+	}
+
+}
 // CUsbSA44BApp message handlers
 
 

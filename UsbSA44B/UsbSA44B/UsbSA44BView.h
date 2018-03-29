@@ -13,6 +13,8 @@
 //
 
 #pragma once
+#include <afxrich.h>
+#include <string>
 
 class CUsbSA44BCntrItem;
 
@@ -32,9 +34,8 @@ public:
 // Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-protected:
-	virtual void OnInitialUpdate(); // called first time after construct
-	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
+protected:	
+	
 
 // Implementation
 public:
@@ -48,11 +49,18 @@ protected:
 
 // Generated message map functions
 protected:
-	afx_msg void OnDestroy();
-	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
+
+private:
+	const int m_nMaxLogLines;
+
+public:
+	void DoAppendToLog(CMutex& mutexNewLogMsg, std::queue<CAppendToLogParams*>& newLogMsg);
+
+private:
+	void DoAppendToLog(LPCTSTR lpszTime, LPCTSTR lpszMessage, enumTypeMsgLevel typeMsgLevel = typeMsgLevelNormal);
 };
 
 #ifndef _DEBUG  // debug version in UsbSA44BView.cpp

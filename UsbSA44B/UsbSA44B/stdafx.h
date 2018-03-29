@@ -48,11 +48,12 @@
 
 
 #include <afxrich.h>            // MFC rich edit classes
+#include <afxsock.h>		// MFC socket extensions
+#include <afxmt.h>			// MFC Thread extentions
+#include <afx.h>
 
-
-
-
-
+#include "GlobalDisplayMessage.h"
+#include "resource.h"
 
 #ifdef _UNICODE
 #if defined _M_IX86

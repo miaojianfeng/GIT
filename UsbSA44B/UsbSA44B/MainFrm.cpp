@@ -28,11 +28,7 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWndEx)
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_CREATE()
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
-	ON_COMMAND(ID_FILE_PRINT, &CMainFrame::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CMainFrame::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CMainFrame::OnFilePrintPreview)
-	ON_UPDATE_COMMAND_UI(ID_FILE_PRINT_PREVIEW, &CMainFrame::OnUpdateFilePrintPreview)
+	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)	
 END_MESSAGE_MAP()
 
 // CMainFrame construction/destruction
@@ -176,26 +172,4 @@ void CMainFrame::OnApplicationLook(UINT id)
 void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
-}
-
-
-void CMainFrame::OnFilePrint()
-{
-	if (IsPrintPreview())
-	{
-		PostMessage(WM_COMMAND, AFX_ID_PREVIEW_PRINT);
-	}
-}
-
-void CMainFrame::OnFilePrintPreview()
-{
-	if (IsPrintPreview())
-	{
-		PostMessage(WM_COMMAND, AFX_ID_PREVIEW_CLOSE);  // force Print Preview mode closed
-	}
-}
-
-void CMainFrame::OnUpdateFilePrintPreview(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck(IsPrintPreview());
 }
