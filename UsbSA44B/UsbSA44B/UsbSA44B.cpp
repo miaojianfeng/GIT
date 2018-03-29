@@ -28,15 +28,18 @@ const UINT CUsbSA44BApp::m_msgLogMsg = ::RegisterWindowMessage(_T("msgLogMsg"));
 BEGIN_MESSAGE_MAP(CUsbSA44BApp, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &CUsbSA44BApp::OnAppAbout)
 	// Standard file based document commands
-	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
+//	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 	ON_REGISTERED_THREAD_MESSAGE(m_msgLogMsg, &OnRegisteredLogMsg)	
+	ON_COMMAND(ID_FILE_NEW, &CUsbSA44BApp::OnFileNew)
+//	ON_UPDATE_COMMAND_UI(ID_FILE_NEW, &CUsbSA44BApp::OnUpdateFileNew)
 END_MESSAGE_MAP()
 
 
 // CUsbSA44BApp construction
 
 CUsbSA44BApp::CUsbSA44BApp():
+	//m_bServerStarted(FALSE),
 	m_pDoc(NULL),
 	m_mutexNewLogMsg(FALSE),
 	m_dwThreadID(GetThreadId(AfxGetThread()->m_hThread))
@@ -140,6 +143,10 @@ BOOL CUsbSA44BApp::InitInstance()
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
+
+	LogMsg(typeMsgNone, 0, _T("Hello World"), typeMsgLevelInformation);
+	LogMsg(typeMsgNone, 0, _T("Start SCPI Server..."), typeMsgLevelInformation);
+
 	return TRUE;
 }
 
@@ -321,5 +328,15 @@ void CUsbSA44BApp::SaveCustomState()
 
 // CUsbSA44BApp message handlers
 
+//void CUsbSA44BApp::OnFileNew()
+//{
+//	//m_bServerStarted = FALSE;
+//	LogMsg(typeMsgNone, 0, _T("Hello World"), typeMsgLevelInformation);
+//}
 
 
+//void CUsbSA44BApp::OnUpdateFileNew(CCmdUI *pCmdUI)
+//{
+//	// TODO: Add your command update UI handler code here
+//	//pCmdUI->Enable(m_bServerStarted);
+//}

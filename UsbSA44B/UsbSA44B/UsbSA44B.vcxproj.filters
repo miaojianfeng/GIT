@@ -48,14 +48,26 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ScpiSocketServer\ThreadSafeSocket.h">
-      <Filter>SCPISocket Server\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GlobalDisplayMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LimitSingleInstance.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSafeSocket.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketServerThread.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientHandlerSocket.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SCPIMsg.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSaProtocol.h">
+      <Filter>SCPISocket Server\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +88,18 @@
     </ClCompile>
     <ClCompile Include="GlobalDisplayMessage.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadSafeSocket.cpp">
+      <Filter>SCPISocket Server\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketServerThread.cpp">
+      <Filter>SCPISocket Server\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientHandlerSocket.cpp">
+      <Filter>SCPISocket Server\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SCPIMsg.cpp">
+      <Filter>SCPISocket Server\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

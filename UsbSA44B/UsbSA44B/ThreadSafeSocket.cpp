@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "AVLZollner.h"
+#include "UsbSA44B.h"
 #include "ThreadSafeSocket.h"
 
 CCriticalSection CThreadSafeSocket::m_CriticalSection;

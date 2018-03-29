@@ -47,6 +47,11 @@ public:
 	afx_msg void OnAppAbout();
 	afx_msg void OnRegisteredLogMsg(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
+//	afx_msg void OnFileNew();
+//	afx_msg void OnUpdateFileNew(CCmdUI *pCmdUI);
+
+private:
+	//bool m_bServerStarted;
 };
 
 extern CUsbSA44BApp theApp;

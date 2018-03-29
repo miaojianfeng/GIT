@@ -1,6 +1,4 @@
 #pragma once
-#include <afxsock.h>
-#include <afxmt.h>
 
 // CThreadSafeSocket command target
 
