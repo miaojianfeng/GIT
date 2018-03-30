@@ -12,13 +12,14 @@
 // CUsbSA44BApp:
 // See UsbSA44B.cpp for the implementation of this class
 //
+class CUsbSA44BDoc;
 
 class CUsbSA44BApp : public CWinAppEx
 {
 public:
 	CUsbSA44BApp();
 
-	CUsbSA44BApp* m_pDoc;
+	CUsbSA44BDoc* m_pDoc;
 	static const UINT m_msgLogMsg;
 
 	CMutex m_mutexNewLogMsg;

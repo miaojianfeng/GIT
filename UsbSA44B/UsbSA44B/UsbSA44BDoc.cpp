@@ -38,10 +38,13 @@ static CString strEntryPort = _T("Port");
 
 CUsbSA44BDoc::CUsbSA44BDoc()
 {
+	ASSERT(!theApp.m_pDoc);
+	theApp.m_pDoc = this; // Link back to app for Automation Object tracking
 }
 
 CUsbSA44BDoc::~CUsbSA44BDoc()
 {
+	theApp.m_pDoc = NULL; // close the link
 }
 
 BOOL CUsbSA44BDoc::OnNewDocument()

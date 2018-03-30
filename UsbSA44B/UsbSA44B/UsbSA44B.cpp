@@ -145,8 +145,11 @@ BOOL CUsbSA44BApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 
-	LogMsg(typeMsgNone, 0, _T("Hello World"), typeMsgLevelInformation);
-	LogMsg(typeMsgNone, 0, _T("Start SCPI Server..."), typeMsgLevelInformation);
+	if (m_pDoc)
+	{
+		LogMsg(typeMsgNone, 0, _T("Start SCPI Server..."), typeMsgLevelInformation);
+		m_pDoc->StartThreads();// start support threads
+	}
 
 	return TRUE;
 }
