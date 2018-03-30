@@ -218,7 +218,7 @@ void CSocketServerThread::OnStartListening(WPARAM wParam, LPARAM lParam)
    bool bWaitInListenLoop = true;
 	while(bWaitInListenLoop)
 	{
-      auto pAcceptSock = new CThreadSafeSocket(typeMsgNone);
+      auto pAcceptSock = new CThreadSafeSocket(typeMsgSaEmulatorSocketInput);
 
       LogMsg(typeMsgSaEmulatorListenThread, m_socket.GetDeviceNumber(), _T("::OnStartListening - Execute Socket Accept()"));
 

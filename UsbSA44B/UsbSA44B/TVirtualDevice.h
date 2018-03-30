@@ -42,10 +42,15 @@ public:
   // please leave these methods in alphabetical order
   void  SetLocalMode() { m_pEngine->SetLocalMode(); }
   
+  int   GetStatus() { return m_pEngine->GetStatus(); }
+  void  SetStatus(int v) { m_pEngine->SetStatus(v); }
+  
   //  2090 SCPI commands
   // ===========================================================================
   virtual void  GetID(struct strParam sParam[], UCHAR ucNumSufCnt, unsigned int uiNumSuf[]);
-  virtual void  Reset(struct strParam sParam[], UCHAR ucNumSufCnt, unsigned int uiNumSuf[]);   
+  virtual void  GetStatus(struct strParam sParam[], UCHAR ucNumSufCnt, unsigned int uiNumSuf[]);
+  virtual void  Reset(struct strParam sParam[], UCHAR ucNumSufCnt, unsigned int uiNumSuf[]);  
+  
   virtual void  SetLocalMode(struct strParam sParam[], UCHAR ucNumSufCnt, unsigned int uiNumSuf[]);
 };
 

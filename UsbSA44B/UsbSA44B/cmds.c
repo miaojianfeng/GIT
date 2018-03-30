@@ -349,80 +349,14 @@ const char *SSpecCmdKeywords[] =
 	"STATus:PRESet",													//		23
 
 ///////////////////////////////////////////////////////////////////////////////////
-// Commands required by all 2090 Positioner Class Compliant Instruments
+// Commands required by all SA Dummy Class Compliant Instruments
 ///////////////////////////////////////////////////////////////////////////////////
 
-	"AIR",			              // 24: Activates or deactivates flotation on air flotation turntables. AIR <ON/OFF>
-	"AUXX",                   // 25: Activates or deactivates one or more auxiliary devices. AUX <Device #> [Device #] [Device #] [Device #] <ON/OFF>
-  "AUX#",                   // 26: Activates or deactivates specified auxiliary device. AUX# <ON/OFF>
-  "AUX#?",                  // 27: Queries the state of the specified auxiliary device control
- 	"CAL",		                // 28: Changes the encoder calibration setting of the device. CAL <integer value>
- 	"CAL?",		                // 29: Query the encoder calibration setting of the device. Response: <value> Value between 1 and 9999.
-  "CC",                     // 30: Instructs the turntable to move in the counterclockwise direction
-  "CL",                     // 31: Changes the counterclockwise limit of the device.
-  "CL?",                    // 32: Queries the turntable's counterclockwise limit.
-  "CP",                     // 33: Changes the current position of the device. Value must be between -999.9 and 999.9.
-  "CP?",                    // 34: Queries the current position.
-  "CW",                     // 35: Instructs the turntable to move in the clockwise direction.
-  "CY",                     // 36: Changes the cycle count for the device.
-  "CY?",                    // 37: Queries the cycle count for the device.
-  "DIR?",                   // 38: Queries the motion direction for the device.
-  "DN",                     // 39: Instructs the tower boom to move in the Down direction.
-  "ERE",                    // 40: Set Device Dependent Error Enable Register.
-  "ERE?",                   // 41: Query Device Dependent Error Enable Register
-  "ERR?",                   // 42: Query Device Dependent Error Register.
-  "LH",                     // 43: Changes the lower limit of the device for horizontal polarity.
-  "LH?",                    // 44: Queries the lower limit of the device for horizontal polarity.
-  "LL",                     // 45: Changes the lower limit of the device. This command effects both the horizontal and vertical limits, simultaneously.
-  "LL?",                    // 46: Query the lower limit of the device. LL? returns the limit associated with the current polarization mode.
-  "LV",                     // 47: Changes the lower limit of the device for vertical polarity.
-  "LV?",                    // 48: Queries the lower limit of the device for vertical polarity.
-  "N1",                     // 49: Places the controller in the backward compatible numeric mode 1.
-  "N2",                     // 50: Places the controller in the backward compatible numeric mode 2.
-  "OFF",                    // 51: Sets the polarization offset of non-bore sight towers.
-  "OFF?",                   // 52: Queries the polarization offset for standard (non-bore sight) towers.
-  "PH",                     // 53: Queries the polarization offset for standard (non-bore sight) towers.
-  "PV",                     // 54: Queries the polarization offset for standard (non-bore sight) towers.
-  "P?",                     // 55: Queries the polarization offset for standard (non-bore sight) towers.
-  "RTL",                    // 56: Causes the device to return to local mode.
-  "S#",                     // 57: Changes the speed selection of a two speed or variable speed device.
-  "S?",                     // 58: Queries the speed selection of a two speed or variable speed device.
-  "SC",                     // 59: Instructs the device to begin scanning between preset lower and upper limits.
-  "SC?",                    // 60: Queries the 2090 to determine if scan mode is active.
-  "SEP",                    // 61: Changes the separation distance between the mast and the EUT.
-  "SEP?",                   // 62: Query the separation distance between the mast and the EUT
-  "SK",                     // 63: Instructs the device to begin seeking for a preset target value.
-  "SKN",                    // 64: Instructs the device to begin seeking the specified target value in the negative (down/counterclockwise) direction only.
-  "SKP",                    // 65: Instructs the device to begin seeking the specified target value in the position (up/clockwise) direction only.
-  "SKR",                    // 66: Instructs the device to begin seeking the specified target value relative to the current position
-  "SS#",                    // 67: Sets a preset speed setting for a variable speed device
-  "SS#?",                   // 68: Queries a preset speed setting for a variable speed device
-  "ST",                     // 69: Causes device motion to stop
-  "TG",                     // 70: Changes the seek target position of the device.
-  "TG?",                    // 71: Query the seek target for the device.
-  "TT",                     // 72: Selects turntable mode of operation. Allows the selection of normal, two speed, and air flotation turntables.
-  "TWR",                    // 73: Selects tower mode of operation
-  "TYP?",                   // 74: Queries the current device type configuration
-  "UH",                     // 75: Changes the upper limit of the device for horizontal polarity
-  "UH?",                    // 76: Queries the upper limit of the device for horizontal polarity.
-  "UL",                     // 77: Queries the tower's upper limit
-  "UL?",                    // 78: Query the upper limit of the device.
-  "UP",                     // 79: Instructs the tower boom to move in the Up direction
-  "UV",                     // 80: Changes the upper limit of the device for vertical polarity
-  "UV?",                    // 81: Queries the upper limit of the device for vertical polarity.
-  "VS?",                    // 82: Queries the variable speed capability of the device
-  "WL",                     // 83: Changes the clockwise limit of the device
-  "WL?",                    // 84: Queries the turntable's clockwise limit.
-  "ZERO",                   // 85: Initiates a zero reference scan for devices equipped with absolute zero reference pulses.
-  "ZERO?",                  // 86: Queries if the device is equipped with an absolute zero reference to determine if the ZERO command can be used
-  "CR?",                    // 87: Queries Continous Rotation Capablity
-  "HOME?",                  // 88: Queries if Homed
-  "A",                      // 89: Set Accelration
-  "A?",                     // 90: Queries Accelration setting
-  "AVLCMD",					// 91: Pass thru command, sends command direclty to AVL MMI
+	"LOC",			              // 24: Local Mode
+	
 
 ///////////////////////////////////////////////////////////////////////////////////
-// End of Commands required by all 2090 Positioner Class Compliant Instruments
+// End of Commands required by all SA Dummy Class Compliant Instruments
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -529,79 +463,12 @@ const struct strSpecCommand sSpecCommand[] =
 
 // ==================================================================================
 ////////////////////////////////////////////////////////////////////////////////
-// Commands required by a 2090 SCPI Instrument Class Compliant
+// Commands required by a SA Dummy SCPI Instrument Class Compliant
 ////////////////////////////////////////////////////////////////////////////////
-	{{	{REQ BOOLEAN	sBNoDef }, {NOP}, {NOP} 	                          }},	//	24: AIR <ON|OFF>
-	{{	NO_PARAMS																													}},	//	25: AUXX
-	{{  {REQ BOOLEAN	sBNoDef }, {NOP}, {NOP}	                            }},	//  26: AUX# <ON|OFF>
-  {{  NO_PARAMS	                                                        }},	//  27: AUX#?
-	{{	{ REQ	NUM	sNoUnits },    {NOP}, {NOP} 														}},	//	28: CAL <integer value>
-  {{	NO_PARAMS																												  }},	//	29: CAL?
-	{{	NO_PARAMS																													}},	//	30: CC
-  {{	{ REQ	NUM	sNoUnits },    {NOP}, {NOP}															}},	//  31: CL [+/-] XXX[.X]
-  {{	NO_PARAMS																													}},	//  32: CL?
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP} 																}},	//  33: CP [+/-] XXX[.X]
-	{{	NO_PARAMS	                                                        }},	//	34: CP?
-	{{	NO_PARAMS																											    }},	//	35: CW
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//  36: CY XXX.X
-  {{	NO_PARAMS																													}},	//  37: CY?
-  {{	NO_PARAMS																													}},	//  38: DIR?
-  {{	NO_PARAMS																													}},	//  39: DN
-	{{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}				 												}},	//	40: ERE XXXX
-  {{	NO_PARAMS																													}},	//  41: ERE?
-  {{	NO_PARAMS																													}},	//  42: ERR?
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//  43: LH [+/-] XXX[.X]
-  {{	NO_PARAMS																													}},	//  44: LH?
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//  45: LL [+/-] XXX[.X]
-  {{	NO_PARAMS																													}},	//  46: LL?
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//  47: LV [+/-] XXX[.X]
-  {{	NO_PARAMS																													}},	//  48: LV?
-  {{	NO_PARAMS																													}},	//  49: N1
-	{{	NO_PARAMS																													}},	//	50: N2
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//  51: OFF [+/-] XX[.X]
-  {{	NO_PARAMS																													}},	//  52: OFF?
-  {{	NO_PARAMS																													}},	//  53: PH
-  {{	NO_PARAMS																													}},	//  54: PV
-  {{	NO_PARAMS																													}},	//  55: P?
-  {{	NO_PARAMS																													}},	//  56: RTL
-  {{	NO_PARAMS																													}},	//  57: S#
-  {{	NO_PARAMS																													}},	//  58: S?
-  {{	NO_PARAMS																													}},	//  59: SC
-	{{	NO_PARAMS																													}},	//	60: SC?
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//  61: SEP XX
-  {{	NO_PARAMS																													}},	//  62: SEP?
-  {{	{ OPT	NUM	sNoUnits }, {NOP}, {NOP}																													}},	//  63: SK
-  {{	NO_PARAMS																													}},	//  64: SKN
-  {{	NO_PARAMS																													}},	//  65: SKP
-  {{	NO_PARAMS																													}},	//  66: SKR
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//  67: SS# <speed>
-  {{	NO_PARAMS																													}},	//  68: SS#?
-  {{	NO_PARAMS																													}},	//  69: ST
-	{{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//	70: TG [+/-] XXX[.X]
-  {{	NO_PARAMS																													}},	//  71: TG?
-  {{	{ REQ	CH_DAT sTTMode}, { REQ	CH_DAT	sCont }, {NOP} 						  }},	//  72: TT <NRM/AIR/TWO>, <CONT/NONCONT>  TODO: make syntax 2090 compatible
-  {{	{ REQ	CH_DAT sTTMode}																							}},	//  73: TWR <NRM/BOR>
-  {{	NO_PARAMS																													}},	//  74: TYP?
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}			 													}},	//  75: UH [+/-] XXX[.X]
-  {{	NO_PARAMS																													}},	//  76: UH?
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//  77: UL [-]XXX[.X]
-  {{	NO_PARAMS																													}},	//  78: UL?
-  {{	NO_PARAMS																													}},	//  79: UP
-	{{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//	80: UV  [+/-] XXX[.X]
-  {{	NO_PARAMS																													}},	//  81: UV?
-  {{	NO_PARAMS																													}},	//  82: VS?
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																}},	//  83: WL [+/-] XXX[.X]
-  {{	NO_PARAMS																													}},	//  84: WL?
-  {{	NO_PARAMS																													}},	//  85: ZERO
-  {{	NO_PARAMS																													}},	//  86: ZERO?
-  {{	NO_PARAMS																													}},	//  87: CR?
-  {{	NO_PARAMS																													}},	//  88: HOME?
-  {{	{ REQ	NUM	sNoUnits }, {NOP}, {NOP}																				}},	//  89: A
-  {{	NO_PARAMS																													}},	//  90: A?
-  { {	{ REQ	STRING }, {NOP}, {NOP}																								}},	//  91: AVLCMD
-
+	{ { NO_PARAMS                                                            } },       //	24: Local Mode
+																				
  //==================================================================================
-  {{	NO_PARAMS																													}},	//  xx: SYSTem:CAPability?
+    {{	NO_PARAMS																													}},	//  xx: SYSTem:CAPability?
 
 
 	END_OF_COMMAND_SPECS	 // USER: Do not modify this line

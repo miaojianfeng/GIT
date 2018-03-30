@@ -204,11 +204,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientHandlerSocket.cpp" />
-    <ClCompile Include="cmds.c" />
+    <ClCompile Include="cmds.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CSaProtocol.cpp" />
     <ClCompile Include="GlobalDisplayMessage.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="scpi.c" />
+    <ClCompile Include="scpi.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SCPIMsg.cpp" />
     <ClCompile Include="SocketServerThread.cpp" />
     <ClCompile Include="SocketServerThreadManager.cpp" />

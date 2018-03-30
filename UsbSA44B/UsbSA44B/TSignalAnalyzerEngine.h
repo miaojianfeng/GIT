@@ -27,6 +27,10 @@ public:
 	void  SetID(int id) { m_idNum = id; UpdateID(); }
 	AnsiString  GetID();
 	int GetDeviceNumber() { return m_idNum; }
+	
+	// *OPC? Query
+	bool GetStatus() { return m_bStatus; } // returns false if still moving
+	void SetStatus(bool status) { m_bStatus = status;  }
 
 	void  SetLocalMode() { m_bLocalMode = true; }  // Causes the device to return to local mode.
 
@@ -34,6 +38,10 @@ public:
 	void UpdateID();
 
 private:
+	void InitParams();
+
+private:
+	bool          m_bStatus;
 	bool          m_bLocalMode;
 	int           m_idNum;
 	std::string   m_id;

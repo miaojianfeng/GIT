@@ -38,7 +38,8 @@ TVirtualDevice::TVirtualDevice(CSaProtocol& protocol) :
   //
   // get command numbers from cmds.c in COMMAND SPECS - Part 1: Command Keywords
   m_operation[4] = &TVirtualDevice::GetID;
-  m_operation[5] = &TVirtualDevice::Reset;
+  m_operation[6] = &TVirtualDevice::GetStatus;
+  m_operation[7] = &TVirtualDevice::Reset;
   
   m_operation[24] = &TVirtualDevice::SetLocalMode;  
 // -----------------------------------------------------------------------------
@@ -114,7 +115,7 @@ AnsiString  TVirtualDevice::Parse(char* SInput)
 // 4
 // *IDN?
 // Query Identity
-//---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 void TVirtualDevice::GetID(struct strParam sParam[], UCHAR ucNumSufCnt, unsigned int uiNumSuf[])
 {
    AnsiString s = m_pEngine->GetID();
@@ -122,6 +123,35 @@ void TVirtualDevice::GetID(struct strParam sParam[], UCHAR ucNumSufCnt, unsigned
 }
 
 //---------------------------------------------------------------------------
+// 6
+// *OPC?
+// Operation Complete Query
+//----------------------------------------------------------------------------
+void TVirtualDevice::GetStatus(struct strParam sParam[], UCHAR ucNumSufCnt, unsigned int uiNumSuf[])
+{
+	short nStatus = 0;
+
+	if (m_protocol.IsSimulationEnabled())
+	{
+		nStatus = 1;
+	}
+	else
+	{
+		nStatus = m_pEngine->GetStatus();		
+	}	
+
+	short nOPC = nStatus == 0 ? 1 : 0; // we return back 1 when we have completed motion, and 0 when moving
+
+	auto s = str_printf("%hd", nOPC); // %hd short int
+	m_protocol.Send(s);
+}
+
+
+//---------------------------------------------------------------------------
+// 7
+// *RST
+// Reset Instrument
+//----------------------------------------------------------------------------
 void TVirtualDevice::Reset(struct strParam sParam[], UCHAR ucNumSufCnt, unsigned int uiNumSuf[])
 {
 #if ALLOW_EMULATION_OF_UNSUPPORTED_COMMANDS   
