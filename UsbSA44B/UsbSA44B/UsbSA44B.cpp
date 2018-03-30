@@ -10,6 +10,7 @@
 #include "UsbSA44BDoc.h"
 #include "UsbSA44BView.h"
 #include "LimitSingleInstance.h" 
+#include "aboutbox.h"
 
 #include <strstream>
 
@@ -265,50 +266,17 @@ void CUsbSA44BApp::OnRegisteredLogMsg(WPARAM wParam, LPARAM lParam)
 	}
 
 }
-// CUsbSA44BApp message handlers
-
 
 // CAboutDlg dialog used for App About
-
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
-
-// Dialog Data
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ABOUTBOX };
-#endif
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-// Implementation
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
-{
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
-
-// App command to run the dialog
 void CUsbSA44BApp::OnAppAbout()
 {
-	CAboutDlg aboutDlg;
-	aboutDlg.DoModal();
+	CAboutBox aboutBox;
+	aboutBox.DoModal();
 }
 
-// CUsbSA44BApp customization load/save methods
 
+
+// CUsbSA44BApp customization load/save methods
 void CUsbSA44BApp::PreLoadState()
 {
 	BOOL bNameValid;

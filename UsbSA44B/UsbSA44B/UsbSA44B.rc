@@ -99,6 +99,8 @@ IDB_WRITESMALL          BITMAP                  "res\\writesmall.bmp"
 
 IDB_BUTTONS             BITMAP                  "res\\buttons.bmp"
 
+IDB_ABOUTBOX            BITMAP                  "res\\aboutbox.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -294,15 +296,29 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+IDD_SETUP DIALOGEX 0, 0, 145, 65
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "AVLZollner Protocol Setup"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "&Server:",IDC_STATIC,7,9,30,8
+    EDITTEXT        IDC_SERVER,42,7,96,12,ES_AUTOHSCROLL | WS_GROUP
+    LTEXT           "&Port:",IDC_STATIC,8,25,30,8
+    EDITTEXT        IDC_CHANNEL,41,23,40,12,WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,20,44,50,14,WS_GROUP
+    PUSHBUTTON      "Cancel",IDCANCEL,74,44,50,14,WS_GROUP
+END
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 361, 127
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About UsbSA44B"
+CAPTION "About %1"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "UsbSA44B, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2018",IDC_STATIC,42,26,114,8
-    DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
+    CONTROL         IDB_BITMAP1,IDC_STATIC,"Static",SS_BITMAP,14,8,333,70
+    LTEXT           "(application name)",IDC_APPLICATION_NAME,14,86,285,8
+    LTEXT           "Version %s",IDC_FILE_VERSION,14,98,156,8
+    LTEXT           "(copyright info)",IDC_COPYRIGHT,14,110,287,8
+    DEFPUSHBUTTON   "OK",IDOK,297,105,50,14,WS_GROUP
 END
 
 
@@ -328,13 +344,13 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "TODO: <Company name>"
+            VALUE "CompanyName", "ETS-Lindgren"
             VALUE "FileDescription", "UsbSA44B"
             VALUE "FileVersion", "1.0.0.1"
             VALUE "InternalName", "UsbSA44B.exe"
-            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "LegalCopyright", "(c) ETS-Lindgren.  All rights reserved."
             VALUE "OriginalFilename", "UsbSA44B.exe"
-            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductName", "ETS-Lindgren Signal Hound USB-SA44B Protocol Manager for TILE"
             VALUE "ProductVersion", "1.0.0.1"
         END
     END
@@ -353,12 +369,16 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO
 BEGIN
+    "IDD_SETUP", DIALOG
+    BEGIN
+    END
+
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 163
         TOPMARGIN, 7
-        BOTTOMMARGIN, 55
+        BOTTOMMARGIN, 56
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -370,6 +390,17 @@ END
 //
 
 IDR_RIBBON              RT_RIBBON_XML           "res\\ribbon.mfcribbon-ms"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_ABOUTBOX AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -386,12 +417,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "Signal Hound USB-SA44B\n\nSignal Hound USB-SA44B\n\n\nUsbSA44B.Document\nUsbSA44B.Document"
+    IDR_MAINFRAME           "UsbSA44B\n\nUsbSA44B\n\n\nUsbSA44B.Document\nUsbSA44B.Document"
 END
 
 STRINGTABLE
 BEGIN
-    AFX_IDS_APP_TITLE       "Signal Hound USB-SA44B"
+    AFX_IDS_APP_TITLE       "UsbSA44B"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 

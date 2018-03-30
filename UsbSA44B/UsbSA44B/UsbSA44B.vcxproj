@@ -178,9 +178,8 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="aboutbox.h" />
+    <ClInclude Include="aboutdlg.h" />
     <ClInclude Include="cmds.h" />
     <ClInclude Include="CSaProtocol.h" />
     <ClInclude Include="ClientHandlerSocket.h" />
@@ -201,8 +200,11 @@
     <ClInclude Include="UsbSA44BDoc.h" />
     <ClInclude Include="UsbSA44BView.h" />
     <ClInclude Include="vcl.h" />
+    <ClInclude Include="versioninfo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="aboutbox.cpp" />
+    <ClCompile Include="aboutdlg.cpp" />
     <ClCompile Include="ClientHandlerSocket.cpp" />
     <ClCompile Include="cmds.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -231,11 +233,13 @@
     <ClCompile Include="UsbSA44BDoc.cpp" />
     <ClCompile Include="UsbSA44BView.cpp" />
     <ClCompile Include="vcl.cpp" />
+    <ClCompile Include="versioninfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UsbSA44B.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\aboutbox.bmp" />
     <Image Include="res\buttons.bmp" />
     <Image Include="res\filelarge.bmp" />
     <Image Include="res\filesmall.bmp" />

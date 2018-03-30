@@ -38,6 +38,14 @@
 #define ID_VIEW_APPLOOK_WINDOWS_7       219
 #define IDS_EDIT_MENU                   306
 #define IDR_RIBBON                      307
+#define IDC_SERVER                      308
+#define IDC_CHANNEL                     309
+#define IDB_BITMAP1                     310
+#define IDB_BITMAP2                     310
+#define IDB_ABOUTBOX                    310
+#define IDC_APPLICATION_NAME            20001
+#define IDC_FILE_VERSION                20002
+#define IDC_COPYRIGHT                   20003
 #define ID_CANCEL_EDIT_CNTR             32768
 #define ID_WRITE_PASTEASHYPERLINK       32770
 
@@ -45,7 +53,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        310
+#define _APS_NEXT_RESOURCE_VALUE        311
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
