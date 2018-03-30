@@ -1,14 +1,3 @@
-// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface 
-// (the "Fluent UI") and is provided only as referential material to supplement the 
-// Microsoft Foundation Classes Reference and related electronic documentation 
-// included with the MFC C++ library software.  
-// License terms to copy, use or distribute the Fluent UI are available separately.  
-// To learn more about our Fluent UI licensing program, please visit 
-// http://go.microsoft.com/fwlink/?LinkId=238214.
-//
-// Copyright (C) Microsoft Corporation
-// All rights reserved.
-
 // UsbSA44BDoc.cpp : implementation of the CUsbSA44BDoc class
 //
 
@@ -20,6 +9,9 @@
 #endif
 
 #include "UsbSA44BDoc.h"
+#include "UsbSA44BView.h"
+#include "MainFrm.h"
+
 #include <propkey.h>
 
 #ifdef _DEBUG
@@ -38,13 +30,14 @@ BEGIN_MESSAGE_MAP(CUsbSA44BDoc, CRichEditDoc)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_OLE_VERB_FIRST, ID_OLE_VERB_LAST, &CRichEditDoc::OnUpdateObjectVerbMenu)
 END_MESSAGE_MAP()
 
+static CString strAppConnectionSettings = _T("ServerConnection");
+static CString strEntryIPAddress = _T("IPAddress");
+static CString strEntryPort = _T("Port");
 
 // CUsbSA44BDoc construction/destruction
 
 CUsbSA44BDoc::CUsbSA44BDoc()
 {
-	// TODO: add one-time construction code here
-
 }
 
 CUsbSA44BDoc::~CUsbSA44BDoc()
@@ -74,17 +67,18 @@ void CUsbSA44BDoc::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
-		// TODO: add storing code here
-	}
-	else
-	{
-		// TODO: add loading code here
-	}
+		for (POSITION pos = GetFirstViewPosition(); pos != NULL;)
+		{
+			CView* pView = GetNextView(pos);
+			CUsbSA44BView* pUsbSA44BView = DYNAMIC_DOWNCAST(CUsbSA44BView, pView);
 
-	// Calling the base class CRichEditDoc enables serialization
-	//  of the container document's COleClientItem objects.
-	// TODO: set CRichEditDoc::m_bRTF = FALSE if you are serializing as text
-	CRichEditDoc::Serialize(ar);
+			if (pUsbSA44BView != NULL)
+			{
+				m_bRTF = FALSE; // save as text
+				CRichEditDoc::Serialize(ar);
+			}
+		}
+	}
 }
 
 #ifdef SHARED_HANDLERS
@@ -155,5 +149,45 @@ void CUsbSA44BDoc::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
+void CUsbSA44BDoc::StartThreads()
+{
+	m_serverSA.Start();
+}
 
-// CUsbSA44BDoc commands
+BOOL CUsbSA44BDoc::SaveModified()
+{
+	return TRUE; // don't bother saving...let user close us
+}
+
+void CUsbSA44BDoc::ShowProgram()
+{
+	POSITION pos = GetFirstViewPosition();
+	CView* pView = GetNextView(pos);
+	if (pView != NULL)
+	{
+		CFrameWnd* pFrameWnd = pView->GetParentFrame();
+		pFrameWnd->ActivateFrame(SW_SHOW);
+		pFrameWnd = pFrameWnd->GetParentFrame();
+		if (pFrameWnd != NULL)
+			pFrameWnd->ActivateFrame(SW_SHOW);
+	}
+}
+
+void CUsbSA44BDoc::PreCloseFrame(CFrameWnd* pFrameWnd)
+{
+	CloseAllSockets();
+
+	CRichEditDoc::PreCloseFrame(pFrameWnd);
+}
+
+void CUsbSA44BDoc::CloseAllSockets()
+{
+	m_serverSA.Stop();	
+}
+
+void CUsbSA44BDoc::DeleteContents()
+{
+	CloseAllSockets();
+
+	CRichEditDoc::DeleteContents();
+}

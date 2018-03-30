@@ -1,20 +1,9 @@
-// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface 
-// (the "Fluent UI") and is provided only as referential material to supplement the 
-// Microsoft Foundation Classes Reference and related electronic documentation 
-// included with the MFC C++ library software.  
-// License terms to copy, use or distribute the Fluent UI are available separately.  
-// To learn more about our Fluent UI licensing program, please visit 
-// http://go.microsoft.com/fwlink/?LinkId=238214.
-//
-// Copyright (C) Microsoft Corporation
-// All rights reserved.
-
 // MainFrm.cpp : implementation of the CMainFrame class
 //
 
 #include "stdafx.h"
 #include "UsbSA44B.h"
-
+#include "UsbSA44BView.h"
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -28,7 +17,10 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWndEx)
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_CREATE()
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)	
+	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
+	ON_COMMAND(ID_VIEW_CAPTION_BAR, &CMainFrame::OnViewCaptionBar)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_CAPTION_BAR, &CMainFrame::OnUpdateViewCaptionBar)
+	ON_COMMAND(ID_TOOLS_OPTIONS, &CMainFrame::OnOptions)
 END_MESSAGE_MAP()
 
 // CMainFrame construction/destruction
@@ -48,20 +40,74 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	BOOL bNameValid;
 
 	m_wndRibbonBar.Create(this);
 	m_wndRibbonBar.LoadFromResource(IDR_RIBBON);
+
+#ifndef _DEBUG
+	// Remove debugging menus
+	m_wndRibbonBar.GetCategory(1)->RemovePanel(4);
+	m_wndRibbonBar.GetCategory(1)->RemovePanel(4);
+	m_wndRibbonBar.GetCategory(1)->RemovePanel(4);
+#endif
+
+#if 0
+	BOOL bNameValid;
+	if (!m_wndStatusBar.Create(this))
+	{
+		TRACE0("Failed to create status bar\n");
+		return -1;      // fail to create
+	}
+
+	CString strTitlePane1;
+	CString strTitlePane2;
+	bNameValid = strTitlePane1.LoadString(IDS_STATUS_PANE1);
+	ASSERT(bNameValid);
+	bNameValid = strTitlePane2.LoadString(IDS_STATUS_PANE2);
+	ASSERT(bNameValid);
+	m_wndStatusBar.AddElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE1, strTitlePane1, TRUE), strTitlePane1);
+	m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(ID_STATUSBAR_PANE2, strTitlePane2, TRUE), strTitlePane2);
+#endif
 
 	// enable Visual Studio 2005 style docking window behavior
 	CDockingManager::SetDockingMode(DT_SMART);
 	// enable Visual Studio 2005 style docking window auto-hide behavior
 	EnableAutoHidePanes(CBRS_ALIGN_ANY);
+
+	// Create a caption bar:
+	if (!CreateCaptionBar())
+	{
+		TRACE0("Failed to create caption bar\n");
+		return -1;      // fail to create
+	}
+
 	// set the visual manager and style based on persisted value
 	OnApplicationLook(theApp.m_nAppLook);
 
 	return 0;
 }
+
+//BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/,
+//	CCreateContext* pContext)
+//{
+//	if (m_wndSplitter.CreateStatic(this, 2, 1))
+//	{
+//		CRect rect;
+//		GetClientRect(&rect);
+//		CSize size = rect.Size();
+//		size.cy -= 150;
+//		if (m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(CAVLZollnerView), size, pContext))
+//		{
+//			if (m_wndSplitter.CreateView(1, 0, RUNTIME_CLASS(CSendView), CSize(0, 0), pContext))
+//			{
+//				SetActiveView((CView*)m_wndSplitter.GetPane(1, 0));
+//				return TRUE;
+//			}
+//		}
+//	}
+//
+//	return TRUE;
+//}
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
@@ -70,6 +116,38 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
+
+	return TRUE;
+}
+
+BOOL CMainFrame::CreateCaptionBar()
+{
+	if (!m_wndCaptionBar.Create(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS, this, ID_VIEW_CAPTION_BAR, -1, TRUE))
+	{
+		TRACE0("Failed to create caption bar\n");
+		return FALSE;
+	}
+
+	BOOL bNameValid;
+
+	CString strTemp, strTemp2;
+	bNameValid = strTemp.LoadString(IDS_CAPTION_BUTTON);
+	ASSERT(bNameValid);
+	m_wndCaptionBar.SetButton(strTemp, ID_TOOLS_OPTIONS, CMFCCaptionBar::ALIGN_LEFT, FALSE);
+	bNameValid = strTemp.LoadString(IDS_CAPTION_BUTTON_TIP);
+	ASSERT(bNameValid);
+	m_wndCaptionBar.SetButtonToolTip(strTemp);
+
+	bNameValid = strTemp.LoadString(IDS_CAPTION_TEXT);
+	ASSERT(bNameValid);
+	m_wndCaptionBar.SetText(strTemp, CMFCCaptionBar::ALIGN_LEFT);
+
+	m_wndCaptionBar.SetBitmap(IDB_INFO, RGB(255, 255, 255), FALSE, CMFCCaptionBar::ALIGN_LEFT);
+	bNameValid = strTemp.LoadString(IDS_CAPTION_IMAGE_TIP);
+	ASSERT(bNameValid);
+	bNameValid = strTemp2.LoadString(IDS_CAPTION_IMAGE_TEXT);
+	ASSERT(bNameValid);
+	m_wndCaptionBar.SetImageToolTip(strTemp, strTemp2);
 
 	return TRUE;
 }
@@ -172,4 +250,24 @@ void CMainFrame::OnApplicationLook(UINT id)
 void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
+}
+
+void CMainFrame::OnViewCaptionBar()
+{
+	m_wndCaptionBar.ShowWindow(m_wndCaptionBar.IsVisible() ? SW_HIDE : SW_SHOW);
+	RecalcLayout(FALSE);
+}
+
+void CMainFrame::OnUpdateViewCaptionBar(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(m_wndCaptionBar.IsVisible());
+}
+
+void CMainFrame::OnOptions()
+{
+	CMFCRibbonCustomizeDialog *pOptionsDlg = new CMFCRibbonCustomizeDialog(this, &m_wndRibbonBar);
+	ASSERT(pOptionsDlg != NULL);
+
+	pOptionsDlg->DoModal();
+	delete pOptionsDlg;
 }

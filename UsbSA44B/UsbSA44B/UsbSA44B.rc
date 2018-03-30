@@ -101,6 +101,8 @@ IDB_BUTTONS             BITMAP                  "res\\buttons.bmp"
 
 IDB_ABOUTBOX            BITMAP                  "res\\aboutbox.bmp"
 
+IDB_TILERIBBON          BITMAP                  "res\\TileRibbon.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -550,6 +552,15 @@ STRINGTABLE
 BEGIN
     IDS_STATUS_PANE1        "Pane 1"
     IDS_STATUS_PANE2        "Pane 2"
+END
+
+STRINGTABLE
+BEGIN
+IDS_CAPTION_BUTTON      "Options..."
+IDS_CAPTION_BUTTON_TIP  "Click here to see more options"
+IDS_CAPTION_TEXT        "This is a caption bar where a message can be presented to the user."
+IDS_CAPTION_IMAGE_TIP   "Important"
+IDS_CAPTION_IMAGE_TEXT  "Here is an informational message for the user."
 END
 
 STRINGTABLE

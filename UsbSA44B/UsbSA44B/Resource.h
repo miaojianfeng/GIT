@@ -43,17 +43,28 @@
 #define IDB_BITMAP1                     310
 #define IDB_BITMAP2                     310
 #define IDB_ABOUTBOX                    310
+#define IDB_BITMAP3                     311
+#define IDB_TILERIBBON                  311
 #define IDC_APPLICATION_NAME            20001
 #define IDC_FILE_VERSION                20002
 #define IDC_COPYRIGHT                   20003
 #define ID_CANCEL_EDIT_CNTR             32768
 #define ID_WRITE_PASTEASHYPERLINK       32770
+#define ID_VIEW_CAPTION_BAR             32771
+#define IDS_CAPTION_BUTTON              32772
+#define ID_TOOLS_OPTIONS                32773
+#define IDS_CAPTION_BUTTON_TIP          32774
+#define IDS_CAPTION_TEXT                32775
+#define IDB_INFO                        32776
+#define IDS_CAPTION_IMAGE_TIP           32777
+#define IDS_CAPTION_IMAGE_TEXT          32778
+
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        311
+#define _APS_NEXT_RESOURCE_VALUE        312
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310

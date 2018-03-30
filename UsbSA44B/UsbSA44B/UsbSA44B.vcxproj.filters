@@ -207,6 +207,9 @@
     <Image Include="res\aboutbox.bmp">
       <Filter>Application\Resource Files</Filter>
     </Image>
+    <Image Include="res\TileRibbon.bmp">
+      <Filter>Application\Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\ribbon.mfcribbon-ms">

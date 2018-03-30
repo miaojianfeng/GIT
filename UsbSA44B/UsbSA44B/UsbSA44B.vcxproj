@@ -244,6 +244,7 @@
     <Image Include="res\filelarge.bmp" />
     <Image Include="res\filesmall.bmp" />
     <Image Include="res\main.bmp" />
+    <Image Include="res\TileRibbon.bmp" />
     <Image Include="res\Toolbar.bmp" />
     <Image Include="res\Toolbar256.bmp" />
     <Image Include="res\UsbSA44B.ico" />

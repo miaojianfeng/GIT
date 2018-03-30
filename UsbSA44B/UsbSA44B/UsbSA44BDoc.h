@@ -1,5 +1,6 @@
 #pragma once
-
+#include "SocketServerThreadManager.h"
+#include <afxrich.h>
 
 class CUsbSA44BDoc : public CRichEditDoc
 {
@@ -12,13 +13,28 @@ public:
 
 // Operations
 public:
+	void StartThreads();
+	void ShowProgram();
+	virtual void PreCloseFrame(CFrameWnd* pFrameWnd);
+	BOOL IsClosing() { return m_bClosing; }
+
+private:
+	void CloseAllSockets();
+
+private:
+	CSocketServerThreadManager m_serverSA;
 
 // Overrides
 public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);	
 
+	virtual void DeleteContents();
+	//virtual BOOL CanCloseFrame(CFrameWnd* pFrame);
 	virtual CRichEditCntrItem* CreateClientItem(REOBJECT* preo) const;
+
+	//virtual CRichEditCntrItem* CreateClientItem(REOBJECT* preo) const;
+
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);
@@ -33,6 +49,7 @@ public:
 #endif
 
 protected:
+	virtual BOOL SaveModified();
 
 // Generated message map functions
 protected:
@@ -42,4 +59,8 @@ protected:
 	// Helper function that sets search content for a Search Handler
 	void SetSearchContent(const CString& value);
 #endif // SHARED_HANDLERS
+
+public:
+	afx_msg void OnUpdateTestButtons(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateOpenSocket(CCmdUI *pCmdUI);
 };
