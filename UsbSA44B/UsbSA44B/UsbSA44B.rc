@@ -419,7 +419,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "UsbSA44B\n\nUsbSA44B\n\n\nUsbSA44B.Document\nUsbSA44B.Document"
+    IDR_MAINFRAME           "Signal Hound USB-SA44B Manager for TILE!\n\nUsbSA44B\n\n\nUsbSA44B.Document\nUsbSA44B.Document"
 END
 
 STRINGTABLE
@@ -556,11 +556,11 @@ END
 
 STRINGTABLE
 BEGIN
-IDS_CAPTION_BUTTON      "Options..."
-IDS_CAPTION_BUTTON_TIP  "Click here to see more options"
-IDS_CAPTION_TEXT        "This is a caption bar where a message can be presented to the user."
-IDS_CAPTION_IMAGE_TIP   "Important"
-IDS_CAPTION_IMAGE_TEXT  "Here is an informational message for the user."
+    IDS_CAPTION_BUTTON      "Options..."
+    IDS_CAPTION_BUTTON_TIP  "Click here to see more options"
+    IDS_CAPTION_TEXT        "This is a caption bar where a message can be presented to the user."
+    IDS_CAPTION_IMAGE_TIP   "Important"
+    IDS_CAPTION_IMAGE_TEXT  "Here is an informational message for the user."
 END
 
 STRINGTABLE

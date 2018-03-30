@@ -43,6 +43,8 @@ private:
 private:
 	bool          m_bStatus;
 	bool          m_bLocalMode;
+
+	static int    m_idLast;
 	int           m_idNum;
 	std::string   m_id;
 };
