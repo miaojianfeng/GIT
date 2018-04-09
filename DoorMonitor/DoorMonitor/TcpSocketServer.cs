@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
@@ -13,74 +14,40 @@ using System.Windows.Forms;
 
 namespace DoorMonitor
 {
-    public enum EnumTcpSocketServerState
+    public enum EnumServerState
     {
-        Stopped = 0,
-        Listening = 1,     
-        Connected = 2             
+        ServerStopped   = 0,
+        ServerStarted   = 1,     
+        ClientConnected = 2             
     }
 
-    public class TcpSocketServerException : Exception
-    {
-#pragma warning disable 1591
-        public TcpSocketServerException() { }
-        public TcpSocketServerException(string message) : base(message) { }
-        public TcpSocketServerException(string message, Exception inner) : base(message, inner) { }
-        protected TcpSocketServerException(System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context)
-            : base(info, context) { }
-#pragma warning restore 1591
-    }
-
-    public interface ITcpSocketServer
-    {
-        // ---------- Property ----------
-        string ServerName { get; set; }
-
-        UInt16 ServerPort { get; set; }
-
-        string ConfigFile { get; set; }
-
-        Action<string> TraceHandler { get; set; }
-
-        Func<string, string> CommandHandler { get; set; }
-
-        EnumTcpSocketServerState State { get; }
-
-        // ----------- Method ----------               
-        void Start();
-
-        void Stop();
-    }
-
-
-    public class TcpSocketServer: INotifyPropertyChanged, ITcpSocketServer
+    public class TcpSocketServer: INotifyPropertyChanged
     {
         // ---------- Type Definition ----------
         // ---------- Field ----------       
-        private TcpListener tcpListener;
-        private TcpClient tcpClient;
-        private CancellationTokenSource cts;
-        //private Dictionary<string, string> dictCmdVsResp;  // Store the "Command vs Response" Table
-
-        private StringBuilder lastError = new StringBuilder(200);
-        private string serverName = string.Empty;
+        private TcpListener   tcpListener;       
+        
+        private string serverName = "TCP Server";
         private UInt16 serverPort = 8001;
-        private string configFile = string.Empty;        
-        private StringBuilder traces = new StringBuilder();
-        private EnumTcpSocketServerState stateMachine = EnumTcpSocketServerState.Stopped;
-        private int queryInterval_ms = 0;
+        private EnumServerState serverState = EnumServerState.ServerStopped;
+
+        private StringBuilder traceRecord = new StringBuilder();
+        private int queryTimeout_ms = 200;
+
+        static private int clientNum = 0;
 
         // ---------- Constructor ---------- 
         public TcpSocketServer()
-        {
-            this.InitMembers("TcpSocketServer", 2000);
+        {  
+            
         }
 
-
-        public TcpSocketServer(string svrName, UInt16 svrPort, string svrConfigFile = "", Action<string> svrTraceHandler = null, Func<string, string> svrCmdHandler = null)
+        public TcpSocketServer(string svrName, UInt16 svrPort, Action<string> svrTraceHandler = null, Func<string, string> svrMsgHandler = null)            
         {
-            this.InitMembers(svrName, svrPort, svrConfigFile, svrTraceHandler, svrCmdHandler);
+            ServerName = svrName;
+            ServerPort = svrPort;
+            UpdateTrace = svrTraceHandler;
+            ProcessMessage = svrMsgHandler;            
         }
 
         // ---------- Property ----------
@@ -108,109 +75,55 @@ namespace DoorMonitor
                 return this.serverPort;
             }
         }
-        public string ConfigFile
+        
+        public EnumServerState ServerState
+        {
+            private set
+            {
+                this.serverState = value;
+                NotifyPropertyChanged("ServerState");
+            }
+            get
+            {
+                return this.serverState;
+            }
+        }
+
+        public int QueryTimeout_ms
         {
             set
             {
-                this.configFile = value;
-                NotifyPropertyChanged("ConfigFile");
+                this.queryTimeout_ms = value;
+                NotifyPropertyChanged("QueryTimeout_ms");
             }
             get
             {
-                return this.configFile;
+                return this.queryTimeout_ms;
             }
         }
 
-        public EnumTcpSocketServerState State
-        {
-            private set
-            {
-                this.stateMachine = value;
-                NotifyPropertyChanged("State");
-            }
+        public string TraceRecord
+        {            
             get
             {
-                return this.stateMachine;
+                return this.traceRecord.ToString();
             }
         }
 
-        public string LastError
+        public Action<string> UpdateTrace { get; set; }
+
+        public Func<string, string> ProcessMessage { get; set; }
+
+        public void ClearTraceRecord()
         {
-            private set
-            {
-                this.lastError.Clear();
-                this.lastError.Append(value);
-                NotifyPropertyChanged("LastError");
-            }
-            get
-            {
-                return this.lastError.ToString();
-            }
-        }
-
-        public int QueryInterval_ms
-        {
-            set
-            {
-                this.queryInterval_ms = value;
-                NotifyPropertyChanged("QueryInterval_ms");
-            }
-            get
-            {
-                return this.queryInterval_ms;
-            }
-        }
-
-        public string Traces
-        {
-            private set
-            {
-                this.traces.Append(value);
-                NotifyPropertyChanged("Traces");
-            }
-            get
-            {
-                return this.traces.ToString();
-            }
-        }
-
-        public Action<string> TraceHandler { get; set; }
-
-        public Func<string, string> CommandHandler { get; set; }
-
-        public void ClearTraces()
-        {
-            this.traces.Clear();
-            NotifyPropertyChanged("Traces");
+            this.traceRecord.Clear();
+            NotifyPropertyChanged("MessageRecord");
         }        
 
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
 
         // ---------- Method ----------
-        private void InitMembers(string svrName,
-                                 UInt16 svrPort,
-                                 string svrConfigFile = "",
-                                 Action<string> svrTraceHandler = null,
-                                 Func<string, string> svrCmdHandler = null)
-        {
-            // Fields            
-            this.tcpClient = null;
-            this.tcpListener = null;
-            this.cts = new CancellationTokenSource();
-            this.traces.Clear();
-
-            // Properties
-            LastError = string.Empty;
-            ServerName = svrName;            
-            ServerPort = svrPort;            
-            ConfigFile = svrConfigFile;   
-            State = EnumTcpSocketServerState.Stopped;
-            TraceHandler = svrTraceHandler;      // Default: null;
-            CommandHandler = svrCmdHandler;  //Default: null;
-            QueryInterval_ms = 100;
-        }
-        
         // This method is called by the Set accessor of each property. 
         // The CallerMemberName attribute that is applied to the optional propertyName 
         // parameter causes the property name of the caller to be substituted as an argument.
@@ -222,118 +135,82 @@ namespace DoorMonitor
             }
         }
 
-        virtual public void Trace(string message)
+        private void AppendTrace(string message)
         {
-            Traces = message;
+            this.traceRecord.Append(message);
+            NotifyPropertyChanged("TraceRecord");
 
-            if (TraceHandler != null)
+            if (UpdateTrace != null)
             {
-                TraceHandler(message);
+                UpdateTrace(message);
             }
         }
 
-        protected string ProcessCommand(string cmdReceived)
+        protected string ProcessRecMessage(string msgReceived)
         {
             string resp = string.Format("No Response");
-            if (CommandHandler != null)
+            if (ProcessMessage != null)
             {
-                resp = CommandHandler(cmdReceived);
+                resp = ProcessMessage(msgReceived);
             }
             
             return resp;
         }
 
-        // ------------------------------ State Machine Description ----------------------------------
-        // <1> [Idle] State:                 IsSessionCreate==false && IsListeningLoopRunning==false;
-        // <2> [TCP  :                       IsSessionCreate==true && IsListeningLoopRunning==false;
-        // <3> [TCP Session Created] State:  IsSessionCreate==true && IsListeningLoopRunning==true;
-        // -------------------------------------------------------------------------------------------
-
-        public async void Start()
+        public async Task Start()
         {
-            if (State == EnumTcpSocketServerState.Stopped)
+            if (ServerState == EnumServerState.ServerStopped)
             {
-                this.ClearTraces();
-                await CreateTcpSessionAsync();
-                
-                try
+                this.tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), ServerPort);
+                this.tcpListener.Start();
+                ServerState = EnumServerState.ServerStarted;
+                AppendTrace(string.Format("{0} (localhost::{1}) started.\n", ServerName, ServerPort));
+
+                while (true)
                 {
-                    Task task = new Task(RunTcpListeningLoop);
-                    task.Start();
+                    clientNum++;
+                    try
+                    {
+                        TcpClient newClient = await tcpListener.AcceptTcpClientAsync();
+                        AppendTrace(String.Format("Client{0} has conected...\n", clientNum));
+
+                        ServerState = EnumServerState.ClientConnected;                        
+                        ReceiveFromClientTask(newClient, clientNum);                        
+                    }
+                    catch
+                    {
+                        break;
+                    }
                 }
-                catch
-                {
-                    Stop();
-                }               
             }
         }
 
         public void Stop()
         {
-            if (State != EnumTcpSocketServerState.Stopped)
+            if (ServerState != EnumServerState.ServerStopped)
             {
-                Trace("/// TCP socket server stops.\n");
-                this.tcpListener.Stop();
-                this.tcpListener = null;
-                this.tcpClient = null;
-                State = EnumTcpSocketServerState.Stopped;                   
+                tcpListener.Stop();                
+                ServerState = EnumServerState.ServerStopped;
+                AppendTrace(string.Format("{0} (localhost::{1}) stopped.\n", ServerName, ServerPort));
             }
         }
 
-        private async Task CreateTcpSessionAsync()
+        private void ReceiveFromClientTask(TcpClient client, int num)
         {
-            Trace(string.Format("/// {0} [Address: localhost(127.0.0.1)::{1}]\n", ServerName, ServerPort));
-            this.tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), ServerPort);
-            //this.tcpListener = new TcpListener(IPAddress.Parse("localhost"), ServerPort);
-
-            this.tcpListener.Start();
-            Trace("/// TCP socket server starts, waiting for connection from client...\n");
-            State = EnumTcpSocketServerState.Listening;
-
-            try
-            {
-                this.tcpClient = await this.tcpListener.AcceptTcpClientAsync();
-                Trace("/// TCP client has connected!\n\n");
-                State = EnumTcpSocketServerState.Connected;
-            }
-            catch
-            {
-                Stop();
-            }
+            Task.Run(() => ReceiveFromClient(client, num));
         }
-
-        private void RunTcpListeningLoop()
+        
+        private void ReceiveFromClient(TcpClient client, int num)
         {
-            Trace("------------------- Message recording starts -------------------\n");
-
-            #region TcplisteningLoop
             while (true)
-            {  
-                NetworkStream stream = null;
-
-                try
-                {   
-                    if (this.tcpClient != null)
-                    {
-                        stream = this.tcpClient.GetStream();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LastError = ex.Message;
-                    Trace(string.Format("Exception occurs: {0}\n", LastError));
-                    Stop();
-                                                            
-                    break;
-                }
-
-                byte[] bytesReceived = new byte[1024];
-                int i;
-                StringBuilder traceTextLine = new StringBuilder();
-
-                #region Receiving/Sending loop
+            {
                 try
                 {
+                    NetworkStream stream = client.GetStream();
+                    byte[] bytesReceived = new byte[1024];
+                    int i;
+                    StringBuilder traceTextLine = new StringBuilder();
+
                     while ((i = stream.Read(bytesReceived, 0, bytesReceived.Length)) != 0)
                     {
                         string cmdReceived = System.Text.Encoding.ASCII.GetString(bytesReceived, 0, i);
@@ -346,7 +223,7 @@ namespace DoorMonitor
                         {
                             traceTextLine.Append(cmdReceived + "\n");
                         }
-                        Trace(String.Format("[Client ==> {0}]:  {1}", ServerName, traceTextLine.ToString()));
+                        AppendTrace(String.Format("[Client{0} ==> {1}]:  {2}", num, ServerName, traceTextLine.ToString()));
 
                         // Process the received message
                         // Remove the \r\n, as well as the ";"   
@@ -369,7 +246,7 @@ namespace DoorMonitor
                             count += 1;
                             // Process the data sent by the client.
                             string temp3 = command.TrimEnd();
-                            string response = ProcessCommand(temp3);
+                            string response = ProcessRecMessage(temp3);
 
                             if (count == commands.Length)
                             {
@@ -389,33 +266,23 @@ namespace DoorMonitor
                             }
                         }
 
-                        Thread.Sleep(QueryInterval_ms);
+                        Thread.Sleep(QueryTimeout_ms);
 
                         // Send back a response.
                         if (responseArray.ToString().ToUpper() != string.Empty)
                         {
                             byte[] bytesSend = System.Text.Encoding.ASCII.GetBytes(responseArray.ToString());
                             stream.Write(bytesSend, 0, bytesSend.Length);
-                            Trace(String.Format("[Client <== {0}]:  {1}", ServerName, responseArray.ToString()));
+                            AppendTrace(String.Format("[Client{0} <== {1}]:  {2}", num, ServerName, responseArray.ToString()));
                         }
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    LastError = ex.Message;
-                    this.Stop();
-
-                    break;
+                    AppendTrace(String.Format("Client{0} has lost connection with {1}\n", num, ServerName));                  
+                    return;
                 }
-                #endregion
-                if (stream != null)
-                {
-                    stream.Close();
-                }
-            }
-            #endregion
-
-            Trace("------------------- Message recording stops ---------------------\n");
+            }            
         }
     }
 }

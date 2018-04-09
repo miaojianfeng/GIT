@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -25,29 +26,23 @@ namespace DoorMonitor
         public MainWindow()
         {
             InitializeComponent();
-
-            this.tcpSvr = new TcpSocketServer("Server",
-                                               8001,
-                                               "",
-                                               null,
-                                               ProcessCommand);
-            this.tcpSvr.QueryInterval_ms = 100;
-
         }
 
-        private void btnStartServer_Click(object sender, RoutedEventArgs e)
+        private async void btnStartServer_Click(object sender, RoutedEventArgs e)
         {
-            this.tcpSvr.Start();
+            tcpSvr = new TcpSocketServer("Server", 8001, UpdateTrace, ProcessCommand);
+            tcpSvr.QueryTimeout_ms = 100;            
+            await tcpSvr.Start();                                                                 
         }
 
         private void btnStopServer_Click(object sender, RoutedEventArgs e)
         {
-            this.tcpSvr.Stop();
+            tcpSvr.Stop();
         }
 
         private void UpdateTrace(string trace)
         {
-            //this.tboxTrace.begin
+            this.Dispatcher.Invoke( ()=> { this.tboxTrace.AppendText(trace); } );
         }
 
         private string ProcessCommand(string command)
@@ -55,7 +50,7 @@ namespace DoorMonitor
             string respMsg = "No Response";
             switch (command.ToLower())
             {
-                case "hello":
+                case "hello?":
                     respMsg = "World!";
                     break;
                 default:
