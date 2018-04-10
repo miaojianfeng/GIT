@@ -1,0 +1,15 @@
+﻿<Window x:Class="DoorMonitor.TraceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DoorMonitor"
+        mc:Ignorable="d"
+        Title="Trace" Height="300" Width="525" Closing="Window_Closing">
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5,0,5,5" HorizontalAlignment="Right">
+            <Button x:Name="btnSaveTrace" Content="Save Trace" Padding="10,2" Click="btnSaveTrace_Click"/>            
+        </StackPanel>
+        <TextBox x:Name="tboxTrace" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="5"/>
+    </DockPanel>
+</Window>
