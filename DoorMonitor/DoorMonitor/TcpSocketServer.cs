@@ -171,7 +171,7 @@ namespace DoorMonitor
                     clientNum++;
                     try
                     {
-                        TcpClient newClient = await tcpListener.AcceptTcpClientAsync();
+                        TcpClient newClient = await tcpListener.AcceptTcpClientAsync();                        
                         AppendTrace(String.Format("Client{0} has conected...\n", clientNum));
 
                         ServerState = EnumServerState.ClientConnected;                        
@@ -202,16 +202,22 @@ namespace DoorMonitor
         
         private void ReceiveFromClient(TcpClient client, int num)
         {
+            NetworkStream nwkStream = client.GetStream();
+            byte[] bytesReceived = new byte[1024];
+            int i;
+            StringBuilder traceTextLine = new StringBuilder();
+
+            // Tricky skill here: 
+            // BinaryReader is used for the purpose of detecting whether client has disconnected.           
+            BinaryReader br = new BinaryReader(nwkStream);            
+
             while (true)
             {
                 try
                 {
-                    NetworkStream stream = client.GetStream();
-                    byte[] bytesReceived = new byte[1024];
-                    int i;
-                    StringBuilder traceTextLine = new StringBuilder();
-
-                    while ((i = stream.Read(bytesReceived, 0, bytesReceived.Length)) != 0)
+                    // To use NetworkStream to read/write message
+                    #region NetworkStream Read/Write                  
+                    while ((i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length)) != 0)
                     {
                         string cmdReceived = System.Text.Encoding.ASCII.GetString(bytesReceived, 0, i);
                         traceTextLine.Clear();
@@ -272,17 +278,68 @@ namespace DoorMonitor
                         if (responseArray.ToString().ToUpper() != string.Empty)
                         {
                             byte[] bytesSend = System.Text.Encoding.ASCII.GetBytes(responseArray.ToString());
-                            stream.Write(bytesSend, 0, bytesSend.Length);
+                            nwkStream.Write(bytesSend, 0, bytesSend.Length);
                             AppendTrace(String.Format("[Client{0} <== {1}]:  {2}", num, ServerName, responseArray.ToString()));
                         }
                     }
+                    #endregion
+
+                    // To use BinaryReader to detect whether client is still connected
+                    // If client is disconnected, BinaryReader.ReaderString will throw an exception
+                    // One important point is: this "br.ReadString()" must be put after NetworkStream Read/Write while loop
+                    // Otherwise the message sent from client cannot be readout
+                    br.ReadString();
                 }
                 catch
                 {
-                    AppendTrace(String.Format("Client{0} has lost connection with {1}\n", num, ServerName));                  
+                    AppendTrace(String.Format("Client{0} has disconnected\n", num, ServerName));                  
                     return;
                 }
             }            
         }
+
+        //private bool IsClientConnected(TcpClient client)
+        //{
+        //    bool retVal = false;
+
+        //    MemoryStream ms = new MemoryStream();
+
+        //    NetworkStream ns = client.GetStream();
+        //    BinaryReader br = new BinaryReader(ns);
+
+        //    // message framing. First, read the #bytes to expect.
+        //    int objectSize = br.ReadInt32();
+
+        //    if (objectSize == 0)
+        //        retVal = false;// client disconnected
+
+        //    byte[] buffer = new byte[objectSize];
+        //    int index = 0;
+
+        //    int read = ns.Read(buffer, index, Math.Min(objectSize, 1024));
+        //    while (read > 0)
+        //    {
+        //        objectSize -= read;
+        //        index += read;
+        //        read = ns.Read(buffer, index, Math.Min(objectSize, 1024);
+        //    }
+
+        //    if (objectSize > 0)
+        //    {
+        //        // client aborted connection in the middle of stream;
+        //        break;
+        //    }
+        //    else
+        //    {
+        //        BinaryFormatter bf = new BinaryFormatter();
+        //        using (MemoryStream ms = new MemoryStream(buffer))
+        //        {
+        //            object o = bf.Deserialize(ns);
+        //            ReceiveMyObject(o);
+        //        }
+        //    }
+
+        //    return retVal;
+        //} 
     }
 }
