@@ -11,14 +11,23 @@ using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
 using System.Windows.Forms;
+using ETSL.Utilities;
 
-namespace DoorMonitor
+namespace ETSL.TcpSocketServer
 {
     public enum EnumServerState
     {
         ServerStopped   = 0,
         ServerStarted   = 1,     
         ClientConnected = 2             
+    }
+
+    public enum EnumTraceType
+    {
+        Information = 0,
+        Error = 1,
+        Exception = 2,
+        Message = 3
     }
 
     public class TcpSocketServer: INotifyPropertyChanged
@@ -135,14 +144,43 @@ namespace DoorMonitor
             }
         }
 
-        private void AppendTrace(string message)
+        private void AppendTrace(EnumTraceType traceType, string message)
         {
-            this.traceRecord.Append(message);
+            // Add time stamp in the beginning of the trace record
+            string timeStamp = "[ " + Auxiliaries.TimeStampGenerate() + " ]";
+
+            // Trace type
+            string typeStr = string.Empty;
+            switch(traceType)
+            {
+                case EnumTraceType.Information:
+                    typeStr = "[INF]";
+                    break;
+                case EnumTraceType.Error:
+                    typeStr = "[ERR]";
+                    break;
+                case EnumTraceType.Exception:
+                    typeStr = "[EXC]";
+                    break;
+                case EnumTraceType.Message:
+                    typeStr = "[MSG]";
+                    break;
+            }
+
+            // Trace body
+            if(!message.EndsWith("\n"))
+            {
+                message += "\n";
+            }
+
+            string traceRecord = timeStamp + " " + typeStr + "   " + message;
+
+            this.traceRecord.Append(traceRecord);
             NotifyPropertyChanged("TraceRecord");
 
             if (UpdateTrace != null)
             {
-                UpdateTrace(message);
+                UpdateTrace(traceRecord);
             }
         }
 
@@ -164,7 +202,7 @@ namespace DoorMonitor
                 this.tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), ServerPort);
                 this.tcpListener.Start();
                 ServerState = EnumServerState.ServerStarted;
-                AppendTrace(string.Format("{0} (localhost::{1}) started.\n", ServerName, ServerPort));
+                AppendTrace(EnumTraceType.Information, string.Format("{0} (localhost::{1}) started...\n", ServerName, ServerPort));
 
                 while (true)
                 {
@@ -172,7 +210,7 @@ namespace DoorMonitor
                     try
                     {
                         TcpClient newClient = await tcpListener.AcceptTcpClientAsync();                        
-                        AppendTrace(String.Format("Client{0} has conected...\n", clientNum));
+                        AppendTrace(EnumTraceType.Information, String.Format("Client{0} has conected...\n", clientNum));
 
                         ServerState = EnumServerState.ClientConnected;                        
                         ReceiveFromClientTask(newClient, clientNum);                        
@@ -191,7 +229,7 @@ namespace DoorMonitor
             {
                 tcpListener.Stop();                
                 ServerState = EnumServerState.ServerStopped;
-                AppendTrace(string.Format("{0} (localhost::{1}) stopped.\n", ServerName, ServerPort));
+                AppendTrace(EnumTraceType.Information, string.Format("{0} (localhost::{1}) stopped.\n", ServerName, ServerPort));
             }
         }
 
@@ -229,7 +267,7 @@ namespace DoorMonitor
                         {
                             traceTextLine.Append(cmdReceived + "\n");
                         }
-                        AppendTrace(String.Format("[Client{0} ==> {1}]:  {2}", num, ServerName, traceTextLine.ToString()));
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1} :  {2}", num, ServerName, traceTextLine.ToString()));
 
                         // Process the received message
                         // Remove the \r\n, as well as the ";"   
@@ -279,7 +317,7 @@ namespace DoorMonitor
                         {
                             byte[] bytesSend = System.Text.Encoding.ASCII.GetBytes(responseArray.ToString());
                             nwkStream.Write(bytesSend, 0, bytesSend.Length);
-                            AppendTrace(String.Format("[Client{0} <== {1}]:  {2}", num, ServerName, responseArray.ToString()));
+                            AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, responseArray.ToString()));
                         }
                     }
                     #endregion
@@ -292,7 +330,7 @@ namespace DoorMonitor
                 }
                 catch
                 {
-                    AppendTrace(String.Format("Client{0} has disconnected\n", num, ServerName));                  
+                    AppendTrace(EnumTraceType.Information, String.Format("Client{0} has disconnected\n", num, ServerName));                  
                     return;
                 }
             }            
