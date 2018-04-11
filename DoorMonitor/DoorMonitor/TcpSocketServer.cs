@@ -39,29 +39,16 @@ namespace ETSL.TcpSocketServer
         private string serverName = "TCP Server";
         private UInt16 serverPort = 8001;
         private EnumServerState serverState = EnumServerState.ServerStopped;
-        private bool enableTrace = false;
 
         private StringBuilder traceRecord = new StringBuilder();
         private int queryTimeout_ms = 200;
 
         static private int clientNum = 0;
-        static private object locker = new object();
 
         // ---------- Constructor ---------- 
         public TcpSocketServer()
         {  
             
-        }
-
-        public TcpSocketServer(UInt16 svrPort)
-        {
-            ServerPort = svrPort;
-        }
-
-        public TcpSocketServer(string svrName, UInt16 svrPort)
-        {
-            ServerName = svrName;
-            ServerPort = svrPort;            
         }
 
         public TcpSocketServer(string svrName, UInt16 svrPort, Action<string> svrTraceHandler = null, Func<string, string> svrMsgHandler = null)            
@@ -124,19 +111,6 @@ namespace ETSL.TcpSocketServer
             }
         }
 
-        public bool EnableTrace
-        {
-            set
-            {
-                this.enableTrace = value;
-                NotifyPropertyChanged("ServerPort");
-            }
-            get
-            {
-                return this.enableTrace;
-            }
-        }
-
         public string TraceRecord
         {            
             get
@@ -172,8 +146,6 @@ namespace ETSL.TcpSocketServer
 
         private void AppendTrace(EnumTraceType traceType, string message)
         {
-            if (!EnableTrace) return;
-
             // Add time stamp in the beginning of the trace record
             string timeStamp = "[ " + Auxiliaries.TimeStampGenerate() + " ]";
 
@@ -182,16 +154,16 @@ namespace ETSL.TcpSocketServer
             switch(traceType)
             {
                 case EnumTraceType.Information:
-                    typeStr = "[ INFO ]";
+                    typeStr = "[INF]";
                     break;
                 case EnumTraceType.Error:
-                    typeStr = "[ ERR ]";
+                    typeStr = "[ERR]";
                     break;
                 case EnumTraceType.Exception:
-                    typeStr = "[ EXCEPTION ]";
+                    typeStr = "[EXC]";
                     break;
                 case EnumTraceType.Message:
-                    typeStr = "[ MSG ]";
+                    typeStr = "[MSG]";
                     break;
             }
 
@@ -201,18 +173,14 @@ namespace ETSL.TcpSocketServer
                 message += "\n";
             }
 
-            string traceText = timeStamp + " " + typeStr + "   " + message;
+            string traceRecord = timeStamp + " " + typeStr + "   " + message;
 
-            // Multiple threads may manipulate the same target concurrently 
-            lock (locker)
+            this.traceRecord.Append(traceRecord);
+            NotifyPropertyChanged("TraceRecord");
+
+            if (UpdateTrace != null)
             {
-                this.traceRecord.Append(traceText);
-                NotifyPropertyChanged("TraceRecord");
-
-                if (UpdateTrace != null)
-                {
-                    UpdateTrace(traceText);
-                }
+                UpdateTrace(traceRecord);
             }
         }
 
