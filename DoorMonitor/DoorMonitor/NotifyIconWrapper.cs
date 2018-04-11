@@ -43,7 +43,8 @@ namespace ETSL.Utilities
 
         private void CmdClose_Click(object sender, EventArgs e)
         {
-            //wnd.ClosePositionInfoFile();
+            //wnd.ClosePositionInfoFile();          
+
             System.Windows.Application.Current.Shutdown();
         }
 

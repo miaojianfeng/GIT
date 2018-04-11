@@ -155,8 +155,7 @@ namespace DoorMonitor
             {
                 HideTraceWnd();
             }
-        }
-        
+        }        
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
