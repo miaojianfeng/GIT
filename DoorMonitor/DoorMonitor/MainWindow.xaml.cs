@@ -13,9 +13,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Controls.Primitives;
 using ETSL.TcpSocketServer;
 using ETSL.Utilities;
 
@@ -26,70 +23,28 @@ namespace DoorMonitor
     /// </summary>
     public partial class MainWindow : Window
     {
-        // Field
         private TcpSocketServer tcpSvr;
-        private TraceWindow traceWnd;
-        private bool isTraceWndOpened = false;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
-
-            // Instance Trace Window 
-            this.traceWnd = new TraceWindow();
-            HideTraceWnd();
-            this.traceWnd.CloseTraceWnd = FireChkboxUnCheckedEvent_ShowTraceWnd;        
         }
 
-        // Property
-        /// <summary>
-        /// IsTraceWndOpened
-        /// </summary>
-        private bool IsTraceWndOpened
+        private async void btnStartServer_Click(object sender, RoutedEventArgs e)
         {
-            set
-            {
-                this.isTraceWndOpened = value;
-                NotifyPropertyChanged("IsTraceWndOpened");
-            }
-            get
-            {
-                return this.isTraceWndOpened;
-            }
+            tcpSvr = new TcpSocketServer("Server", 8001, UpdateTrace, ProcessCommand);
+            tcpSvr.QueryTimeout_ms = 100;            
+            await tcpSvr.Start();                                                                 
         }
 
-        // ---------- Event ----------
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // ---------- Method ----------
-        #region Method
-        /// <summary>
-        /// This method is called by the Set accessor of each property. 
-        /// The CallerMemberName attribute that is applied to the optional propertyName 
-        /// parameter causes the property name of the caller to be substituted as an argument.
-        /// </summary>
-        /// <param name="propertyName"></param>
-        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void btnStopServer_Click(object sender, RoutedEventArgs e)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
+            tcpSvr.Stop();
         }
 
-        public void ShowTraceWnd()
+        private void UpdateTrace(string trace)
         {
-            this.traceWnd.Show();
-            IsTraceWndOpened = true;            
-        }
-
-        public void HideTraceWnd()
-        {
-            this.traceWnd.Hide();
-            IsTraceWndOpened = false;           
+            this.Dispatcher.Invoke( ()=> { this.tboxTrace.AppendText(trace); } );
         }
 
         private string ProcessCommand(string command)
@@ -105,64 +60,6 @@ namespace DoorMonitor
             }
 
             return respMsg;
-        }        
-
-        public void FireChkboxUnCheckedEvent_ShowTraceWnd()
-        {
-            this.chkboxShowTrace.IsChecked = false;
-            IsTraceWndOpened = false;
         }
-        #endregion
-
-        // EventHandler
-        #region EventHandler
-        /// <summary>
-        /// btnStartServer_Click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void btnStartServer_Click(object sender, RoutedEventArgs e)
-        {
-            this.tcpSvr = new TcpSocketServer("Server", 8001);
-            this.tcpSvr.EnableTrace = true;
-            this.tcpSvr.QueryTimeout_ms = 100;
-            this.tcpSvr.ProcessMessage = ProcessCommand;
-            this.tcpSvr.UpdateTrace = this.traceWnd.UpdateTrace;
-            await tcpSvr.Start();                                                                 
-        }
-
-        /// <summary>
-        /// btnStopServer_Click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnStopServer_Click(object sender, RoutedEventArgs e)
-        {
-            tcpSvr.Stop();
-        }
-
-        private void chkboxShowTrace_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!IsTraceWndOpened)
-            {
-                ShowTraceWnd();
-            }
-        }
-
-        private void chkboxShowTrace_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (IsTraceWndOpened)
-            {
-                HideTraceWnd();
-            }
-        }        
-
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            e.Cancel = true;
-            this.WindowState = WindowState.Minimized;
-            this.ShowInTaskbar = false;
-        }
-        #endregion
     }
 }
