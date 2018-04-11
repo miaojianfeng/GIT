@@ -115,12 +115,7 @@ namespace DoorMonitor
         #endregion
 
         // EventHandler
-        #region EventHandler
-        /// <summary>
-        /// btnStartServer_Click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        #region EventHandler       
         private async void btnStartServer_Click(object sender, RoutedEventArgs e)
         {
             this.tcpSvr = new TcpSocketServer("Server", 8001);
@@ -156,14 +151,14 @@ namespace DoorMonitor
                 HideTraceWnd();
             }
         }
-        
+        #endregion
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            e.Cancel = true;
-            this.WindowState = WindowState.Minimized;
-            this.ShowInTaskbar = false;
+            if(this.traceWnd!=null)
+            {
+                this.traceWnd.Close();
+            }
         }
-        #endregion
     }
 }
