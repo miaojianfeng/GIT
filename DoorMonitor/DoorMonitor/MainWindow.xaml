@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DoorMonitor"
-        mc:Ignorable="d"
-        Title="Door Monitor" Height="200" Width="400" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+        mc:Ignorable="d"        
+        Title="Door Monitor" Height="200" Width="400" WindowStartupLocation="CenterScreen" Closing="Window_Closing" Icon="Resources/Door.ico">
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5" HorizontalAlignment="Left">
             <CheckBox x:Name="chkboxShowTrace" Content="Show Trace Window" Padding="2" VerticalContentAlignment="Center" Checked="chkboxShowTrace_Checked" Unchecked="chkboxShowTrace_Unchecked"                      
