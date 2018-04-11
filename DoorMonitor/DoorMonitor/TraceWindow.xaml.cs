@@ -49,6 +49,9 @@ namespace DoorMonitor
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            // Prevent TraceWindow being closed, instead just hide it
+            e.Cancel = true;
+
             if(CloseTraceWnd!=null)
             {
                 CloseTraceWnd();
