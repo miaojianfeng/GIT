@@ -40,8 +40,8 @@ namespace DoorMonitor
 
             // Instance Trace Window 
             this.traceWnd = new TraceWindow();
-            HideTraceWnd();
-            this.traceWnd.CloseTraceWnd = FireChkboxUnCheckedEvent_ShowTraceWnd;        
+            this.traceWnd.CloseTraceWnd = FireChkboxUnCheckedEvent_ShowTraceWnd;
+            HideTraceWnd();                    
         }
 
         // Property
@@ -109,8 +109,7 @@ namespace DoorMonitor
 
         public void FireChkboxUnCheckedEvent_ShowTraceWnd()
         {
-            this.chkboxShowTrace.IsChecked = false;
-            IsTraceWndOpened = false;
+            this.chkboxShowTrace.IsChecked = false;           
         }
         #endregion
 
@@ -157,7 +156,8 @@ namespace DoorMonitor
         {
             if(this.traceWnd!=null)
             {
-                this.traceWnd.Close();
+                this.traceWnd.DestroyWndFlag = true;
+                this.traceWnd.Close();                
             }
         }
     }

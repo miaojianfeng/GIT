@@ -28,10 +28,11 @@ namespace DoorMonitor
         {
             InitializeComponent();
 
-            //CloseTraceWnd = null;
+            DestroyWndFlag = false;
         }
 
         public Action CloseTraceWnd { set; get; }  
+        public bool DestroyWndFlag { set; get; }
         
         /// <summary>
         /// Invoked by the TcpSocketServer task 
@@ -49,10 +50,19 @@ namespace DoorMonitor
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if(CloseTraceWnd!=null)
+            if (DestroyWndFlag == false)
             {
-                CloseTraceWnd();
+                e.Cancel = true;
+
+                if (CloseTraceWnd != null)
+                {
+                    CloseTraceWnd();
+                }
             }
+            else
+            {
+                e.Cancel = false;
+            }                        
         }
     }
 }

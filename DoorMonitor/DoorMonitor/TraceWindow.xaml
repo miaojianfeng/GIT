@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DoorMonitor"
         mc:Ignorable="d"
-        Title="Trace" Height="300" Width="525" Closing="Window_Closing">
+        Title="Trace" Height="300" Width="525" Closing="Window_Closing" Icon="Resources/Trace.ico">
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5,0,5,5" HorizontalAlignment="Right">
             <Button x:Name="btnSaveTrace" Content="Save Trace" Padding="10,2" Click="btnSaveTrace_Click"/>            
