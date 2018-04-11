@@ -31,6 +31,8 @@ namespace DoorMonitor
         private TraceWindow traceWnd;
         private bool isTraceWndOpened = false;
 
+        private WindowState lastWindowState;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -114,7 +116,65 @@ namespace DoorMonitor
         #endregion
 
         // EventHandler
-        #region EventHandler       
+        #region EventHandler    
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+            this.lastWindowState = WindowState;
+            this.Hide();
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (this.WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+            }
+            else
+            {
+                this.lastWindowState = this.WindowState;
+            }
+        }
+
+        // The following two function code shows how to operate NotifyIcon behaviors
+        
+        //private void OnVisibilityClick(object sender, RoutedEventArgs e)
+        //{
+        //    this.notifyIcon.Visibility = this.notifyIcon.Visibility == Visibility.Visible ?
+        //        Visibility.Collapsed : Visibility.Visible;
+        //}
+
+        
+        //private void OnBalloonClick(object sender, RoutedEventArgs e)
+        //{
+        //    if (!string.IsNullOrEmpty(this.notifyIcon.BalloonTipText))
+        //    {
+        //        this.notifyIcon.ShowBalloonTip(2000);
+        //    }
+        //}
+
+        private void OnNotifyIconDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                this.Show();
+                this.WindowState = this.lastWindowState;
+            }
+        }
+
+        // NotifyIcon Context Menu Item <Open>
+        private void OnOpenClick(object sender, RoutedEventArgs e)
+        {
+            this.Show();
+            this.WindowState = this.lastWindowState;
+        }
+
+        // NotifyIcon Context Menu Item <Exit>
+        private void OnExitClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
         private async void btnStartServer_Click(object sender, RoutedEventArgs e)
         {
             this.tcpSvr = new TcpSocketServer("Server", 8001);
