@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls.Primitives;
-using ETSL.TcpSocketServer;
+using ETSL.TcpSocket;
 using ETSL.Utilities;
 
 namespace DoorMonitor

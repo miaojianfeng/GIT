@@ -1,0 +1,58 @@
+﻿<Window x:Class="DoorSimulator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DoorSimulator"
+        mc:Ignorable="d"
+        Title="Door Simulator" Height="200" Width="300" WindowStartupLocation="CenterScreen">
+    <DockPanel LastChildFill="True">
+        <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Top">
+            <Expander.Header>
+                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30*"/>
+                        <ColumnDefinition Width="30*"/>
+                        <ColumnDefinition Width="40*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Margin="2,0" Source="Resources\Settings.ico"  
+                           VerticalAlignment="Center" HorizontalAlignment="Right" Stretch="None" />
+                    <Label Grid.Column="1" Grid.ColumnSpan="2"   
+                           VerticalAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center"  
+                           Content="Settings"/>
+                </Grid>
+            </Expander.Header>
+            <Border BorderBrush="Black" BorderThickness="0.5" Margin="2,2">
+                <Grid Margin="5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40*"/>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="20*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Port Number" Grid.Row="0" Grid.Column="0" Foreground="DarkBlue"
+                                   HorizontalAlignment="Right" Margin="0,4,0,2" />
+                    <TextBox Margin="0,4,0,2" Grid.Row="0" Grid.Column="1" Foreground="DarkBlue" x:Name="tboxInstrName"                                     
+                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>                    
+                    <Label Grid.Row="1" Grid.Column="0" Content="Period" Foreground="DarkBlue"
+                                   HorizontalAlignment="Right" Margin="0,2" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="0,2" Foreground="DarkBlue" x:Name="tboxPort"
+                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Querying Interval" Foreground="DarkBlue" 
+                                   HorizontalAlignment="Right" Margin="0,2,0,4" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,2,0,4" Foreground="DarkBlue"
+                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <Button Content="OK" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3"
+                            FontWeight="Bold" FontSize="15" Foreground="White" Margin="5,5,0,5"/>
+
+                </Grid>
+            </Border>
+        </Expander>
+    </DockPanel>
+</Window>

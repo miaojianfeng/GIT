@@ -10,7 +10,6 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
-using System.Windows.Forms;
 using ETSL.Utilities;
 
 namespace ETSL.TcpSocket

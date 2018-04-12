@@ -35,7 +35,7 @@ namespace DoorMonitor
         public bool DestroyWndFlag { set; get; }
         
         /// <summary>
-        /// Invoked by the TcpSocketServer task 
+        /// Invoked by the TcpSocket task 
         /// </summary>
         /// <param name="trace"></param>
         public void UpdateTrace(string trace)
