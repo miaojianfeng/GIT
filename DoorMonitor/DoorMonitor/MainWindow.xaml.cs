@@ -46,7 +46,9 @@ namespace DoorMonitor
             HideTraceWnd();
 
             // Flag used to decide whether to destroy window or just minimize the window
-            DestroyMainWnd = false;                  
+            DestroyMainWnd = false;
+
+            this.Show();              
         }
 
         // Property

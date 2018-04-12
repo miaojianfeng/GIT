@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DoorMonitor"       
         mc:Ignorable="d"        
         Title="Door Monitor" Height="200" Width="400" 
-        WindowStartupLocation="CenterScreen" 
+        WindowStartupLocation="CenterScreen"        
         ShowInTaskbar="False"
         Closing="Window_Closing" 
         Icon="Resources/Door.ico">
