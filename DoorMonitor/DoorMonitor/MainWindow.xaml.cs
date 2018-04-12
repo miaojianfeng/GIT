@@ -179,7 +179,7 @@ namespace DoorMonitor
         // NotifyIcon Context Menu Item <Exit>
         private void OnExitClick(object sender, RoutedEventArgs e)
         {
-            DestroyMainWnd = true;
+            DestroyMainWnd = true;            
             this.Close();
         }
 
@@ -224,6 +224,8 @@ namespace DoorMonitor
         {
             if(DestroyMainWnd)
             {
+                this.tcpSvr.Stop();
+
                 if (this.traceWnd != null)
                 {
                     this.traceWnd.DestroyWndFlag = true;
