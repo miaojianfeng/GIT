@@ -13,10 +13,10 @@
     <DockPanel LastChildFill="True">
         <local:NotifyIcon
 			x:Name="notifyIcon"
-			Text="DoorMonitor"
+			Text="{Binding ElementName=tipText,Path=Text}"
 			Icon="Resources/Door.ico"
-			BalloonTipText=""
-			BalloonTipTitle="Door closed"
+			BalloonTipText="{Binding Text, ElementName=balloonTipText}"
+			BalloonTipTitle="{Binding Text, ElementName=balloonTipTitle}"
 			BalloonTipIcon="Info"
 			MouseDoubleClick="OnNotifyIconDoubleClick">
             <local:NotifyIcon.ContextMenu>
