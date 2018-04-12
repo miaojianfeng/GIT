@@ -7,9 +7,9 @@
         mc:Ignorable="d"        
         Title="Door Monitor" Height="200" Width="400" 
         WindowStartupLocation="CenterScreen"        
-        ShowInTaskbar="False"
+        ShowInTaskbar="False"        
         Closing="Window_Closing" 
-        Icon="Resources/Door.ico">
+        Icon="Resources/Door.ico" Topmost="True">
     <DockPanel LastChildFill="True">
         <local:NotifyIcon
 			x:Name="notifyIcon"
