@@ -47,8 +47,11 @@ namespace DoorMonitor
 
             // Flag used to decide whether to destroy window or just minimize the window
             DestroyMainWnd = false;
-
-            this.Show();              
+            double left, top;        
+            GetMainWndStartupPosition(out left, out top);
+            this.Left = MainWndLeftPos = left;
+            this.Top = MainWndTopPos = top;
+            this.Show();
         }
 
         // Property
@@ -70,8 +73,11 @@ namespace DoorMonitor
 
         private bool DestroyMainWnd { get; set; }
 
+        private double MainWndLeftPos { set; get; }
+        private double MainWndTopPos { set; get; }
+
         // ---------- Event ----------
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;       
 
         // ---------- Method ----------
         #region Method
@@ -87,6 +93,14 @@ namespace DoorMonitor
             {
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        private void GetMainWndStartupPosition(out double left, out double top)
+        {
+            double widthWorkArea  = SystemParameters.WorkArea.Width;  // Get the work area width
+            double heightWorkArea = SystemParameters.WorkArea.Height; // Get the work area Height
+            left = widthWorkArea  - this.Width;
+            top = heightWorkArea - this.Height;            
         }
 
         public void ShowTraceWnd()
@@ -164,6 +178,8 @@ namespace DoorMonitor
         {
             if (e.ChangedButton == MouseButton.Left)
             {
+                this.Left = MainWndLeftPos;
+                this.Top = MainWndTopPos;
                 this.Show();
                 this.WindowState = this.lastWindowState;
             }
@@ -172,8 +188,10 @@ namespace DoorMonitor
         // NotifyIcon Context Menu Item <Open>
         private void OnOpenClick(object sender, RoutedEventArgs e)
         {
+            this.Left = MainWndLeftPos;
+            this.Top = MainWndTopPos;
             this.Show();
-            this.WindowState = this.lastWindowState;
+            this.WindowState = this.lastWindowState;                       
         }
 
         // NotifyIcon Context Menu Item <Exit>
