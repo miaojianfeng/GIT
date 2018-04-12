@@ -203,12 +203,15 @@ namespace DoorMonitor
 
         private async void btnStartServer_Click(object sender, RoutedEventArgs e)
         {
-            this.tcpSvr = new TcpSocketServer("Server", 8001);
-            this.tcpSvr.EnableTrace = true;
-            this.tcpSvr.QueryTimeout_ms = 100;
-            this.tcpSvr.ProcessMessage = ProcessCommand;
-            this.tcpSvr.UpdateTrace = this.traceWnd.UpdateTrace;
-            await tcpSvr.Start();                                                                 
+            if (tcpSvr == null)
+            {
+                this.tcpSvr = new TcpSocketServer("Server", 8001);
+                this.tcpSvr.EnableTrace = true;
+                this.tcpSvr.QueryTimeout_ms = 100;
+                this.tcpSvr.ProcessMessage = ProcessCommand;
+                this.tcpSvr.UpdateTrace = this.traceWnd.UpdateTrace;
+                await tcpSvr.Start();
+            }                                                       
         }
 
         /// <summary>
@@ -218,7 +221,7 @@ namespace DoorMonitor
         /// <param name="e"></param>
         private void btnStopServer_Click(object sender, RoutedEventArgs e)
         {
-            tcpSvr.Stop();
+            if(tcpSvr!=null) tcpSvr.Stop();
         }
 
         private void chkboxShowTrace_Checked(object sender, RoutedEventArgs e)
