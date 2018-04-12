@@ -13,29 +13,27 @@ namespace DoorMonitor
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
-    {
-        //public EventWaitHandle ProgramStarted { get; set; }
+    {        
+        public EventWaitHandle ProgramStarted { get; set; }
 
-        //protected override void OnStartup(StartupEventArgs e)
-        //{
-        //    //bool createNew;
-        //    //ProgramStarted = new EventWaitHandle(false, EventResetMode.AutoReset, "DoorMonitorApp", out createNew);
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            bool createNew;
+            ProgramStarted = new EventWaitHandle(false, EventResetMode.AutoReset, "DoorMonitorApp", out createNew);
 
-        //    //if (!createNew)
-        //    //{
-        //    //    MessageBox.Show("Application already exit", "Information");
-        //    //    App.Current.Shutdown();
-        //    //    Environment.Exit(0);
-        //    //}
+            if (!createNew)
+            {
+                MessageBox.Show("Application is already running!", "Information");
+                App.Current.Shutdown();
+                Environment.Exit(0);
+            }
 
-        //    //base.OnStartup(e);
+            base.OnStartup(e);
+        }
 
-        //    //this.ShutdownMode = ShutdownMode.OnExplicitShutdown;            
-        //}
-
-        //protected override void OnExit(ExitEventArgs e)
-        //{
-        //    base.OnExit(e);            
-        //}
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+        }
     }
 }
