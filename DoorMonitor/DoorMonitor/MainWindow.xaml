@@ -21,8 +21,16 @@
 			MouseDoubleClick="OnNotifyIconDoubleClick">
             <local:NotifyIcon.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Open" Click="OnOpenClick" />
-                    <MenuItem Header="Exit" Click="OnExitClick" />
+                    <MenuItem Header="Open" Click="OnOpenClick">
+                        <MenuItem.Icon>
+                            <Image Source="Resources/Open.ico"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Exit" Click="OnExitClick">
+                        <MenuItem.Icon>
+                            <Image Source="Resources/Exit.ico"/>
+                        </MenuItem.Icon>
+                    </MenuItem> 
                 </ContextMenu>
             </local:NotifyIcon.ContextMenu>
         </local:NotifyIcon>
