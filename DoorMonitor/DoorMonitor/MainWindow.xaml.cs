@@ -43,7 +43,10 @@ namespace DoorMonitor
             // Instance Trace Window 
             this.traceWnd = new TraceWindow();
             this.traceWnd.CloseTraceWnd = FireChkboxUnCheckedEvent_ShowTraceWnd;
-            HideTraceWnd();                    
+            HideTraceWnd();
+
+            // Flag used to decide whether to destroy window or just minimize the window
+            DestroyMainWnd = false;                  
         }
 
         // Property
@@ -62,6 +65,8 @@ namespace DoorMonitor
                 return this.isTraceWndOpened;
             }
         }
+
+        private bool DestroyMainWnd { get; set; }
 
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
@@ -172,6 +177,7 @@ namespace DoorMonitor
         // NotifyIcon Context Menu Item <Exit>
         private void OnExitClick(object sender, RoutedEventArgs e)
         {
+            DestroyMainWnd = true;
             this.Close();
         }
 
@@ -214,10 +220,18 @@ namespace DoorMonitor
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if(this.traceWnd!=null)
+            if(DestroyMainWnd)
             {
-                this.traceWnd.DestroyWndFlag = true;
-                this.traceWnd.Close();                
+                if (this.traceWnd != null)
+                {
+                    this.traceWnd.DestroyWndFlag = true;
+                    this.traceWnd.Close();
+                }
+            }
+            else
+            {
+                e.Cancel = true;  // Bypass window destroy procedure but just minimize the window
+                WindowState = WindowState.Minimized;
             }
         }
     }
