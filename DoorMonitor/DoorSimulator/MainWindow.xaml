@@ -9,25 +9,44 @@
         WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
     <Window.Resources>
         <!--UI Proerty-->
-        <LinearGradientBrush x:Key="RedLightOn" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="Pink" Offset="0"/>
-            <GradientStop Color="Red" Offset="0.5"/>
-            <GradientStop Color="DarkRed" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="GreenLightOn" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="LightGreen" Offset="0"/>
-            <GradientStop Color="Green" Offset="0.5"/>
-            <GradientStop Color="DarkGreen" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="YellowLightOn" StartPoint="0,0" EndPoint="0,1">
+        <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
             <GradientStop Color="Yellow" Offset="0.5"/>
             <GradientStop Color="YellowGreen" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="RedLED" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="Pink" Offset="0"/>
+            <GradientStop Color="Red" Offset="0.5"/>
+            <GradientStop Color="DarkRed" Offset="1"/>
+        </LinearGradientBrush> 
+        <LinearGradientBrush x:Key="LightGreenLED" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="White" Offset="0"/>
+            <GradientStop Color="LightGreen" Offset="0.35"/>
+            <GradientStop Color="LimeGreen" Offset="0.85"/>
+            <GradientStop Color="Green" Offset="0.9"/>
+            <GradientStop Color="DarkGreen" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="DarkGreenLED" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="DarkGreen" Offset="0"/>            
+            <GradientStop Color="Green" Offset="0.75"/>
+            <GradientStop Color="LimeGreen" Offset="0.85"/>
+            <GradientStop Color="LightGreen" Offset="0.9"/>
+            <GradientStop Color="white" Offset="1"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="GrayButton" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightGray" Offset="0"/>
             <GradientStop Color="Gray" Offset="0.5"/>
             <GradientStop Color="DarkGray" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="RedButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="Pink" Offset="0"/>
+            <GradientStop Color="Red" Offset="0.5"/>
+            <GradientStop Color="DarkRed" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GreenButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="LightGreen" Offset="0"/>
+            <GradientStop Color="Green" Offset="0.5"/>
+            <GradientStop Color="DarkGreen" Offset="1"/>
         </LinearGradientBrush>
         <!--Style-->
         <Style x:Key="SettingsLabel" TargetType="Label">            
@@ -46,7 +65,7 @@
         </Style>        
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Top" Margin="5,0">
+        <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Top" Margin="5,2">
             <Expander.Header>
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
@@ -84,7 +103,7 @@
                     <Label Grid.Row="3" Grid.Column="0" Content="Port Number" Style="{StaticResource ResourceKey=SettingsLabel}" />
                     <TextBox Grid.Row="3" Grid.Column="1" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}"/>
                     <Button Content="OK" Grid.Row="2" Grid.Column="2" Grid.RowSpan="2"   
-                            Background="{StaticResource GreenLightOn}" FontWeight="Bold" VerticalContentAlignment="Center"
+                            Background="{StaticResource GreenButton}" FontWeight="Bold" VerticalContentAlignment="Center"
                             FontSize="15" Foreground="White" Margin="2,3,5,3" />
                 </Grid>
             <!--</Border>-->
@@ -99,21 +118,39 @@
                 <ColumnDefinition Width="50*"/>
                 <ColumnDefinition Width="50*"/>
             </Grid.ColumnDefinitions>
-            <GroupBox Grid.Column="0" Header="Door 1" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
-                        Margin="20,0,20,0">
+            <GroupBox Grid.Column="0" Header="Door 1" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                      Margin="15,0,15,0">
                 <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
                     <CheckBox Content="Open" Margin="0,2"/>
                     <CheckBox Content="Close"/>
                 </StackPanel>                    
             </GroupBox>
             <GroupBox Grid.Column="1" Header="Door 2" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
-                        Margin="20,0,20,0">
+                        Margin="15,0,15,0">
                 <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
                     <CheckBox Content="Open" Margin="0,2"/>
                     <CheckBox Content="Close"/>
                 </StackPanel>
             </GroupBox>
-            <Button Grid.Row="1" Grid.Column="1" Content="Run" Margin="22,0,22,10" />
+            <Grid Grid.Row="1" Grid.Column="1" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="50*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" Content="Run" Margin="5,0,10,6" 
+                        VerticalContentAlignment="Center" Foreground="White" 
+                        Background="{StaticResource GreenButton}"/>
+                <Button Grid.Row="1" Grid.Column="1" Content="Stop" Margin="0,0,15,6" 
+                        VerticalContentAlignment="Center" Foreground="White" 
+                        Background="{StaticResource RedButton}"/>
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" 
+                        VerticalAlignment="Center">
+                <Ellipse Width="15" Height="15" Fill="{StaticResource DarkGreenLED}"/>
+                <Label Content="SVR" VerticalContentAlignment="Top" />
+                <Ellipse Width="15" Height="15" Margin="10,0,0,0" Fill="{StaticResource DarkGreenLED}"/>
+                <Label Content="MSG" VerticalContentAlignment="Center"/>
+            </StackPanel>
         </Grid>             
         <!--</Border>-->
     </DockPanel>

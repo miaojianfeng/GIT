@@ -21,6 +21,12 @@ namespace ETSL.TcpSocket
         ClientConnected = 2             
     }
 
+    public enum EnumMsgTransState
+    {
+        Silence = 0,
+        Working = 1
+    }
+
     public enum EnumTraceType
     {
         Information = 0,
@@ -38,6 +44,7 @@ namespace ETSL.TcpSocket
         private string serverName = "TCP Server";
         private UInt16 serverPort = 8001;
         private EnumServerState serverState = EnumServerState.ServerStopped;
+        private EnumMsgTransState msgTransState = EnumMsgTransState.Silence;
         private bool enableTrace = false;
 
         private StringBuilder traceRecord = new StringBuilder();
@@ -107,6 +114,19 @@ namespace ETSL.TcpSocket
             get
             {
                 return this.serverState;
+            }
+        }
+
+        public EnumMsgTransState MsgTransState
+        {
+            private set
+            {
+                this.msgTransState = value;
+                NotifyPropertyChanged("MsgTransState");
+            }
+            get
+            {
+                return this.msgTransState;
             }
         }
 
@@ -285,9 +305,13 @@ namespace ETSL.TcpSocket
                 try
                 {
                     // To use NetworkStream to read/write message
-                    #region NetworkStream Read/Write                  
+                    #region NetworkStream Read/Write   
+                    MsgTransState = EnumMsgTransState.Silence; 
+                                  
                     while ((i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length)) != 0)
                     {
+                        MsgTransState = EnumMsgTransState.Working;
+
                         string cmdReceived = System.Text.Encoding.ASCII.GetString(bytesReceived, 0, i);
                         traceTextLine.Clear();
                         if (cmdReceived.EndsWith("\n"))
@@ -361,7 +385,8 @@ namespace ETSL.TcpSocket
                 }
                 catch
                 {
-                    AppendTrace(EnumTraceType.Information, String.Format("Client{0} has disconnected\n", num, ServerName));                  
+                    MsgTransState = EnumMsgTransState.Silence;
+                    AppendTrace(EnumTraceType.Information, String.Format("Client{0} has disconnected\n", num, ServerName));                                     
                     return;
                 }
             }            
