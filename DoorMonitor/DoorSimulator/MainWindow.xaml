@@ -7,11 +7,12 @@
         xmlns:socket="clr-namespace:ETSL.TcpSocket"
         mc:Ignorable="d"
         Title="Door Simulator" Height="175" Width="280" 
+        Background="LightBlue"
         WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Icon="Resources/TrafficLight.ico">
     <Window.Resources>
         <!--Object Definition-->
         <socket:TcpSocketServer x:Key="tcpSvr"/>
-        <local:DoorSimulatorParams x:Key="params"/>
+        <local:DoorSimulatorParams x:Key="simParams"/>
         <!--Converter-->
         <local:SvrStateToRunSvrEnableConverter x:Key="svrStaToRunSvrEnable"/>
         <local:SvrStateToStopSvrEnableConverter x:Key="svrStaToStopSvrEnable"/>
@@ -71,20 +72,27 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>        
     </Window.Resources>
+    <Window.CommandBindings>
+        <!--Standard Pre-defined Commands -->
+        <!--<CommandBinding Command="ApplicationCommands.Open" Executed="OpenCommand_Executed"/>-->
+        <!--Customed Commands-->
+        <CommandBinding Command="local:SimulatorCommands.SimSettingOK"  
+                        CanExecute="SimSettingOK_CanExecute"  
+                        Executed="SimSettingOK_Executed"/>
+    </Window.CommandBindings>
     <DockPanel LastChildFill="True">
         <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Top" Margin="5,2">
             <Expander.Header>
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="70*"/>                        
+                        <ColumnDefinition Width="30*"/>                        
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Margin="2,0" 
-                           Source="Resources\Settings.ico"  
-                           VerticalAlignment="Center" HorizontalAlignment="Right" Stretch="None" />
-                    <Label Grid.Column="1" Grid.ColumnSpan="2"   
-                           VerticalAlignment="Center" HorizontalAlignment="Stretch" VerticalContentAlignment="Center"  
-                           Content="Simulator Settings"/>
+                    <Image Grid.Column="1" Margin="4,0" 
+                           Source="Resources/Settings.ico"   
+                           VerticalAlignment="Center" HorizontalAlignment="Right" Stretch="None"/>
+                    <Label Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="14"  
+                           Content="Press button to show settings"/>
                 </Grid>
             </Expander.Header>
             <!--<Border BorderBrush="Black" BorderThickness="0.5" Margin="2,4" Padding="0,2,0,2">-->
@@ -103,22 +111,27 @@
                     
                     <Label Grid.Row="0" Grid.Column="0" Content="RX MSG" Style="{StaticResource ResourceKey=SettingsLabel}" />
                     <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" 
+                             x:Name="tboxRxMsg"
                              Style="{StaticResource ResourceKey=SettingsTextBox}"
-                             Text="{Binding Source={StaticResource params}, Path=RxMsg, Mode=TwoWay}"/>
+                             Text="{Binding Source={StaticResource simParams}, Path=RxMsg, Mode=TwoWay}"/>
                     <Label Grid.Row="1" Grid.Column="0" Content="TX MSG" Style="{StaticResource ResourceKey=SettingsLabel}" />
                     <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" 
+                             x:Name="tboxTxMsg"
                              Style="{StaticResource ResourceKey=SettingsTextBox}"
-                             Text="{Binding Source={StaticResource params}, Path=TxMsg, Mode=TwoWay}"/>
+                             Text="{Binding Source={StaticResource simParams}, Path=TxMsg, Mode=TwoWay}"/>
                     <Label Grid.Row="2" Grid.Column="0" Content="Cycle (ms)" Style="{StaticResource ResourceKey=SettingsLabel}" />
                     <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3,5,3" 
+                             x:Name="tboxCycle"
                              Style="{StaticResource ResourceKey=SettingsTextBox}" 
-                             Text="{Binding Source={StaticResource params}, Path=Cycle_ms, Mode=TwoWay}"/>
+                             Text="{Binding Source={StaticResource simParams}, Path=Cycle_ms, Mode=TwoWay}"/>
                     <Label Grid.Row="3" Grid.Column="0" Content="Port Number" Style="{StaticResource ResourceKey=SettingsLabel}" />
                     <TextBox Grid.Row="3" Grid.Column="1" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}"
+                             x:Name="tboxPort"
                              Text="{Binding Source={StaticResource tcpSvr}, Path=ServerPort,Mode=TwoWay}"/>
-                    <Button Content="OK" Grid.Row="2" Grid.Column="2" Grid.RowSpan="2"   
-                            Background="{StaticResource GreenButton}" FontWeight="Bold" VerticalContentAlignment="Center"
-                            FontSize="15" Foreground="White" Margin="2,3,5,3" />
+                <Button Content="OK" Grid.Row="2" Grid.Column="2" Grid.RowSpan="2"   
+                        Background="{StaticResource GreenButton}" FontWeight="Bold" VerticalContentAlignment="Center"
+                        FontSize="15" Foreground="White" Margin="2,3,5,3" 
+                        Command="local:SimulatorCommands.SimSettingOK"/>
                 </Grid>
             <!--</Border>-->
         </Expander>        

@@ -59,6 +59,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Auxiliaries.cs" />
+    <Compile Include="SimulatorCommands.cs" />
     <Compile Include="TcpSocketServer\TcpSocketServer.cs" />
     <Compile Include="Utilities.cs" />
     <Page Include="MainWindow.xaml">
@@ -103,6 +104,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\TrafficLight.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Settings.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

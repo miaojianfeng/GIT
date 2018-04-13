@@ -33,14 +33,15 @@ namespace DoorSimulator
 
             // TcpSocketServer
             TcpSvr = (TcpSocketServer)this.FindResource("tcpSvr");
-            TcpSvr.ServerPort = 9001;     
-            
+            TcpSvr.ServerPort = 9001;
+
+            SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");
             // Simulator Settings
-                  
         }
 
         // Property
-        public static TcpSocketServer TcpSvr { get; set; }
+        public TcpSocketServer TcpSvr { get; private set; }
+        public DoorSimulatorParams SimParams { get; private set; }
 
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
@@ -61,6 +62,44 @@ namespace DoorSimulator
             }
         }
         #endregion
+
+        // Commands
+        private void SimSettingOK_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (TcpSvr == null)
+            {
+                e.CanExecute = false;
+            }
+            else
+            {
+                int cycle = Convert.ToInt16(tboxCycle.Text);
+                UInt16 port = Convert.ToUInt16(tboxPort.Text);
+
+                // Settings changed
+                if (SimParams.RxMsg    != tboxRxMsg.Text ||
+                    SimParams.TxMsg    != tboxTxMsg.Text ||
+                    SimParams.Cycle_ms != cycle || TcpSvr.ServerPort  != port)
+                {
+                    e.CanExecute = true;
+                }
+                else
+                {
+                    e.CanExecute = false;
+                }
+            }
+            e.Handled = true;
+        }
+
+        private void SimSettingOK_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            int cycle = Convert.ToInt16(tboxCycle.Text);
+            UInt16 port = Convert.ToUInt16(tboxPort.Text);
+            SimParams.Cycle_ms = cycle;
+            SimParams.RxMsg = tboxRxMsg.Text;
+            SimParams.TxMsg = tboxTxMsg.Text;
+
+            e.Handled = true;
+        }
     }
 
     public class DoorSimulatorParams
@@ -82,7 +121,7 @@ namespace DoorSimulator
             set
             {
                 this.rxMsg = value;
-                NotifyPropertyChanged("RxMsg");
+                //NotifyPropertyChanged("RxMsg");
             }
             get
             {
@@ -94,8 +133,8 @@ namespace DoorSimulator
         {
             set
             {
-                this.TxMsg = value;
-                NotifyPropertyChanged("TxMsg");
+                this.txMsg = value;
+                //NotifyPropertyChanged("TxMsg");
             }
             get
             {
@@ -108,7 +147,7 @@ namespace DoorSimulator
             set
             {
                 this.cycle_ms = value;
-                NotifyPropertyChanged("Cycle_ms");
+                //NotifyPropertyChanged("Cycle_ms");
             }
             get
             {
@@ -117,7 +156,7 @@ namespace DoorSimulator
         }
 
         // ---------- Event ----------
-        public event PropertyChangedEventHandler PropertyChanged;
+        //public event PropertyChangedEventHandler PropertyChanged;
 
         // ---------- Method ----------
         #region Method
@@ -127,13 +166,13 @@ namespace DoorSimulator
         /// parameter causes the property name of the caller to be substituted as an argument.
         /// </summary>
         /// <param name="propertyName"></param>
-        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-        #endregion
+        //protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        //{
+        //    if (PropertyChanged != null)
+        //    {
+        //        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //    }
+        //}
+        #endregion        
     }
 }
