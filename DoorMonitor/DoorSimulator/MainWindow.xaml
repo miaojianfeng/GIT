@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DoorSimulator"
         mc:Ignorable="d"
-        Title="Door Simulator" Height="200" Width="300" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+        Title="Door Simulator" Height="175" Width="280" 
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
     <Window.Resources>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="RedLightOn" StartPoint="0,0" EndPoint="0,1">
@@ -32,23 +33,20 @@
         <Style x:Key="SettingsLabel" TargetType="Label">            
             <Setter Property="Foreground" Value="DarkBlue"/>            
             <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="VerticalAlignment" Value="Stretch"/>            
-        </Style>
-        <Style x:Key="SettingsLabelUnit" TargetType="Label">
-            <Setter Property="Foreground" Value="DarkBlue"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Stretch"/>
-        </Style>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>        
         <Style x:Key="SettingsTextBox" TargetType="TextBox">            
             <Setter Property="Foreground" Value="DarkBlue"/>            
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>        
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Top" Margin="5">
+        <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Top" Margin="5,0">
             <Expander.Header>
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
@@ -63,45 +61,60 @@
                            Content="Settings"/>
                 </Grid>
             </Expander.Header>
-            <Border BorderBrush="Black" BorderThickness="0.5" Margin="2,2" Padding="0,5,0,5">
+            <!--<Border BorderBrush="Black" BorderThickness="0.5" Margin="2,4" Padding="0,2,0,2">-->
                 <Grid Margin="2,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="25*"/>
+                        <RowDefinition Height="25*"/>
+                        <RowDefinition Height="25*"/>
+                        <RowDefinition Height="25*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="35*"/>
-                        <ColumnDefinition Width="25*"/>
-                        <ColumnDefinition Width="15*"/>
-                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="40*"/>                        
+                        <ColumnDefinition Width="30*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Margin="0,0,0,2" Content="Port" Style="{StaticResource ResourceKey=SettingsLabel}" />
-                    <TextBox Grid.Row="0" Grid.Column="1" Margin="0,0,0,2" Style="{StaticResource ResourceKey=SettingsTextBox}" />
-                    <Label Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,0,2" Content="( localhost::8001 )" Style="{StaticResource ResourceKey=SettingsLabelUnit}" />
-                    <Label Grid.Row="1" Grid.Column="0" Margin="0,2,0,2" Content="Cycle Time" Style="{StaticResource ResourceKey=SettingsLabel}" />
-                    <TextBox Grid.Row="1" Grid.Column="1" Margin="0,2,0,2" Style="{StaticResource ResourceKey=SettingsTextBox}"/>
-                    <Label Grid.Row="1" Grid.Column="2" Margin="0,0,0,2" Content="ms" Style="{StaticResource ResourceKey=SettingsLabelUnit}" />
-                    <Label Grid.Row="2" Grid.Column="0" Margin="0,2,0,2" Content="Sending MSG" Style="{StaticResource ResourceKey=SettingsLabel}" />
-                    <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,2,0,2" Style="{StaticResource ResourceKey=SettingsTextBox}"/>
-                    <Label Grid.Row="3" Grid.Column="0" Margin="0,2,0,0" Content="Receiving MSG" Style="{StaticResource ResourceKey=SettingsLabel}" />
-                    <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,2,0,0" Style="{StaticResource ResourceKey=SettingsTextBox}"/>
-                    <Button Content="OK" Grid.Row="1" Grid.Column="3" Grid.RowSpan="3" Background="{StaticResource GreenLightOn}" FontWeight="Bold" 
-                            FontSize="15" Foreground="White" Margin="5,2,5,0" />
+                    
+                    <Label Grid.Row="0" Grid.Column="0" Content="RX MSG" Style="{StaticResource ResourceKey=SettingsLabel}" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="TX MSG" Style="{StaticResource ResourceKey=SettingsLabel}" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Cycle (ms)" Style="{StaticResource ResourceKey=SettingsLabel}" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}" />
+                    <Label Grid.Row="3" Grid.Column="0" Content="Port Number" Style="{StaticResource ResourceKey=SettingsLabel}" />
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}"/>
+                    <Button Content="OK" Grid.Row="2" Grid.Column="2" Grid.RowSpan="2"   
+                            Background="{StaticResource GreenLightOn}" FontWeight="Bold" VerticalContentAlignment="Center"
+                            FontSize="15" Foreground="White" Margin="2,3,5,3" />
                 </Grid>
-            </Border>
-        </Expander>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="5,0,5,5"
-                    HorizontalAlignment="Right" VerticalAlignment="Center" >
-            <Button Content="Start" Padding="10, 5" Width="80" />
-            <Button Content="Stop" Padding="10,5" Margin="10,0,0,0" Width="80"/>
-        </StackPanel>
-        <GroupBox Margin="5,5,5,10" Header="Door Selection" BorderBrush="Black" BorderThickness="1" >
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <CheckBox Content="Chamber1 Door" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
-                <CheckBox Content="Chamber2 Door" Margin="20,0,0,0" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
-            </StackPanel>            
-        </GroupBox>
+            <!--</Border>-->
+        </Expander>        
+        <!--<Border Margin="8,4,8,5" BorderBrush="Black" BorderThickness="0.5" >-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70*"/>
+                <RowDefinition Height="30*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="50*"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Grid.Column="0" Header="Door 1" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                        Margin="20,0,20,0">
+                <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
+                    <CheckBox Content="Open" Margin="0,2"/>
+                    <CheckBox Content="Close"/>
+                </StackPanel>                    
+            </GroupBox>
+            <GroupBox Grid.Column="1" Header="Door 2" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                        Margin="20,0,20,0">
+                <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
+                    <CheckBox Content="Open" Margin="0,2"/>
+                    <CheckBox Content="Close"/>
+                </StackPanel>
+            </GroupBox>
+            <Button Grid.Row="1" Grid.Column="1" Content="Run" Margin="22,0,22,10" />
+        </Grid>             
+        <!--</Border>-->
     </DockPanel>
 </Window>
