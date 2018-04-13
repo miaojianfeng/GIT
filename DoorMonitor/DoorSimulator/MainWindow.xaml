@@ -11,6 +11,10 @@
     <Window.Resources>
         <!--Object Definition-->
         <socket:TcpSocketServer x:Key="tcpSvr"/>
+        <local:DoorSimulatorParams x:Key="params"/>
+        <!--Converter-->
+        <local:SvrStateToRunSvrEnableConverter x:Key="svrStaToRunSvrEnable"/>
+        <local:SvrStateToStopSvrEnableConverter x:Key="svrStaToStopSvrEnable"/>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
@@ -60,7 +64,7 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>        
         <Style x:Key="SettingsTextBox" TargetType="TextBox">            
-            <Setter Property="Foreground" Value="DarkBlue"/>            
+            <Setter Property="Foreground" Value="Black"/>            
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -72,15 +76,15 @@
             <Expander.Header>
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="30*"/>
-                        <ColumnDefinition Width="30*"/>
-                        <ColumnDefinition Width="40*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="70*"/>                        
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Margin="2,0" Source="Resources\Settings.ico"  
+                    <Image Grid.Column="0" Margin="2,0" 
+                           Source="Resources\Settings.ico"  
                            VerticalAlignment="Center" HorizontalAlignment="Right" Stretch="None" />
                     <Label Grid.Column="1" Grid.ColumnSpan="2"   
-                           VerticalAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center"  
-                           Content="Settings"/>
+                           VerticalAlignment="Center" HorizontalAlignment="Stretch" VerticalContentAlignment="Center"  
+                           Content="Simulator Settings"/>
                 </Grid>
             </Expander.Header>
             <!--<Border BorderBrush="Black" BorderThickness="0.5" Margin="2,4" Padding="0,2,0,2">-->
@@ -98,13 +102,20 @@
                     </Grid.ColumnDefinitions>
                     
                     <Label Grid.Row="0" Grid.Column="0" Content="RX MSG" Style="{StaticResource ResourceKey=SettingsLabel}" />
-                    <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" 
+                             Style="{StaticResource ResourceKey=SettingsTextBox}"
+                             Text="{Binding Source={StaticResource params}, Path=RxMsg, Mode=TwoWay}"/>
                     <Label Grid.Row="1" Grid.Column="0" Content="TX MSG" Style="{StaticResource ResourceKey=SettingsLabel}" />
-                    <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" 
+                             Style="{StaticResource ResourceKey=SettingsTextBox}"
+                             Text="{Binding Source={StaticResource params}, Path=TxMsg, Mode=TwoWay}"/>
                     <Label Grid.Row="2" Grid.Column="0" Content="Cycle (ms)" Style="{StaticResource ResourceKey=SettingsLabel}" />
-                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3,5,3" 
+                             Style="{StaticResource ResourceKey=SettingsTextBox}" 
+                             Text="{Binding Source={StaticResource params}, Path=Cycle_ms, Mode=TwoWay}"/>
                     <Label Grid.Row="3" Grid.Column="0" Content="Port Number" Style="{StaticResource ResourceKey=SettingsLabel}" />
-                    <TextBox Grid.Row="3" Grid.Column="1" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}"
+                             Text="{Binding Source={StaticResource tcpSvr}, Path=ServerPort,Mode=TwoWay}"/>
                     <Button Content="OK" Grid.Row="2" Grid.Column="2" Grid.RowSpan="2"   
                             Background="{StaticResource GreenButton}" FontWeight="Bold" VerticalContentAlignment="Center"
                             FontSize="15" Foreground="White" Margin="2,3,5,3" />
@@ -142,10 +153,14 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Row="0" Grid.Column="0" Content="Run" Margin="5,0,10,6" 
                         VerticalContentAlignment="Center" Foreground="White" 
-                        Background="{StaticResource GreenButton}"/>
+                        Background="{StaticResource GreenButton}"
+                        IsEnabled="{Binding Source={StaticResource tcpSvr}, Path=ServerState,
+                                    Converter={StaticResource ResourceKey=svrStaToRunSvrEnable},Mode=OneWay}"/>
                 <Button Grid.Row="1" Grid.Column="1" Content="Stop" Margin="0,0,15,6" 
                         VerticalContentAlignment="Center" Foreground="White" 
-                        Background="{StaticResource RedButton}"/>
+                        Background="{StaticResource RedButton}"
+                        IsEnabled="{Binding Source={StaticResource tcpSvr}, Path=ServerState,
+                                    Converter={StaticResource ResourceKey=svrStaToStopSvrEnable},Mode=OneWay}"/>
             </Grid>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" 
                         VerticalAlignment="Center">

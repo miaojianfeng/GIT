@@ -48,7 +48,7 @@ namespace ETSL.TcpSocket
         private bool enableTrace = false;
 
         private StringBuilder traceRecord = new StringBuilder();
-        private int queryTimeout_ms = 200;
+        private int queryTimeout_ms = 100;
 
         static private int clientNum = 0;
         static private object locker = new object();
