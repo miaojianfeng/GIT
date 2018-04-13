@@ -4,10 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DoorSimulator"
+        xmlns:socket="clr-namespace:ETSL.TcpSocket"
         mc:Ignorable="d"
         Title="Door Simulator" Height="175" Width="280" 
-        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Icon="Resources/TrafficLight.ico">
     <Window.Resources>
+        <!--Object Definition-->
+        <socket:TcpSocketServer x:Key="tcpSvr"/>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
