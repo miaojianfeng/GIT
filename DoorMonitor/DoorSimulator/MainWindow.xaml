@@ -77,7 +77,7 @@
         <!--<CommandBinding Command="ApplicationCommands.Open" Executed="OpenCommand_Executed"/>-->
         <!--Customed Commands-->
         <CommandBinding Command="local:SimulatorCommands.SimSettingOK"  
-                        CanExecute="SimSettingOK_CanExecute"  
+                        CanExecute="SimSettingOK_CanExecute" 
                         Executed="SimSettingOK_Executed"/>
     </Window.CommandBindings>
     <DockPanel LastChildFill="True">
@@ -111,28 +111,24 @@
                     
                     <Label Grid.Row="0" Grid.Column="0" Content="RX MSG" Style="{StaticResource ResourceKey=SettingsLabel}" />
                     <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" 
-                             x:Name="tboxRxMsg"
                              Style="{StaticResource ResourceKey=SettingsTextBox}"
-                             Text="{Binding Source={StaticResource simParams}, Path=RxMsg, Mode=TwoWay}"/>
+                             Text="{Binding Source={StaticResource simParams}, Path=RxMsg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Grid.Row="1" Grid.Column="0" Content="TX MSG" Style="{StaticResource ResourceKey=SettingsLabel}" />
                     <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" 
-                             x:Name="tboxTxMsg"
                              Style="{StaticResource ResourceKey=SettingsTextBox}"
-                             Text="{Binding Source={StaticResource simParams}, Path=TxMsg, Mode=TwoWay}"/>
+                             Text="{Binding Source={StaticResource simParams}, Path=TxMsg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Grid.Row="2" Grid.Column="0" Content="Cycle (ms)" Style="{StaticResource ResourceKey=SettingsLabel}" />
                     <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3,5,3" 
-                             x:Name="tboxCycle"
                              Style="{StaticResource ResourceKey=SettingsTextBox}" 
-                             Text="{Binding Source={StaticResource simParams}, Path=Cycle_ms, Mode=TwoWay}"/>
+                             Text="{Binding Source={StaticResource simParams}, Path=Cycle_ms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Grid.Row="3" Grid.Column="0" Content="Port Number" Style="{StaticResource ResourceKey=SettingsLabel}" />
                     <TextBox Grid.Row="3" Grid.Column="1" Margin="0,3,5,3" Style="{StaticResource ResourceKey=SettingsTextBox}"
-                             x:Name="tboxPort"
-                             Text="{Binding Source={StaticResource tcpSvr}, Path=ServerPort,Mode=TwoWay}"/>
-                <Button Content="OK" Grid.Row="2" Grid.Column="2" Grid.RowSpan="2"   
-                        Background="{StaticResource GreenButton}" FontWeight="Bold" VerticalContentAlignment="Center"
-                        FontSize="15" Foreground="White" Margin="2,3,5,3" 
-                        Command="local:SimulatorCommands.SimSettingOK"/>
-                </Grid>
+                             Text="{Binding Source={StaticResource simParams}, Path=PortNum,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Content="OK" Grid.Row="2" Grid.Column="2" Grid.RowSpan="2"   
+                            Background="{StaticResource GreenButton}" FontWeight="Bold" VerticalContentAlignment="Center"
+                            FontSize="15" Foreground="White" Margin="2,3,5,3" 
+                            Command="local:SimulatorCommands.SimSettingOK"/>
+            </Grid>
             <!--</Border>-->
         </Expander>        
         <!--<Border Margin="8,4,8,5" BorderBrush="Black" BorderThickness="0.5" >-->

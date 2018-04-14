@@ -15,7 +15,7 @@ namespace DoorSimulator
         static SimulatorCommands()
         {
             // Initialize commands            
-            simSettingOK = new RoutedUICommand("Simulator setting is done", "SimSettingOK", typeof(SimulatorCommands));            
+            simSettingOK = new RoutedUICommand("Set Simulator Settings", "SimSettingOK", typeof(SimulatorCommands));            
         }
 
         public static RoutedUICommand SimSettingOK
