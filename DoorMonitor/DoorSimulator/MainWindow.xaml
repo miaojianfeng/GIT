@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Door Simulator" Height="175" Width="280" 
         Background="LightBlue"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="Resources/TrafficLight.ico">
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="Resources/TrafficLight.ico" Closing="Window_Closing">
     <Window.Resources>
         <!--Object Definition-->
         <socket:TcpSocketServer x:Key="tcpSvr"/>
@@ -16,6 +16,8 @@
         <!--Converter-->
         <local:SvrStateToRunSvrEnableConverter x:Key="svrStaToRunSvrEnable"/>
         <local:SvrStateToStopSvrEnableConverter x:Key="svrStaToStopSvrEnable"/>
+        <local:SvrStateToFillColorConverter x:Key="svrStaToFillColor"/>
+        <local:MsgTransStateToFillColorConverter x:Key="msgTransStaToFillColor"/>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
@@ -92,7 +94,7 @@
                            Source="Resources/Settings.ico"   
                            VerticalAlignment="Center" HorizontalAlignment="Right" Stretch="None"/>
                     <Label Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="14"  
-                           Content="Press button to show settings"/>
+                           Content="Press to show more settings"/>
                 </Grid>
             </Expander.Header>
             <!--<Border BorderBrush="Black" BorderThickness="0.5" Margin="2,4" Padding="0,2,0,2">-->
@@ -163,19 +165,25 @@
                 <Button Grid.Row="0" Grid.Column="0" Content="Run" Margin="5,0,10,6" 
                         VerticalContentAlignment="Center" Foreground="White" 
                         Background="{StaticResource GreenButton}"
+                        x:Name="btnRun"
                         IsEnabled="{Binding Source={StaticResource tcpSvr}, Path=ServerState,
-                                    Converter={StaticResource ResourceKey=svrStaToRunSvrEnable},Mode=OneWay}"/>
+                                    Converter={StaticResource svrStaToRunSvrEnable},Mode=OneWay}" 
+                        Click="BtnRun_Click"/>
                 <Button Grid.Row="1" Grid.Column="1" Content="Stop" Margin="0,0,15,6" 
                         VerticalContentAlignment="Center" Foreground="White" 
                         Background="{StaticResource RedButton}"
+                        x:Name="btnStop"
                         IsEnabled="{Binding Source={StaticResource tcpSvr}, Path=ServerState,
-                                    Converter={StaticResource ResourceKey=svrStaToStopSvrEnable},Mode=OneWay}"/>
+                                    Converter={StaticResource svrStaToStopSvrEnable},Mode=OneWay}" 
+                        Click="BtnStop_Click"/>
             </Grid>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" 
                         VerticalAlignment="Center">
-                <Ellipse Width="15" Height="15" Fill="{StaticResource DarkGreenLED}"/>
+                <Ellipse Width="15" Height="15" 
+                         Fill="{Binding Source={StaticResource tcpSvr}, Path=ServerState, Converter={StaticResource svrStaToFillColor}, Mode=OneWay}"/>
                 <Label Content="SVR" VerticalContentAlignment="Top" />
-                <Ellipse Width="15" Height="15" Margin="10,0,0,0" Fill="{StaticResource DarkGreenLED}"/>
+                <Ellipse Width="15" Height="15" Margin="10,0,0,0" 
+                         Fill="{Binding Source={StaticResource tcpSvr}, Path=MsgTransState, Converter={StaticResource msgTransStaToFillColor}, Mode=OneWay}"/>
                 <Label Content="MSG" VerticalContentAlignment="Center"/>
             </StackPanel>
         </Grid>             

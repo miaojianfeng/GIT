@@ -154,6 +154,25 @@ namespace DoorSimulator
                 IsDoor2Closed = true;
             }
         }
+
+        private async void BtnRun_Click(object sender, RoutedEventArgs e)
+        {
+           await TcpSvr.Start();
+        }
+
+        private void BtnStop_Click(object sender, RoutedEventArgs e)
+        {  
+            TcpSvr.Stop();
+            
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if(TcpSvr.ServerState!=EnumServerState.ServerStopped)
+            {
+                TcpSvr.Stop();
+            }
+        }
     }
 
     public class DoorSimulatorParams

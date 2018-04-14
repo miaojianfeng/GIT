@@ -147,4 +147,46 @@ namespace DoorSimulator
         }
     }
 
+    public class MsgTransStateToFillColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            EnumMsgTransState state = (EnumMsgTransState)value;
+
+            LinearGradientBrush brush = new LinearGradientBrush();
+            brush.StartPoint = new Point(0, 0);
+            brush.EndPoint = new Point(0, 1);
+
+            // DarkGreen LED
+            GradientStopCollection darkGreenLED = new GradientStopCollection() { new GradientStop(Colors.DarkGreen, 0),
+                                                                                 new GradientStop(Colors.Green, 0.75),
+                                                                                 new GradientStop(Colors.LimeGreen, 0.85),
+                                                                                 new GradientStop(Colors.LightGreen, 0.9),
+                                                                                 new GradientStop(Colors.LightGreen, 1)};
+
+            // LightGreen LED
+            GradientStopCollection lightGreenLED = new GradientStopCollection() { new GradientStop(Colors.White, 0),
+                                                                                  new GradientStop(Colors.LightGreen, 0.35),
+                                                                                  new GradientStop(Colors.LimeGreen, 0.85),
+                                                                                  new GradientStop(Colors.Green, 0.9),
+                                                                                  new GradientStop(Colors.DarkGreen, 1)};
+
+            switch (state)
+            {
+                case EnumMsgTransState.Silence:
+                    brush.GradientStops = new GradientStopCollection(darkGreenLED);
+                    break;
+                case EnumMsgTransState.Working:
+                    brush.GradientStops = new GradientStopCollection(lightGreenLED);
+                    break;
+            }
+            return brush;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
 }
