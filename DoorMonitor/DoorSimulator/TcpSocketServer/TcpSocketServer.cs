@@ -240,6 +240,7 @@ namespace ETSL.TcpSocket
             string resp = string.Format("No Response");
             if (ProcessMessage != null)
             {
+                msgReceived.TrimEnd();
                 resp = ProcessMessage(msgReceived);
             }
             
@@ -280,6 +281,7 @@ namespace ETSL.TcpSocket
             {
                 tcpListener.Stop();                
                 ServerState = EnumServerState.ServerStopped;
+                MsgTransState = EnumMsgTransState.Silence;
                 AppendTrace(EnumTraceType.Information, string.Format("{0} (localhost::{1}) stopped.\n", ServerName, ServerPort));
             }
         }
@@ -374,7 +376,9 @@ namespace ETSL.TcpSocket
                             nwkStream.Write(bytesSend, 0, bytesSend.Length);
                             AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, responseArray.ToString()));
                         }
-                    }
+
+                        MsgTransState = EnumMsgTransState.Silence;
+                    }                    
                     #endregion
 
                     // To use BinaryReader to detect whether client is still connected
@@ -391,49 +395,5 @@ namespace ETSL.TcpSocket
                 }
             }            
         }
-
-        //private bool IsClientConnected(TcpClient client)
-        //{
-        //    bool retVal = false;
-
-        //    MemoryStream ms = new MemoryStream();
-
-        //    NetworkStream ns = client.GetStream();
-        //    BinaryReader br = new BinaryReader(ns);
-
-        //    // message framing. First, read the #bytes to expect.
-        //    int objectSize = br.ReadInt32();
-
-        //    if (objectSize == 0)
-        //        retVal = false;// client disconnected
-
-        //    byte[] buffer = new byte[objectSize];
-        //    int index = 0;
-
-        //    int read = ns.Read(buffer, index, Math.Min(objectSize, 1024));
-        //    while (read > 0)
-        //    {
-        //        objectSize -= read;
-        //        index += read;
-        //        read = ns.Read(buffer, index, Math.Min(objectSize, 1024);
-        //    }
-
-        //    if (objectSize > 0)
-        //    {
-        //        // client aborted connection in the middle of stream;
-        //        break;
-        //    }
-        //    else
-        //    {
-        //        BinaryFormatter bf = new BinaryFormatter();
-        //        using (MemoryStream ms = new MemoryStream(buffer))
-        //        {
-        //            object o = bf.Deserialize(ns);
-        //            ReceiveMyObject(o);
-        //        }
-        //    }
-
-        //    return retVal;
-        //} 
     }
 }

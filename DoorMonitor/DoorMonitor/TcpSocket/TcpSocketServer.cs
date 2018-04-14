@@ -10,7 +10,6 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
-using System.Windows.Forms;
 using ETSL.Utilities;
 
 namespace ETSL.TcpSocket
@@ -20,6 +19,12 @@ namespace ETSL.TcpSocket
         ServerStopped   = 0,
         ServerStarted   = 1,     
         ClientConnected = 2             
+    }
+
+    public enum EnumMsgTransState
+    {
+        Silence = 0,
+        Working = 1
     }
 
     public enum EnumTraceType
@@ -39,6 +44,7 @@ namespace ETSL.TcpSocket
         private string serverName = "TCP Server";
         private UInt16 serverPort = 8001;
         private EnumServerState serverState = EnumServerState.ServerStopped;
+        private EnumMsgTransState msgTransState = EnumMsgTransState.Silence;
         private bool enableTrace = false;
 
         private StringBuilder traceRecord = new StringBuilder();
@@ -108,6 +114,19 @@ namespace ETSL.TcpSocket
             get
             {
                 return this.serverState;
+            }
+        }
+
+        public EnumMsgTransState MsgTransState
+        {
+            private set
+            {
+                this.msgTransState = value;
+                NotifyPropertyChanged("MsgTransState");
+            }
+            get
+            {
+                return this.msgTransState;
             }
         }
 
@@ -221,6 +240,7 @@ namespace ETSL.TcpSocket
             string resp = string.Format("No Response");
             if (ProcessMessage != null)
             {
+                msgReceived.TrimEnd();
                 resp = ProcessMessage(msgReceived);
             }
             
@@ -261,6 +281,7 @@ namespace ETSL.TcpSocket
             {
                 tcpListener.Stop();                
                 ServerState = EnumServerState.ServerStopped;
+                MsgTransState = EnumMsgTransState.Silence;
                 AppendTrace(EnumTraceType.Information, string.Format("{0} (localhost::{1}) stopped.\n", ServerName, ServerPort));
             }
         }
@@ -286,9 +307,13 @@ namespace ETSL.TcpSocket
                 try
                 {
                     // To use NetworkStream to read/write message
-                    #region NetworkStream Read/Write                  
+                    #region NetworkStream Read/Write   
+                    MsgTransState = EnumMsgTransState.Silence; 
+                                  
                     while ((i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length)) != 0)
                     {
+                        MsgTransState = EnumMsgTransState.Working;
+
                         string cmdReceived = System.Text.Encoding.ASCII.GetString(bytesReceived, 0, i);
                         traceTextLine.Clear();
                         if (cmdReceived.EndsWith("\n"))
@@ -351,7 +376,9 @@ namespace ETSL.TcpSocket
                             nwkStream.Write(bytesSend, 0, bytesSend.Length);
                             AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, responseArray.ToString()));
                         }
-                    }
+
+                        MsgTransState = EnumMsgTransState.Silence;
+                    }                    
                     #endregion
 
                     // To use BinaryReader to detect whether client is still connected
@@ -362,54 +389,11 @@ namespace ETSL.TcpSocket
                 }
                 catch
                 {
-                    AppendTrace(EnumTraceType.Information, String.Format("Client{0} has disconnected\n", num, ServerName));                  
+                    MsgTransState = EnumMsgTransState.Silence;
+                    AppendTrace(EnumTraceType.Information, String.Format("Client{0} has disconnected\n", num, ServerName));                                     
                     return;
                 }
             }            
         }
-
-        //private bool IsClientConnected(TcpClient client)
-        //{
-        //    bool retVal = false;
-
-        //    MemoryStream ms = new MemoryStream();
-
-        //    NetworkStream ns = client.GetStream();
-        //    BinaryReader br = new BinaryReader(ns);
-
-        //    // message framing. First, read the #bytes to expect.
-        //    int objectSize = br.ReadInt32();
-
-        //    if (objectSize == 0)
-        //        retVal = false;// client disconnected
-
-        //    byte[] buffer = new byte[objectSize];
-        //    int index = 0;
-
-        //    int read = ns.Read(buffer, index, Math.Min(objectSize, 1024));
-        //    while (read > 0)
-        //    {
-        //        objectSize -= read;
-        //        index += read;
-        //        read = ns.Read(buffer, index, Math.Min(objectSize, 1024);
-        //    }
-
-        //    if (objectSize > 0)
-        //    {
-        //        // client aborted connection in the middle of stream;
-        //        break;
-        //    }
-        //    else
-        //    {
-        //        BinaryFormatter bf = new BinaryFormatter();
-        //        using (MemoryStream ms = new MemoryStream(buffer))
-        //        {
-        //            object o = bf.Deserialize(ns);
-        //            ReceiveMyObject(o);
-        //        }
-        //    }
-
-        //    return retVal;
-        //} 
     }
 }

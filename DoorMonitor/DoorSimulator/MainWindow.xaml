@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Door Simulator" Height="175" Width="280" 
         Background="LightBlue"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="Resources/TrafficLight.ico" Closing="Window_Closing">
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="Resources/TrafficLight.ico" Closing="Window_Closing" Topmost="True">
     <Window.Resources>
         <!--Object Definition-->
         <socket:TcpSocketServer x:Key="tcpSvr"/>

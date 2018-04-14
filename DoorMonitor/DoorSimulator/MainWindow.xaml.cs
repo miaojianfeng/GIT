@@ -93,6 +93,19 @@ namespace DoorSimulator
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        public string ProcessReceivingMessage(string recString)
+        {
+            RxMsg = RxMsg.TrimEnd();
+            if(recString == RxMsg)
+            {
+                return TxMsg;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
         #endregion 
 
         // Commands
@@ -121,14 +134,21 @@ namespace DoorSimulator
 
         private void SimSettingOK_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            if(TcpSvr.ServerState!=EnumServerState.ServerStopped)
+            {
+                TcpSvr.Stop();
+            }
+            
             TxMsg = SimParams.TxMsg;
             RxMsg = SimParams.RxMsg;
             Cycle_ms = SimParams.Cycle_ms;
             TcpSvr.ServerPort = SimParams.PortNum;
+            TcpSvr.QueryTimeout_ms = 200;
             this.expdr.IsExpanded = false;
             e.Handled = true;
         }
 
+        // EventHandler
         private void RadioButtonDoor1_Checked(object sender, RoutedEventArgs e)
         {
             if(radioBtnDoor1Open.IsChecked==true)
@@ -157,13 +177,13 @@ namespace DoorSimulator
 
         private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
-           await TcpSvr.Start();
+            TcpSvr.ProcessMessage = ProcessReceivingMessage;
+            await TcpSvr.Start();
         }
 
         private void BtnStop_Click(object sender, RoutedEventArgs e)
         {  
-            TcpSvr.Stop();
-            
+            TcpSvr.Stop();            
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -181,10 +201,7 @@ namespace DoorSimulator
         private string txMsg = "Door1:Closed;Door2:Closed\n";
         private string rxMsg = "DoorState?\n";
         private int cycle_ms = 500;
-        private UInt16 portNum = 9001;
-        //private bool isDoor1Closed = true;
-        //private bool isDoor2Closed = true;
-        
+        private UInt16 portNum = 9001;               
 
         public DoorSimulatorParams()
         {
@@ -243,32 +260,6 @@ namespace DoorSimulator
                 return this.portNum;
             }
         }
-
-        //public bool IsDoor1Closed
-        //{
-        //    set
-        //    {
-        //        this.isDoor1Closed = value;
-        //        NotifyPropertyChanged("IsDoor1Closed");
-        //    }
-        //    get
-        //    {
-        //        return this.isDoor1Closed;
-        //    }
-        //}
-
-        //public bool IsDoor2Closed
-        //{
-        //    set
-        //    {
-        //        this.isDoor2Closed = value;
-        //        NotifyPropertyChanged("IsDoor2Closed");
-        //    }
-        //    get
-        //    {
-        //        return this.isDoor2Closed;
-        //    }
-        //}
 
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
