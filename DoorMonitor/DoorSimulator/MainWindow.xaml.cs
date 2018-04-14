@@ -35,11 +35,33 @@ namespace DoorSimulator
             TcpSvr = (TcpSocketServer)this.FindResource("tcpSvr");
             TcpSvr.ServerPort = 9001;
 
-            SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");
             // Simulator Settings
+            SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");            
             RxMsg = SimParams.RxMsg;
             TxMsg = SimParams.TxMsg;
-            Cycle_ms = SimParams.Cycle_ms;            
+            Cycle_ms = SimParams.Cycle_ms;  
+            
+            // Door1 State
+            if(this.radioBtnDoor1Open.IsChecked == true && this.radioBtnDoor1Closed.IsChecked == false)
+            {
+                IsDoor1Closed = false;
+            }
+            else if(this.radioBtnDoor1Open.IsChecked==false && this.radioBtnDoor1Closed.IsChecked == true)
+            {
+                IsDoor1Closed = true;
+            }
+            else { IsDoor1Closed = false; }
+
+            // Door2 State
+            if (this.radioBtnDoor2Open.IsChecked == true && this.radioBtnDoor2Closed.IsChecked == false)
+            {
+                IsDoor2Closed = false;
+            }
+            else if (this.radioBtnDoor2Open.IsChecked == false && this.radioBtnDoor2Closed.IsChecked == true)
+            {
+                IsDoor2Closed = true;
+            }
+            else { IsDoor2Closed = false; }
         }
 
         // Property
@@ -49,6 +71,9 @@ namespace DoorSimulator
         private string RxMsg { set; get; }
         private string TxMsg { set; get; }
         private int Cycle_ms { set; get; }
+
+        private bool IsDoor1Closed { set; get; }
+        private bool IsDoor2Closed { set; get; }
         
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
@@ -103,6 +128,32 @@ namespace DoorSimulator
             this.expdr.IsExpanded = false;
             e.Handled = true;
         }
+
+        private void RadioButtonDoor1_Checked(object sender, RoutedEventArgs e)
+        {
+            if(radioBtnDoor1Open.IsChecked==true)
+            {
+                IsDoor1Closed = false;
+            } 
+
+            if(radioBtnDoor1Closed.IsChecked==true)
+            {
+                IsDoor1Closed = true;
+            }
+        }
+
+        private void RadioButtonDoor2_Checked(object sender, RoutedEventArgs e)
+        {
+            if (radioBtnDoor2Open.IsChecked == true)
+            {
+                IsDoor2Closed = false;
+            }
+
+            if (radioBtnDoor2Closed.IsChecked == true)
+            {
+                IsDoor2Closed = true;
+            }
+        }
     }
 
     public class DoorSimulatorParams
@@ -112,14 +163,16 @@ namespace DoorSimulator
         private string rxMsg = "DoorState?\n";
         private int cycle_ms = 500;
         private UInt16 portNum = 9001;
+        //private bool isDoor1Closed = true;
+        //private bool isDoor2Closed = true;
+        
 
         public DoorSimulatorParams()
         {
 
         }
 
-        // Property        
-
+        // Property   
         public string RxMsg
         {
             set
@@ -171,6 +224,32 @@ namespace DoorSimulator
                 return this.portNum;
             }
         }
+
+        //public bool IsDoor1Closed
+        //{
+        //    set
+        //    {
+        //        this.isDoor1Closed = value;
+        //        NotifyPropertyChanged("IsDoor1Closed");
+        //    }
+        //    get
+        //    {
+        //        return this.isDoor1Closed;
+        //    }
+        //}
+
+        //public bool IsDoor2Closed
+        //{
+        //    set
+        //    {
+        //        this.isDoor2Closed = value;
+        //        NotifyPropertyChanged("IsDoor2Closed");
+        //    }
+        //    get
+        //    {
+        //        return this.isDoor2Closed;
+        //    }
+        //}
 
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;

@@ -26,7 +26,7 @@ namespace DoorSimulator
             switch (state)
             {
                 case EnumServerState.ServerStopped:
-                    retVal = true;                                                              
+                    retVal = true;
                     break;
                 case EnumServerState.ServerStarted:
                 case EnumServerState.ClientConnected:
@@ -82,13 +82,13 @@ namespace DoorSimulator
                     brush = (System.Windows.Media.Brush)brushConverter.ConvertFromString("Red");
                     break;
                 case EnumServerState.ServerStarted:
-                    brush = (System.Windows.Media.Brush)brushConverter.ConvertFromString("DarkGreen");                    
+                    brush = (System.Windows.Media.Brush)brushConverter.ConvertFromString("DarkGreen");
                     break;
                 case EnumServerState.ClientConnected:
                     brush = (System.Windows.Media.Brush)brushConverter.ConvertFromString("YellowGreen");
                     break;
             }
-            return brush;            
+            return brush;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -106,7 +106,7 @@ namespace DoorSimulator
             LinearGradientBrush brush = new LinearGradientBrush();
             brush.StartPoint = new Point(0, 0);
             brush.EndPoint = new Point(0, 1);
-            
+
             // RedLED
             GradientStopCollection redLED = new GradientStopCollection() { new GradientStop(Colors.Pink, 0),
                                                                            new GradientStop(Colors.Red, 0.5),
@@ -145,5 +145,6 @@ namespace DoorSimulator
         {
             throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
         }
-    }  
+    }
+
 }

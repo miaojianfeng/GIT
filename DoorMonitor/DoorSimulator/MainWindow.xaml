@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Door Simulator" Height="175" Width="280" 
         Background="LightBlue"
-        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Icon="Resources/TrafficLight.ico">
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="Resources/TrafficLight.ico">
     <Window.Resources>
         <!--Object Definition-->
         <socket:TcpSocketServer x:Key="tcpSvr"/>
@@ -144,15 +144,15 @@
             <GroupBox Grid.Column="0" Header="Door 1" HorizontalAlignment="Stretch" VerticalAlignment="Center"
                       Margin="15,0,15,0">
                 <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
-                    <CheckBox Content="Open" Margin="0,2"/>
-                    <CheckBox Content="Close"/>
+                    <RadioButton Content="Open" Margin="0,2" Checked="RadioButtonDoor1_Checked" x:Name="radioBtnDoor1Open"/>
+                    <RadioButton Content="Close" x:Name="radioBtnDoor1Closed" IsChecked="True" Checked="RadioButtonDoor1_Checked"/>
                 </StackPanel>                    
             </GroupBox>
             <GroupBox Grid.Column="1" Header="Door 2" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
                         Margin="15,0,15,0">
                 <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
-                    <CheckBox Content="Open" Margin="0,2"/>
-                    <CheckBox Content="Close"/>
+                    <RadioButton Content="Open" Margin="0,2" x:Name="radioBtnDoor2Open" Checked="RadioButtonDoor2_Checked"/>
+                    <RadioButton Content="Close" x:Name="radioBtnDoor2Closed" IsChecked="True" Checked="RadioButtonDoor2_Checked"/>
                 </StackPanel>
             </GroupBox>
             <Grid Grid.Row="1" Grid.Column="1" >
