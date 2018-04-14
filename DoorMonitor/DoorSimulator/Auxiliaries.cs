@@ -105,7 +105,7 @@ namespace DoorSimulator
 
             LinearGradientBrush brush = new LinearGradientBrush();
             brush.StartPoint = new Point(0, 0);
-            brush.EndPoint = new Point(0, 1);
+            brush.EndPoint = new Point(1, 1);
 
             // RedLED
             GradientStopCollection redLED = new GradientStopCollection() { new GradientStop(Colors.Pink, 0),
@@ -155,7 +155,7 @@ namespace DoorSimulator
 
             LinearGradientBrush brush = new LinearGradientBrush();
             brush.StartPoint = new Point(0, 0);
-            brush.EndPoint = new Point(0, 1);
+            brush.EndPoint = new Point(1, 1);
 
             // DarkGreen LED
             GradientStopCollection darkGreenLED = new GradientStopCollection() { new GradientStop(Colors.DarkGreen, 0),
@@ -181,6 +181,31 @@ namespace DoorSimulator
                     break;
             }
             return brush;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class ExpdrStateToExpdrTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool isExpanded = (bool)value;
+            string text = string.Empty;
+
+            if(isExpanded)
+            {
+                text = "Press here to switch back...";
+            }
+            else
+            {
+                text = "Press here to show more settings...";
+            }
+
+            return text;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

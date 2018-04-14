@@ -62,6 +62,9 @@ namespace DoorSimulator
                 IsDoor2Closed = true;
             }
             else { IsDoor2Closed = false; }
+
+            // DirtyFlag
+            //DirtyFlag = false;
         }
 
         // Property
@@ -74,6 +77,8 @@ namespace DoorSimulator
 
         private bool IsDoor1Closed { set; get; }
         private bool IsDoor2Closed { set; get; }
+        private bool DirtyFlag { set; get; }
+        
         
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
@@ -122,10 +127,12 @@ namespace DoorSimulator
                     Cycle_ms != SimParams.Cycle_ms ||
                     TcpSvr.ServerPort != SimParams.PortNum)
                 {
+                    //DirtyFlag = true;
                     e.CanExecute = true;
                 }
                 else
                 {
+                    //DirtyFlag = false;
                     e.CanExecute = false;
                 }                   
             }
@@ -145,6 +152,8 @@ namespace DoorSimulator
             TcpSvr.ServerPort = SimParams.PortNum;
             TcpSvr.QueryTimeout_ms = 200;
             this.expdr.IsExpanded = false;
+            //DirtyFlag = false;
+
             e.Handled = true;
         }
 
@@ -193,13 +202,23 @@ namespace DoorSimulator
                 TcpSvr.Stop();
             }
         }
+
+        private void expdr_Collapsed(object sender, RoutedEventArgs e)
+        {
+            this.expdrText.Content = "Press here to show more settings...";
+        }
+
+        private void expdr_Expanded(object sender, RoutedEventArgs e)
+        {
+            this.expdrText.Content = "Press here to switch back...";
+        }
     }
 
     public class DoorSimulatorParams
     {
         // Field
-        private string txMsg = "Door1:Closed;Door2:Closed\n";
-        private string rxMsg = "DoorState?\n";
+        private string txMsg = "Door1:<Open | Closed>;Door2:<Open | Closed>";
+        private string rxMsg = "DoorState?";
         private int cycle_ms = 500;
         private UInt16 portNum = 9001;               
 
