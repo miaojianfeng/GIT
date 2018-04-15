@@ -37,9 +37,8 @@ namespace DoorSimulator
 
             // Simulator Settings
             SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");            
-            RxMsg = SimParams.RxMsg;
-            TxMsg = SimParams.TxMsg;
-            Cycle_ms = SimParams.Cycle_ms;  
+            RxMsg = SimParams.RxMsg;            
+            Timeout_ms = SimParams.Timeout_ms;  
             
             // Door1 State
             if(this.radioBtnDoor1Open.IsChecked == true && this.radioBtnDoor1Closed.IsChecked == false)
@@ -72,8 +71,7 @@ namespace DoorSimulator
         public DoorSimulatorParams SimParams { get; private set; }
 
         private string RxMsg { set; get; }
-        private string TxMsg { set; get; }
-        private int Cycle_ms { set; get; }
+        private int Timeout_ms { set; get; }
 
         private bool IsDoor1Closed { set; get; }
         private bool IsDoor2Closed { set; get; }
@@ -104,7 +102,10 @@ namespace DoorSimulator
             RxMsg = RxMsg.TrimEnd();
             if(recString == RxMsg)
             {
-                return TxMsg;
+                string staDoor1 = IsDoor1Closed ? "Closed" : "Open";
+                string staDoor2 = IsDoor2Closed ? "Closed" : "Open";
+                string txMsg = string.Format("Door1:{0};Door2:{1}\n",staDoor1,staDoor2);
+                return txMsg;
             }
             else
             {
@@ -122,10 +123,7 @@ namespace DoorSimulator
             }
             else
             {
-                if (TxMsg != SimParams.TxMsg ||
-                    RxMsg != SimParams.RxMsg ||
-                    Cycle_ms != SimParams.Cycle_ms ||
-                    TcpSvr.ServerPort != SimParams.PortNum)
+                if (RxMsg != SimParams.RxMsg || Timeout_ms != SimParams.Timeout_ms || TcpSvr.ServerPort != SimParams.PortNum)
                 {
                     DirtyFlag = true;
                     e.CanExecute = true;
@@ -146,11 +144,10 @@ namespace DoorSimulator
                 TcpSvr.Stop();
             }
             
-            TxMsg = SimParams.TxMsg;
             RxMsg = SimParams.RxMsg;
-            Cycle_ms = SimParams.Cycle_ms;
+            Timeout_ms = SimParams.Timeout_ms;
             TcpSvr.ServerPort = SimParams.PortNum;
-            TcpSvr.QueryTimeout_ms = 200;
+            TcpSvr.QueryTimeout_ms = SimParams.Timeout_ms;
             this.expdr.IsExpanded = false;
             DirtyFlag = false;
 
@@ -208,9 +205,8 @@ namespace DoorSimulator
             this.expdrText.Content = "Press here to show more settings...";
             if (DirtyFlag)
             {
-                SimParams.TxMsg = TxMsg;
                 SimParams.RxMsg = RxMsg;
-                SimParams.Cycle_ms = Cycle_ms;
+                SimParams.Timeout_ms = Timeout_ms;
                 SimParams.PortNum = TcpSvr.ServerPort;
                 DirtyFlag = false;
             }

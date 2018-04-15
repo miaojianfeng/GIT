@@ -22,7 +22,7 @@ namespace DoorSimulator
         // Field
         private string txMsg = "Door1:<Open | Closed>;Door2:<Open | Closed>";
         private string rxMsg = "DoorState?";
-        private int cycle_ms = 500;
+        private int timeout_ms = 200;
         private UInt16 portNum = 9001;
 
         public DoorSimulatorParams()
@@ -57,16 +57,16 @@ namespace DoorSimulator
             }
         }
 
-        public int Cycle_ms
+        public int Timeout_ms
         {
             set
             {
-                this.cycle_ms = value;
-                NotifyPropertyChanged("Cycle_ms");
+                this.timeout_ms = value;
+                NotifyPropertyChanged("Timeout_ms");
             }
             get
             {
-                return this.cycle_ms;
+                return this.timeout_ms;
             }
         }
 

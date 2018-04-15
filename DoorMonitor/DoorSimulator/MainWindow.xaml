@@ -119,12 +119,12 @@
                              Text="{Binding Source={StaticResource simParams}, Path=RxMsg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Grid.Row="1" Grid.Column="0" Content="TX MSG" Style="{StaticResource SettingsLabel}" />
                     <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,3,5,3" 
-                             Style="{StaticResource SettingsTextBox}"
-                             Text="{Binding Source={StaticResource simParams}, Path=TxMsg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Label Grid.Row="2" Grid.Column="0" Content="Cycle (ms)" Style="{StaticResource SettingsLabel}" />
+                             Style="{StaticResource SettingsTextBox}" IsReadOnly="true"
+                             Text="{Binding Source={StaticResource simParams}, Path=TxMsg, Mode=OneWay}"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Timeout (ms)" Style="{StaticResource SettingsLabel}" />
                     <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3,5,3" 
                              Style="{StaticResource SettingsTextBox}" 
-                             Text="{Binding Source={StaticResource simParams}, Path=Cycle_ms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding Source={StaticResource simParams}, Path=Timeout_ms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Grid.Row="3" Grid.Column="0" Content="Port Number" Style="{StaticResource SettingsLabel}" />
                     <TextBox Grid.Row="3" Grid.Column="1" Margin="0,3,5,3" Style="{StaticResource SettingsTextBox}"
                              Text="{Binding Source={StaticResource simParams}, Path=PortNum,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -148,7 +148,7 @@
             <GroupBox Grid.Column="0" Header="Door 1" HorizontalAlignment="Stretch" VerticalAlignment="Center"
                       Margin="15,0,15,0">
                 <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
-                    <RadioButton Content="Open" Margin="0,2" Checked="RadioButtonDoor1_Checked" x:Name="radioBtnDoor1Open"/>
+                    <RadioButton Content="Open" Margin="0,2"  x:Name="radioBtnDoor1Open" Checked="RadioButtonDoor1_Checked"/>
                     <RadioButton Content="Close" x:Name="radioBtnDoor1Closed" IsChecked="True" Checked="RadioButtonDoor1_Checked"/>
                 </StackPanel>                    
             </GroupBox>
