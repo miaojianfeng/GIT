@@ -16,6 +16,94 @@ using ETSL.TcpSocket;
 
 namespace DoorSimulator
 {
+    public class DoorSimulatorParams: INotifyPropertyChanged
+    {
+
+        // Field
+        private string txMsg = "Door1:<Open | Closed>;Door2:<Open | Closed>";
+        private string rxMsg = "DoorState?";
+        private int cycle_ms = 500;
+        private UInt16 portNum = 9001;
+
+        public DoorSimulatorParams()
+        {
+
+        }
+
+        // Property   
+        public string RxMsg
+        {
+            set
+            {
+                this.rxMsg = value;
+                NotifyPropertyChanged("RxMsg");
+            }
+            get
+            {
+                return this.rxMsg;
+            }
+        }
+
+        public string TxMsg
+        {
+            set
+            {
+                this.txMsg = value;
+                NotifyPropertyChanged("TxMsg");
+            }
+            get
+            {
+                return this.txMsg;
+            }
+        }
+
+        public int Cycle_ms
+        {
+            set
+            {
+                this.cycle_ms = value;
+                NotifyPropertyChanged("Cycle_ms");
+            }
+            get
+            {
+                return this.cycle_ms;
+            }
+        }
+
+        public UInt16 PortNum
+        {
+            set
+            {
+                this.portNum = value;
+                NotifyPropertyChanged("PortNum");
+            }
+            get
+            {
+                return this.portNum;
+            }
+        }
+
+        // ---------- Event ----------
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // ---------- Method ----------
+        #region Method
+        /// <summary>
+        /// This method is called by the Set accessor of each property. 
+        /// The CallerMemberName attribute that is applied to the optional propertyName 
+        /// parameter causes the property name of the caller to be substituted as an argument.
+        /// </summary>
+        /// <param name="propertyName"></param>
+        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
+    }
+
     public class SvrStateToRunSvrEnableConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -213,5 +301,4 @@ namespace DoorSimulator
             throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
         }
     }
-
 }
