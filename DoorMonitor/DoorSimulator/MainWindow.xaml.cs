@@ -24,7 +24,8 @@ namespace DoorSimulator
     public partial class MainWindow : Window
     {
         // Field
-        
+        private TraceWindow traceWnd;
+        private bool isTraceWndOpened = false;
 
         // Constructor
         public MainWindow()
@@ -33,15 +34,15 @@ namespace DoorSimulator
 
             // TcpSocketServer
             TcpSvr = (TcpSocketServer)this.FindResource("tcpSvr");
-            TcpSvr.ServerPort = 9001;
+            TcpSvr.ServerPort = 9001;            
 
             // Simulator Settings
             SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");            
             RxMsg = SimParams.RxMsg;            
-            Timeout_ms = SimParams.Timeout_ms;  
-            
+            Timeout_ms = SimParams.Timeout_ms;            
+
             // Door1 State
-            if(this.radioBtnDoor1Open.IsChecked == true && this.radioBtnDoor1Closed.IsChecked == false)
+            if (this.radioBtnDoor1Open.IsChecked == true && this.radioBtnDoor1Closed.IsChecked == false)
             {
                 IsDoor1Closed = false;
             }
@@ -64,6 +65,11 @@ namespace DoorSimulator
 
             // DirtyFlag
             DirtyFlag = false;
+
+            // Instance Trace Window 
+            this.traceWnd = new TraceWindow();
+            this.traceWnd.CloseTraceWnd = CloseTraceWindow;
+            HideTraceWnd();
         }
 
         // Property
@@ -76,7 +82,19 @@ namespace DoorSimulator
         private bool IsDoor1Closed { set; get; }
         private bool IsDoor2Closed { set; get; }
         private bool DirtyFlag { set; get; }
-        
+
+        private bool IsTraceWndOpened
+        {
+            set
+            {
+                this.isTraceWndOpened = value;
+                NotifyPropertyChanged("IsTraceWndOpened");
+            }
+            get
+            {
+                return this.isTraceWndOpened;
+            }
+        }
         
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
@@ -110,6 +128,26 @@ namespace DoorSimulator
             else
             {
                 return string.Empty;
+            }
+        }
+
+        public void ShowTraceWnd()
+        {
+            this.traceWnd.Show();
+            IsTraceWndOpened = true;
+        }
+
+        public void HideTraceWnd()
+        {
+            this.traceWnd.Hide();
+            IsTraceWndOpened = false;
+        }
+
+        private void CloseTraceWindow()
+        {
+            if (IsTraceWndOpened)
+            {
+                HideTraceWnd();
             }
         }
         #endregion 
@@ -184,6 +222,8 @@ namespace DoorSimulator
         private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
             TcpSvr.ProcessMessage = ProcessReceivingMessage;
+            TcpSvr.EnableTrace = true;
+            TcpSvr.UpdateTrace = this.traceWnd.UpdateTrace; // Update Trace
             await TcpSvr.Start();
         }
 
@@ -194,10 +234,13 @@ namespace DoorSimulator
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if(TcpSvr.ServerState!=EnumServerState.ServerStopped)
+            this.traceWnd.DestroyWndFlag = true;
+            this.traceWnd.Close();
+
+            if (TcpSvr.ServerState!=EnumServerState.ServerStopped)
             {
-                TcpSvr.Stop();
-            }
+                TcpSvr.Stop();                
+            }                     
         }
 
         private void expdr_Collapsed(object sender, RoutedEventArgs e)
@@ -215,6 +258,11 @@ namespace DoorSimulator
         private void expdr_Expanded(object sender, RoutedEventArgs e)
         {
             this.expdrText.Content = "Press here to switch back...";            
+        }
+
+        private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {            
+            ShowTraceWnd();
         }
     }
 }

@@ -182,7 +182,7 @@
                 <Label Content="Server" VerticalContentAlignment="Center" FontSize="11"/>
                 <Ellipse Width="12" Height="12" Margin="25,0,0,0" 
                          Fill="{Binding Source={StaticResource tcpSvr}, Path=MsgTransState, Converter={StaticResource msgTransStaToFillColor}, Mode=OneWay}"/>
-                <Label Content="Message" VerticalContentAlignment="Center" FontSize="11"/>
+                <Label Content="Message" VerticalContentAlignment="Center" FontSize="11" MouseDoubleClick="Label_MouseDoubleClick"/>
             </StackPanel>
         </Grid>             
         <!--</Border>-->
