@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DoorMonitor"       
         mc:Ignorable="d"        
-        Title="Door Monitor" Height="200" Width="400" 
+        Title="TILE! Door Monitor" Height="200" Width="400" 
         WindowStartupLocation="Manual"        
         ShowInTaskbar="False"        
         Closing="Window_Closing" 

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DoorSimulator"
         xmlns:socket="clr-namespace:ETSL.TcpSocket"
         mc:Ignorable="d"
-        Title="Door Simulator" Height="175" Width="380" 
+        Title="TILE! Door Simulator" Height="175" Width="380" 
         Background="LightBlue"
         WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Icon="Resources/TrafficLight.ico" Closing="Window_Closing" Topmost="True">
     <Window.Resources>
