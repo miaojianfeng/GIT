@@ -59,8 +59,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Auxiliaries.cs" />
+    <Compile Include="ModbusTcpSocketServer\ZL6042Protocol.cs" />
     <Compile Include="SimulatorCommands.cs" />
-    <Compile Include="TcpSocketServer\TcpSocketServer.cs" />
+    <Compile Include="ModbusTcpSocketServer\ModbusTcpSocketServer.cs" />
     <Compile Include="TraceWindow.xaml.cs">
       <DependentUpon>TraceWindow.xaml</DependentUpon>
     </Compile>

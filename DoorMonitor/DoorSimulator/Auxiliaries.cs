@@ -19,42 +19,13 @@ namespace DoorSimulator
     public class DoorSimulatorParams: INotifyPropertyChanged
     {
 
-        // Field
-        private string txMsg = "Door1:<Open | Closed>;Door2:<Open | Closed>";
-        private string rxMsg = "DoorState?";
+        // Field        
         private int timeout_ms = 200;
         private UInt16 portNum = 9001;
 
         public DoorSimulatorParams()
         {
 
-        }
-
-        // Property   
-        public string RxMsg
-        {
-            set
-            {
-                this.rxMsg = value;
-                NotifyPropertyChanged("RxMsg");
-            }
-            get
-            {
-                return this.rxMsg;
-            }
-        }
-
-        public string TxMsg
-        {
-            set
-            {
-                this.txMsg = value;
-                NotifyPropertyChanged("TxMsg");
-            }
-            get
-            {
-                return this.txMsg;
-            }
         }
 
         public int Timeout_ms

@@ -35,7 +35,7 @@ namespace ETSL.TcpSocket
         Message = 3
     }
 
-    public class TcpSocketServer: INotifyPropertyChanged
+    public class ModbusTcpSocketServer: INotifyPropertyChanged
     {
         // ---------- Type Definition ----------
         // ---------- Field ----------       
@@ -54,23 +54,23 @@ namespace ETSL.TcpSocket
         static private object locker = new object();
 
         // ---------- Constructor ---------- 
-        public TcpSocketServer()
+        public ModbusTcpSocketServer()
         {  
             
         }
 
-        public TcpSocketServer(UInt16 svrPort)
+        public ModbusTcpSocketServer(UInt16 svrPort)
         {
             ServerPort = svrPort;
         }
 
-        public TcpSocketServer(string svrName, UInt16 svrPort)
+        public ModbusTcpSocketServer(string svrName, UInt16 svrPort)
         {
             ServerName = svrName;
             ServerPort = svrPort;            
         }
 
-        public TcpSocketServer(string svrName, UInt16 svrPort, Action<string> svrTraceHandler = null, Func<string, string> svrMsgHandler = null)            
+        public ModbusTcpSocketServer(string svrName, UInt16 svrPort, Action<string> svrTraceHandler = null, Func<string, string> svrMsgHandler = null)            
         {
             ServerName = svrName;
             ServerPort = svrPort;

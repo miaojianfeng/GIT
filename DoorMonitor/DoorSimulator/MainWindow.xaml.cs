@@ -32,13 +32,12 @@ namespace DoorSimulator
         {
             InitializeComponent();
 
-            // TcpSocketServer
-            TcpSvr = (TcpSocketServer)this.FindResource("tcpSvr");
+            // ModbusTcpSocketServer
+            TcpSvr = (ModbusTcpSocketServer)this.FindResource("tcpSvr");
             TcpSvr.ServerPort = 9001;            
 
             // Simulator Settings
-            SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");            
-            RxMsg = SimParams.RxMsg;            
+            SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");        
             Timeout_ms = SimParams.Timeout_ms;            
 
             // Door1 State
@@ -73,10 +72,9 @@ namespace DoorSimulator
         }
 
         // Property
-        public TcpSocketServer TcpSvr { get; private set; }
+        public ModbusTcpSocketServer TcpSvr { get; private set; }
         public DoorSimulatorParams SimParams { get; private set; }
-
-        private string RxMsg { set; get; }
+        
         private int Timeout_ms { set; get; }
 
         private bool IsDoor1Closed { set; get; }
@@ -115,21 +113,10 @@ namespace DoorSimulator
             }
         }
 
-        public string ProcessReceivingMessage(string recString)
-        {
-            RxMsg = RxMsg.TrimEnd();
-            if(recString == RxMsg)
-            {
-                string staDoor1 = IsDoor1Closed ? "Closed" : "Open";
-                string staDoor2 = IsDoor2Closed ? "Closed" : "Open";
-                string txMsg = string.Format("Door1:{0};Door2:{1}\n",staDoor1,staDoor2);
-                return txMsg;
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
+        //public string ProcessReceivingMessage(string recString)
+        //{
+            
+        //}
 
         public void ShowTraceWnd()
         {
@@ -161,7 +148,7 @@ namespace DoorSimulator
             }
             else
             {
-                if (RxMsg != SimParams.RxMsg || Timeout_ms != SimParams.Timeout_ms || TcpSvr.ServerPort != SimParams.PortNum)
+                if (Timeout_ms != SimParams.Timeout_ms || TcpSvr.ServerPort != SimParams.PortNum)
                 {
                     DirtyFlag = true;
                     e.CanExecute = true;
@@ -182,7 +169,6 @@ namespace DoorSimulator
                 TcpSvr.Stop();
             }
             
-            RxMsg = SimParams.RxMsg;
             Timeout_ms = SimParams.Timeout_ms;
             TcpSvr.ServerPort = SimParams.PortNum;
             TcpSvr.QueryTimeout_ms = SimParams.Timeout_ms;
@@ -221,7 +207,7 @@ namespace DoorSimulator
 
         private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
-            TcpSvr.ProcessMessage = ProcessReceivingMessage;
+            //TcpSvr.ProcessMessage = ProcessReceivingMessage;
             TcpSvr.EnableTrace = true;
             TcpSvr.UpdateTrace = this.traceWnd.UpdateTrace; // Update Trace
             await TcpSvr.Start();
@@ -247,8 +233,7 @@ namespace DoorSimulator
         {
             this.expdrText.Content = "Press here to show more settings...";
             if (DirtyFlag)
-            {
-                SimParams.RxMsg = RxMsg;
+            {               
                 SimParams.Timeout_ms = Timeout_ms;
                 SimParams.PortNum = TcpSvr.ServerPort;
                 DirtyFlag = false;
