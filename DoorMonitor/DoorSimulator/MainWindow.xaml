@@ -12,7 +12,8 @@
     <Window.Resources>
         <!--Object Definition-->
         <socket:ModbusTcpSocketServer x:Key="tcpSvr"/>
-        <local:DoorSimulatorParams x:Key="simParams"/>
+        <socket:ZL6042DISimulator x:Key="zl6042Sim"/>
+        <local:DoorSimulatorParams x:Key="simParams"/>        
         <!--Converter-->
         <local:SvrStateToRunSvrEnableConverter x:Key="svrStaToRunSvrEnable"/>
         <local:SvrStateToStopSvrEnableConverter x:Key="svrStaToStopSvrEnable"/>

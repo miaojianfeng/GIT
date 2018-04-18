@@ -25,7 +25,7 @@ namespace DoorSimulator
     {
         // Field
         private TraceWindow traceWnd;
-        private bool isTraceWndOpened = false;
+        private bool isTraceWndOpened = false;        
 
         // Constructor
         public MainWindow()
@@ -34,7 +34,10 @@ namespace DoorSimulator
 
             // ModbusTcpSocketServer
             TcpSvr = (ModbusTcpSocketServer)this.FindResource("tcpSvr");
-            TcpSvr.ServerPort = 9001;            
+            TcpSvr.ServerPort = 9001;
+
+            // ZL6042Simulator
+            ZL6042Sim = (ZL6042DISimulator)this.FindResource("zl6042Sim");
 
             // Simulator Settings
             SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");        
@@ -73,6 +76,7 @@ namespace DoorSimulator
 
         // Property
         public ModbusTcpSocketServer TcpSvr { get; private set; }
+        public ZL6042DISimulator ZL6042Sim { get; private set; }
         public DoorSimulatorParams SimParams { get; private set; }
         
         private int Timeout_ms { set; get; }
@@ -183,11 +187,13 @@ namespace DoorSimulator
         {
             if(radioBtnDoor1Open.IsChecked==true)
             {
+                if(ZL6042Sim!=null) ZL6042Sim.DIStateCh1 = EnumDIState.LowLevel;
                 IsDoor1Closed = false;
             } 
 
             if(radioBtnDoor1Closed.IsChecked==true)
             {
+                if (ZL6042Sim != null) ZL6042Sim.DIStateCh1 = EnumDIState.HighLevel;
                 IsDoor1Closed = true;
             }
         }
@@ -196,20 +202,23 @@ namespace DoorSimulator
         {
             if (radioBtnDoor2Open.IsChecked == true)
             {
+                if (ZL6042Sim != null) ZL6042Sim.DIStateCh2 = EnumDIState.LowLevel;
                 IsDoor2Closed = false;
             }
 
             if (radioBtnDoor2Closed.IsChecked == true)
             {
+                if (ZL6042Sim != null) ZL6042Sim.DIStateCh2 = EnumDIState.HighLevel;
                 IsDoor2Closed = true;
             }
         }
 
         private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
-            //TcpSvr.ProcessMessage = ProcessReceivingMessage;
+            TcpSvr.ProcessMessage = ZL6042Sim.ProcessDIStateQueryMessage;
             TcpSvr.EnableTrace = true;
             TcpSvr.UpdateTrace = this.traceWnd.UpdateTrace; // Update Trace
+            
             await TcpSvr.Start();
         }
 

@@ -55,6 +55,23 @@ namespace ETSL.Utilities
             return folderName.ToString();
         }
 
+        /// <summary>
+        /// 十六进制字符串转十六进制字节数组
+        /// </summary>
+        /// <param name="hexString">十六进制字符串</param>
+        /// <returns></returns>
+        static public byte[] strToToHexByte(string hexString)
+        {
+            hexString = hexString.Replace(" ", "");
+            if ((hexString.Length % 2) != 0)
+                hexString += " ";
+            byte[] returnBytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2).Trim(), 16);
+            return returnBytes;
+        }
+
+
         public static void LaunchProgram(string exeName, string processName, string folder)
         {
             bool simRunning = false;

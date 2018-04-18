@@ -29,7 +29,10 @@ namespace ETSL.TcpSocket
         // Constructor
         public ZL6042DISimulator()
         {
-
+            DIStateCh1 = EnumDIState.HighLevel;
+            DIStateCh2 = EnumDIState.HighLevel;
+            DIStateCh3 = EnumDIState.HighLevel;
+            DIStateCh4 = EnumDIState.HighLevel;
         }
 
         // Field

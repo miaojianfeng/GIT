@@ -55,19 +55,21 @@ namespace ETSL.TcpSocket
 
         // ---------- Constructor ---------- 
         public ModbusTcpSocketServer()
-        {  
-            
+        {
+            IsAutoNotifyMode = false;
         }
 
         public ModbusTcpSocketServer(UInt16 svrPort)
         {
             ServerPort = svrPort;
+            IsAutoNotifyMode = false;
         }
 
         public ModbusTcpSocketServer(string svrName, UInt16 svrPort)
         {
             ServerName = svrName;
-            ServerPort = svrPort;            
+            ServerPort = svrPort;
+            IsAutoNotifyMode = false;
         }
 
         public ModbusTcpSocketServer(string svrName, UInt16 svrPort, Action<string> svrTraceHandler = null, Func<string, string> svrMsgHandler = null)            
@@ -75,7 +77,8 @@ namespace ETSL.TcpSocket
             ServerName = svrName;
             ServerPort = svrPort;
             UpdateTrace = svrTraceHandler;
-            ProcessMessage = svrMsgHandler;            
+            ProcessMessage = svrMsgHandler;
+            IsAutoNotifyMode = false;
         }
 
         // ---------- Property ----------
@@ -164,6 +167,8 @@ namespace ETSL.TcpSocket
             }
         }
 
+        public bool IsAutoNotifyMode { set; get; }
+        
         public Action<string> UpdateTrace { get; set; }
 
         public Func<string, string> ProcessMessage { get; set; }
@@ -296,7 +301,8 @@ namespace ETSL.TcpSocket
             NetworkStream nwkStream = client.GetStream();
             byte[] bytesReceived = new byte[1024];
             int i;
-            StringBuilder traceTextLine = new StringBuilder();
+            StringBuilder recMsg = new StringBuilder();
+            StringBuilder sendMsg     = new StringBuilder();
 
             // Tricky skill here: 
             // BinaryReader is used for the purpose of detecting whether client has disconnected.           
@@ -314,68 +320,25 @@ namespace ETSL.TcpSocket
                     {
                         MsgTransState = EnumMsgTransState.Working;
 
-                        string cmdReceived = System.Text.Encoding.ASCII.GetString(bytesReceived, 0, i);
-                        traceTextLine.Clear();
-                        if (cmdReceived.EndsWith("\n"))
+                        recMsg.Clear();
+                        for(int j=0;j<i;j++)
                         {
-                            traceTextLine.Append(cmdReceived);
-                        }
-                        else
-                        {
-                            traceTextLine.Append(cmdReceived + "\n");
-                        }
-                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1} :  {2}", num, ServerName, traceTextLine.ToString()));
+                            recMsg.Append(bytesReceived[j].ToString("X2"));
 
-                        // Process the received message
-                        // Remove the \r\n, as well as the ";"   
-                        string temp1 = cmdReceived.TrimEnd();
-                        string temp2 = string.Empty;
-                        if (temp1.EndsWith(";"))
-                        {
-                            temp2 = temp1.Remove(cmdReceived.LastIndexOf(";"), 1);
-                        }
-                        else
-                        {
-                            temp2 = temp1;
-                        }
+                            if (j!=i-1) recMsg.Append(" ");
+                        }     
+                                           
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1} :  {2}", num, ServerName, recMsg.ToString()));
 
-                        string[] commands = temp2.Split(new string[] { ";" }, StringSplitOptions.None);
-                        int count = 0;
-                        StringBuilder responseArray = new StringBuilder();
-                        foreach (string command in commands)
-                        {
-                            count += 1;
-                            // Process the data sent by the client.
-                            string temp3 = command.TrimEnd();
-                            string response = ProcessRecMessage(temp3);
-
-                            if (count == commands.Length)
-                            {
-                                responseArray.Append(response);
-                            }
-                            else
-                            {
-                                responseArray.Append(response + ";");
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(responseArray.ToString()))
-                        {
-                            if (!responseArray.ToString().EndsWith("\n"))
-                            {
-                                responseArray.Append("\n");
-                            }
-                        }
-
+                        // Process received message
+                        sendMsg.Clear();
+                        sendMsg.Append(ProcessRecMessage(recMsg.ToString()));
+                          
                         Thread.Sleep(QueryTimeout_ms);
 
-                        // Send back a response.
-                        if (responseArray.ToString().ToUpper() != string.Empty)
-                        {
-                            byte[] bytesSend = System.Text.Encoding.ASCII.GetBytes(responseArray.ToString());
-                            nwkStream.Write(bytesSend, 0, bytesSend.Length);
-                            AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, responseArray.ToString()));
-                        }
+                        byte[] bytesSend = Utilities.Auxiliaries.strToToHexByte(sendMsg.ToString());
+                        nwkStream.Write(bytesSend, 0, bytesSend.Length);
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, sendMsg.ToString()));
 
                         MsgTransState = EnumMsgTransState.Silence;
                     }                    
