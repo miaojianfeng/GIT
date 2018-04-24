@@ -159,7 +159,7 @@ namespace DoorSimulator
             TcpSvr.ServerPort = SimParams.PortNum;
             TcpSvr.QueryTimeout_ms = SimParams.Timeout_ms;
             this.expdr.IsExpanded = false;
-            DirtyFlag = false;
+            DirtyFlag = false;            
 
             e.Handled = true;
         }

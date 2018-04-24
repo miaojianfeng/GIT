@@ -269,8 +269,16 @@ namespace ETSL.TcpSocket
                         TcpClient newClient = await tcpListener.AcceptTcpClientAsync();                        
                         AppendTrace(EnumTraceType.Information, String.Format("Client{0} has conected...\n", clientNum));
 
-                        ServerState = EnumServerState.ClientConnected;                        
-                        ReceiveFromClientTask(newClient, clientNum);                        
+                        ServerState = EnumServerState.ClientConnected; 
+                        
+                        if(IsAutoNotifyMode)
+                        {
+
+                        }   
+                        else
+                        {
+                            ReceiveFromClientTask(newClient, clientNum);
+                        }                      
                     }
                     catch
                     {
@@ -316,7 +324,7 @@ namespace ETSL.TcpSocket
                     #region NetworkStream Read/Write   
                     MsgTransState = EnumMsgTransState.Silence; 
                                   
-                    while ((i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length)) != 0 && IsAutoNotifyMode==false)
+                    while ((i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length)) != 0)
                     {
                         MsgTransState = EnumMsgTransState.Working;
 
