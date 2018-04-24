@@ -205,6 +205,7 @@ namespace DoorSimulator
 
         private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
+            TcpSvr.IsAutoNotifyMode = IsAutoNotifyMode;
             TcpSvr.ProcessMessage = ZL6042Sim.ProcessDIStateQueryMessage;
             TcpSvr.EnableTrace = true;
             TcpSvr.UpdateTrace = this.traceWnd.UpdateTrace; // Update Trace

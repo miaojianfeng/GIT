@@ -302,7 +302,7 @@ namespace ETSL.TcpSocket
             byte[] bytesReceived = new byte[1024];
             int i;
             StringBuilder recMsg = new StringBuilder();
-            StringBuilder sendMsg     = new StringBuilder();
+            StringBuilder sendMsg = new StringBuilder();
 
             // Tricky skill here: 
             // BinaryReader is used for the purpose of detecting whether client has disconnected.           
@@ -316,7 +316,7 @@ namespace ETSL.TcpSocket
                     #region NetworkStream Read/Write   
                     MsgTransState = EnumMsgTransState.Silence; 
                                   
-                    while ((i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length)) != 0)
+                    while ((i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length)) != 0 && IsAutoNotifyMode==false)
                     {
                         MsgTransState = EnumMsgTransState.Working;
 
