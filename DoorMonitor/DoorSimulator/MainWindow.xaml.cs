@@ -41,29 +41,10 @@ namespace DoorSimulator
 
             // Simulator Settings
             SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");        
-            Timeout_ms = SimParams.Timeout_ms;            
-
-            // Door1 State
-            if (this.radioBtnDoor1Open.IsChecked == true && this.radioBtnDoor1Closed.IsChecked == false)
-            {
-                IsDoor1Closed = false;
-            }
-            else if(this.radioBtnDoor1Open.IsChecked==false && this.radioBtnDoor1Closed.IsChecked == true)
-            {
-                IsDoor1Closed = true;
-            }
-            else { IsDoor1Closed = false; }
-
-            // Door2 State
-            if (this.radioBtnDoor2Open.IsChecked == true && this.radioBtnDoor2Closed.IsChecked == false)
-            {
-                IsDoor2Closed = false;
-            }
-            else if (this.radioBtnDoor2Open.IsChecked == false && this.radioBtnDoor2Closed.IsChecked == true)
-            {
-                IsDoor2Closed = true;
-            }
-            else { IsDoor2Closed = false; }
+            Timeout_ms = SimParams.Timeout_ms;
+            IsAutoNotifyMode = SimParams.IsAutoNotifyMode;
+            IsDoor1Closed = SimParams.IsDoor1Closed;
+            IsDoor2Closed = SimParams.IsDoor2Closed;
 
             // DirtyFlag
             DirtyFlag = false;
@@ -79,10 +60,10 @@ namespace DoorSimulator
         public ZL6042DISimulator ZL6042Sim { get; private set; }
         public DoorSimulatorParams SimParams { get; private set; }
         
-        private int Timeout_ms { set; get; }
-
+        private bool IsAutoNotifyMode { set; get; }
         private bool IsDoor1Closed { set; get; }
         private bool IsDoor2Closed { set; get; }
+        private int Timeout_ms { set; get; }        
         private bool DirtyFlag { set; get; }
 
         private bool IsTraceWndOpened
@@ -152,7 +133,7 @@ namespace DoorSimulator
             }
             else
             {
-                if (Timeout_ms != SimParams.Timeout_ms || TcpSvr.ServerPort != SimParams.PortNum)
+                if (Timeout_ms != SimParams.Timeout_ms || TcpSvr.ServerPort != SimParams.PortNum || IsAutoNotifyMode!= SimParams.IsAutoNotifyMode)
                 {
                     DirtyFlag = true;
                     e.CanExecute = true;
@@ -172,7 +153,8 @@ namespace DoorSimulator
             {
                 TcpSvr.Stop();
             }
-            
+
+            IsAutoNotifyMode = SimParams.IsAutoNotifyMode;
             Timeout_ms = SimParams.Timeout_ms;
             TcpSvr.ServerPort = SimParams.PortNum;
             TcpSvr.QueryTimeout_ms = SimParams.Timeout_ms;
@@ -183,33 +165,41 @@ namespace DoorSimulator
         }
 
         // EventHandler
-        private void RadioButtonDoor1_Checked(object sender, RoutedEventArgs e)
+        private void RadioBtnDoor1State_Changed(object sender, RoutedEventArgs e)
         {
-            if(radioBtnDoor1Open.IsChecked==true)
+            if(SimParams!=null)
             {
-                if(ZL6042Sim!=null) ZL6042Sim.DIStateCh1 = EnumDIState.LowLevel;
-                IsDoor1Closed = false;
-            } 
-
-            if(radioBtnDoor1Closed.IsChecked==true)
-            {
-                if (ZL6042Sim != null) ZL6042Sim.DIStateCh1 = EnumDIState.HighLevel;
-                IsDoor1Closed = true;
+                if (IsDoor1Closed != SimParams.IsDoor1Closed)
+                {
+                    IsDoor1Closed = SimParams.IsDoor1Closed;
+                    if (IsDoor1Closed)
+                    {
+                        ZL6042Sim.DIStateCh1 = EnumDIState.HighLevel;
+                    }
+                    else
+                    {
+                        ZL6042Sim.DIStateCh1 = EnumDIState.LowLevel;
+                    }
+                }
             }
         }
 
-        private void RadioButtonDoor2_Checked(object sender, RoutedEventArgs e)
+        private void RadioBtnDoor2State_Changed(object sender, RoutedEventArgs e)
         {
-            if (radioBtnDoor2Open.IsChecked == true)
+            if (SimParams != null)
             {
-                if (ZL6042Sim != null) ZL6042Sim.DIStateCh2 = EnumDIState.LowLevel;
-                IsDoor2Closed = false;
-            }
-
-            if (radioBtnDoor2Closed.IsChecked == true)
-            {
-                if (ZL6042Sim != null) ZL6042Sim.DIStateCh2 = EnumDIState.HighLevel;
-                IsDoor2Closed = true;
+                if (IsDoor2Closed != SimParams.IsDoor2Closed)
+                {
+                    IsDoor2Closed = SimParams.IsDoor2Closed;
+                    if (IsDoor2Closed)
+                    {
+                        ZL6042Sim.DIStateCh2 = EnumDIState.HighLevel;
+                    }
+                    else
+                    {
+                        ZL6042Sim.DIStateCh2 = EnumDIState.LowLevel;
+                    }
+                }
             }
         }
 

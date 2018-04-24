@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:DoorSimulator"
         xmlns:socket="clr-namespace:ETSL.TcpSocket"
         mc:Ignorable="d"
-        Title="TILE! Door Simulator (ZL6042)" Height="175" Width="380" 
+        Title="TILE! Door Simulator (ZL6042)" Height="180" Width="380" 
         Background="LightBlue"
-        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Icon="Resources/TrafficLight.ico" Closing="Window_Closing" Topmost="True">
+        ResizeMode="CanMinimize" Icon="Resources/TrafficLight.ico" Closing="Window_Closing" Topmost="True">
     <Window.Resources>
         <!--Object Definition-->
         <socket:ModbusTcpSocketServer x:Key="tcpSvr"/>
@@ -20,6 +20,8 @@
         <local:SvrStateToFillColorConverter x:Key="svrStaToFillColor"/>
         <local:MsgTransStateToFillColorConverter x:Key="msgTransStaToFillColor"/>
         <local:ExpdrStateToExpdrTextConverter x:Key="expdrStaToExpdrText"/>
+        <local:ContraAutoNotifyStaConverter x:Key="contraAutoNotifySta"/>
+        <local:ContraDoorClosedStaConverter x:Key="contraDoorClosedSta"/>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
@@ -117,8 +119,10 @@
                               Header="ZL6042 DI Report Mode">
                         <StackPanel Orientation="Horizontal" Margin="5" 
                                     HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <RadioButton Content="Polling/Response" Margin="20,2"/>
-                            <RadioButton Content="Automatic Notification" Margin="20,2"/>
+                            <RadioButton Content="Polling/Response" Margin="20,2"
+                                         IsChecked="{Binding Source={StaticResource simParams}, Path=IsAutoNotifyMode, Mode=TwoWay, Converter={StaticResource contraAutoNotifySta}}" />
+                            <RadioButton Content="Automatic Notification" Margin="20,2" 
+                                         IsChecked="{Binding Source={StaticResource simParams}, Path=IsAutoNotifyMode, Mode=TwoWay}"/>
                         </StackPanel>
                     </GroupBox>
                     <Label Grid.Row="1" Grid.Column="0" Content="Timeout (ms)" Style="{StaticResource SettingsLabel}" />
@@ -148,15 +152,23 @@
             <GroupBox Grid.Column="0" Header="Door 1" HorizontalAlignment="Stretch" VerticalAlignment="Center"
                       Margin="15,0,15,0">
                 <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
-                    <RadioButton Content="Open" Margin="0,2"  x:Name="radioBtnDoor1Open" Checked="RadioButtonDoor1_Checked"/>
-                    <RadioButton Content="Close" x:Name="radioBtnDoor1Closed" IsChecked="True" Checked="RadioButtonDoor1_Checked"/>
+                    <RadioButton Content="Open" Margin="0,2" 
+                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor1Closed, Mode=TwoWay, Converter={StaticResource contraDoorClosedSta}}"
+                                 Checked="RadioBtnDoor1State_Changed"/>
+                    <RadioButton Content="Close" 
+                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor1Closed, Mode=TwoWay}"
+                                 Checked="RadioBtnDoor1State_Changed"/>
                 </StackPanel>                    
             </GroupBox>
             <GroupBox Grid.Column="1" Header="Door 2" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
                         Margin="15,0,15,0">
                 <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
-                    <RadioButton Content="Open" Margin="0,2" x:Name="radioBtnDoor2Open" Checked="RadioButtonDoor2_Checked"/>
-                    <RadioButton Content="Close" x:Name="radioBtnDoor2Closed" IsChecked="True" Checked="RadioButtonDoor2_Checked"/>
+                    <RadioButton Content="Open" Margin="0,2" 
+                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor2Closed, Mode=TwoWay, Converter={StaticResource contraDoorClosedSta}}"
+                                 Checked="RadioBtnDoor2State_Changed"/>
+                    <RadioButton Content="Close" 
+                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor2Closed, Mode=TwoWay}"
+                                 Checked="RadioBtnDoor2State_Changed"/>
                 </StackPanel>
             </GroupBox>
             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">                

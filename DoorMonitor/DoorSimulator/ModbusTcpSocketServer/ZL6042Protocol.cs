@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ETSL.TcpSocket
 {
-    public enum EnumDIReportMode
-    {
-        Polling = 0,
-        AutoNotify = 1
-    }
+    //public enum EnumDIReportMode
+    //{
+    //    Polling = 0,
+    //    AutoNotify = 1
+    //}
 
     public enum EnumDIState
     {
@@ -38,7 +38,7 @@ namespace ETSL.TcpSocket
         // Field
 
         // Property
-        public EnumDIReportMode DIReportMode { set; get; }
+        //public EnumDIReportMode DIReportMode { set; get; }
 
         public EnumDIState DIStateCh1 { private get; set; }
         public EnumDIState DIStateCh2 { private get; set; }

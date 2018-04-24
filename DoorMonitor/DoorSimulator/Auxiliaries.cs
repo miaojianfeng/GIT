@@ -22,6 +22,9 @@ namespace DoorSimulator
         // Field        
         private int timeout_ms = 200;
         private UInt16 portNum = 9001;
+        private bool isAutoNotify = true;
+        private bool isDoor1Closed = true;
+        private bool isDoor2Closed = true;
 
         public DoorSimulatorParams()
         {
@@ -54,6 +57,45 @@ namespace DoorSimulator
             }
         }
 
+        public bool IsAutoNotifyMode
+        {
+            set
+            {
+                this.isAutoNotify = value;
+                NotifyPropertyChanged("IsAutoNotifyMode");
+            }
+            get
+            {
+                return this.isAutoNotify;
+            }
+        }
+
+        public bool IsDoor1Closed
+        {
+            set
+            {
+                this.isDoor1Closed = value;
+                NotifyPropertyChanged("IsDoor1Closed");
+            }
+            get
+            {
+                return this.isDoor1Closed;
+            }
+        }
+
+        public bool IsDoor2Closed
+        {
+            set
+            {
+                this.isDoor2Closed = value;
+                NotifyPropertyChanged("IsDoor2Closed");
+            }
+            get
+            {
+                return this.isDoor2Closed;
+            }
+        }
+
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -73,6 +115,36 @@ namespace DoorSimulator
             }
         }
         #endregion
+    }
+
+    public class ContraAutoNotifyStaConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool state = (bool)value;
+            return !state;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool state = (bool)value;
+            return !state;
+        }
+    }
+
+    public class ContraDoorClosedStaConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool state = (bool)value;
+            return !state;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool state = (bool)value;
+            return !state;
+        }
     }
 
     public class SvrStateToRunSvrEnableConverter : IValueConverter
