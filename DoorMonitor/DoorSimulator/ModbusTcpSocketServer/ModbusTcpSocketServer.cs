@@ -369,11 +369,11 @@ namespace ETSL.TcpSocket
                             if (j!=i-1) recMsg.Append(" ");
                         }     
                                            
-                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1} :  {2}", num, ServerName, recMsg.ToString()));
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1} :  {2}", num, ServerName, recMsg.ToString().ToUpper()));
 
                         // Process received message
                         sendMsg.Clear();
-                        sendMsg.Append(ProcessRecMessage(recMsg.ToString()));
+                        sendMsg.Append(ProcessRecMessage(recMsg.ToString().ToUpper()));
                           
                         Thread.Sleep(QueryTimeout_ms);
 
@@ -428,7 +428,7 @@ namespace ETSL.TcpSocket
                         // Invoke DIChangedEvent here
                         if (DIChangedEvent != null) DIChangedEvent(this, new EventArgs());
 
-                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, sendMsg.ToString()));
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, sendMsg.ToString().ToUpper()));
                         MsgTransState = EnumMsgTransState.Working;
                         isDIChanged = false;
                     }                                

@@ -159,10 +159,10 @@ namespace DoorSimulator
                 TcpSvr.Stop();
             }
 
-            IsAutoNotifyMode = SimParams.IsAutoNotifyMode;
-            Timeout_ms = SimParams.Timeout_ms;
+            TcpSvr.QueryTimeout_ms = Timeout_ms = SimParams.Timeout_ms;
             TcpSvr.ServerPort = SimParams.PortNum;
-            TcpSvr.QueryTimeout_ms = SimParams.Timeout_ms;
+            TcpSvr.IsAutoNotifyMode = IsAutoNotifyMode = SimParams.IsAutoNotifyMode;
+
             this.expdr.IsExpanded = false;
             DirtyFlag = false;            
 
@@ -269,16 +269,16 @@ namespace DoorSimulator
             }
         }
 
-        private void RadioBtnDIReportMode_Changed(object sender, RoutedEventArgs e)
-        {
-            if (SimParams != null)
-            {
-                if (IsAutoNotifyMode != SimParams.IsAutoNotifyMode)
-                {
-                    TcpSvr.IsAutoNotifyMode = IsAutoNotifyMode = SimParams.IsAutoNotifyMode;
-                }
-            }
-        }
+        //private void RadioBtnDIReportMode_Changed(object sender, RoutedEventArgs e)
+        //{
+        //    if (SimParams != null)
+        //    {
+        //        if (IsAutoNotifyMode != SimParams.IsAutoNotifyMode)
+        //        {
+        //            TcpSvr.IsAutoNotifyMode = IsAutoNotifyMode = SimParams.IsAutoNotifyMode;
+        //        }
+        //    }
+        //}
 
         private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
