@@ -42,7 +42,7 @@ namespace DoorSimulator
         /// <param name="trace"></param>
         public void UpdateTrace(string trace)
         {
-            this.Dispatcher.Invoke(() => { lock(locker) { this.tboxTrace.AppendText(trace);}});
+            this.Dispatcher.Invoke(() => { lock (locker) { this.tboxTrace.AppendText(trace); } });           
         }
 
         private void btnSaveTrace_Click(object sender, RoutedEventArgs e)
@@ -62,7 +62,7 @@ namespace DoorSimulator
 
         private void btnClearTrace_Click(object sender, RoutedEventArgs e)
         {
-            this.Dispatcher.Invoke(() => { lock (locker) { this.tboxTrace.Clear(); } });
+            this.Dispatcher.Invoke(() => { lock (locker) { this.tboxTrace.Clear(); } });           
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

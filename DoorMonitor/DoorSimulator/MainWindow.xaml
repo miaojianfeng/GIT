@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DoorSimulator"
         xmlns:socket="clr-namespace:ETSL.TcpSocket"
         mc:Ignorable="d"
+        x:Name="wndMain"
         Title="TILE! Door Simulator (ZL6042)" Height="180" Width="380" 
         Background="LightBlue"
         ResizeMode="CanMinimize" Icon="Resources/TrafficLight.ico" Closing="Window_Closing">

@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices; 
 using ETSL.TcpSocket;
+using ETSL.Utilities;
 
 namespace DoorSimulator
 {
@@ -127,6 +128,40 @@ namespace DoorSimulator
                 HideTraceWnd();
             }
         }
+
+        private void AppendTrace(EnumTraceType traceType, string message)
+        {
+            // Add time stamp in the beginning of the trace record
+            string timeStamp = "[ " + Auxiliaries.TimeStampGenerate() + " ]";
+
+            // Trace type
+            string typeStr = string.Empty;
+            switch (traceType)
+            {
+                case EnumTraceType.Information:
+                    typeStr = "[ INFO ]";
+                    break;
+                case EnumTraceType.Error:
+                    typeStr = "[ ERR ]";
+                    break;
+                case EnumTraceType.Exception:
+                    typeStr = "[ EXCEPTION ]";
+                    break;
+                case EnumTraceType.Message:
+                    typeStr = "[ MSG ]";
+                    break;
+            }
+
+            // Trace body
+            if (!message.EndsWith("\n"))
+            {
+                message += "\n";
+            }
+
+            string traceText = timeStamp + " " + typeStr + "   " + message;
+
+            traceWnd.UpdateTrace(traceText);
+        }
         #endregion 
 
         // Commands
@@ -159,7 +194,8 @@ namespace DoorSimulator
             // Stop the server first
             if(TcpSvr.ServerState!=EnumServerState.ServerStopped)
             {
-                MessageBox.Show("The server will be stopped before the new setting to take effect",
+                MessageBox.Show( this.wndMain,
+                                 "The server will be stopped before the new setting to take effect",
                                  "Information", 
                                  MessageBoxButton.OK, 
                                  MessageBoxImage.Information);
@@ -170,18 +206,47 @@ namespace DoorSimulator
             if (TcpSvr.QueryTimeout_ms != SimParams.Timeout_ms)
             {
                 TcpSvr.QueryTimeout_ms = SimParams.Timeout_ms;
+                AppendTrace(EnumTraceType.Information, string.Format("Set QueryTimeout_ms: {0}\n", TcpSvr.QueryTimeout_ms));
             }
 
             // ServerPort
             if(TcpSvr.ServerPort != SimParams.PortNum)
             {
                 TcpSvr.ServerPort = SimParams.PortNum;
+                AppendTrace(EnumTraceType.Information, string.Format("Set ServerPort: {0}\n", TcpSvr.ServerPort));
             }
 
             // IsAutoNotifyMode
             if(TcpSvr.IsAutoNotifyMode!=SimParams.IsAutoNotifyMode)
             {
                 TcpSvr.IsAutoNotifyMode = SimParams.IsAutoNotifyMode;
+                AppendTrace(EnumTraceType.Information, string.Format("Set IsAutoNotifyMode: {0}\n", TcpSvr.IsAutoNotifyMode));
+
+                if (!TcpSvr.IsAutoNotifyMode)
+                {
+                    TcpSvr.ProcessMessage = ZL6042Sim.ProcessDIStateQueryMessage;
+                    
+                    if(IsDoor1Open)
+                    {
+                        ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                    }
+                    else
+                    {
+                        ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                    }
+
+                    if (IsDoor2Open)
+                    {
+                        ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                    }
+                    else
+                    {
+                        ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                    }
+
+                    ZL6042Sim.DIStateCh3 = EnumDIState.HighLevel;
+                    ZL6042Sim.DIStateCh4 = EnumDIState.HighLevel;
+                }
             } 
 
             this.expdr.IsExpanded = false;
@@ -207,12 +272,22 @@ namespace DoorSimulator
                             string msg = ZL6042Sim.GetDIStateChangeAutoNotifyMessage(1, diStateChange);
                             TcpSvr.AutoNotificationMessage = msg;
                             TcpSvr.IsDIChanged = true;
-                            traceWnd.UpdateTrace(string.Format("Door1 Closed ==> Set DI1 to: {0}\n", IsDIDetLowForOpen ? "High" : "Low"));
+                            AppendTrace(EnumTraceType.Information, string.Format("Door1 Closed ==> Set DI1 to: {0}\n", IsDIDetLowForOpen ? "High" : "Low"));
                         }
                         else
                         {
-                            ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen? EnumDIState.HighLevel : EnumDIState.LowLevel;
-                            traceWnd.UpdateTrace(string.Format("Door1 Closed ==> Set DI1 to: {0}\n", IsDIDetLowForOpen ? "High" : "Low"));
+                            ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;                            
+
+                            if (IsDoor2Open)
+                            {
+                                ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                            }
+                            else
+                            {
+                                ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                            }
+
+                            AppendTrace(EnumTraceType.Information, string.Format("Door1 Closed ==> Set DI1 to: {0}\n", IsDIDetLowForOpen ? "High" : "Low"));
                         }
                     }
                     else
@@ -223,12 +298,22 @@ namespace DoorSimulator
                             string msg = ZL6042Sim.GetDIStateChangeAutoNotifyMessage(1, diStateChange);
                             TcpSvr.AutoNotificationMessage = msg;
                             TcpSvr.IsDIChanged = true;
-                            traceWnd.UpdateTrace(string.Format("Door1 Open ==> Set DI1 to: {0}\n", IsDIDetLowForOpen ? "Low" : "High"));
+                            AppendTrace(EnumTraceType.Information, string.Format("Door1 Open ==> Set DI1 to: {0}\n", IsDIDetLowForOpen ? "Low" : "High"));
                         }
                         else
                         {
-                            ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
-                            traceWnd.UpdateTrace(string.Format("Door1 Open ==> Set DI1 to: {0}\n", IsDIDetLowForOpen ? "Low" : "High"));
+                            ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                            
+                            if (IsDoor2Open)
+                            {
+                                ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                            }
+                            else
+                            {
+                                ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                            }
+
+                            AppendTrace(EnumTraceType.Information, string.Format("Door1 Open ==> Set DI1 to: {0}\n", IsDIDetLowForOpen ? "Low" : "High"));
                         }
                     }
                 }
@@ -251,12 +336,22 @@ namespace DoorSimulator
                             string msg = ZL6042Sim.GetDIStateChangeAutoNotifyMessage(2, diStateChange);                            
                             TcpSvr.AutoNotificationMessage = msg;
                             TcpSvr.IsDIChanged = true;
-                            traceWnd.UpdateTrace(string.Format("Door2 Closed ==> Set DI2 to: {0}\n", IsDIDetLowForOpen ? "High" : "Low"));
+                            AppendTrace(EnumTraceType.Information, string.Format("Door2 Closed ==> Set DI2 to: {0}\n", IsDIDetLowForOpen ? "High" : "Low"));
                         }
                         else
                         {
-                            ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
-                            traceWnd.UpdateTrace(string.Format("Door1 Closed ==> Set DI2 to: {0}\n", IsDIDetLowForOpen ? "High" : "Low"));
+                            ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                            
+                            if (IsDoor1Open)
+                            {
+                                ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                            }
+                            else
+                            {
+                                ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                            }
+
+                            AppendTrace(EnumTraceType.Information, string.Format("Door1 Closed ==> Set DI2 to: {0}\n", IsDIDetLowForOpen ? "High" : "Low"));
                         }
                     }
                     else
@@ -267,12 +362,22 @@ namespace DoorSimulator
                             string msg = ZL6042Sim.GetDIStateChangeAutoNotifyMessage(2, diStateChange);
                             TcpSvr.AutoNotificationMessage = msg;
                             TcpSvr.IsDIChanged = true;
-                            traceWnd.UpdateTrace(string.Format("Door2 Open ==> Set DI2 to: {0}\n", IsDIDetLowForOpen ? "Low" : "High"));
+                            AppendTrace(EnumTraceType.Information, string.Format("Door2 Open ==> Set DI2 to: {0}\n", IsDIDetLowForOpen ? "Low" : "High"));
                         }
                         else
                         {
-                            ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
-                            traceWnd.UpdateTrace(string.Format("Door1 Closed ==> Set DI2 to: {0}\n", IsDIDetLowForOpen ? "Low" : "High"));
+                            ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                            
+                            if (IsDoor1Open)
+                            {
+                                ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                            }
+                            else
+                            {
+                                ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                            }
+
+                            AppendTrace(EnumTraceType.Information, string.Format("Door1 Closed ==> Set DI2 to: {0}\n", IsDIDetLowForOpen ? "Low" : "High"));
                         }
                     }
                 }
@@ -286,10 +391,28 @@ namespace DoorSimulator
                 if(IsDIDetLowForOpen!=SimParams.IsDIDetLowForOpen)
                 {
                     IsDIDetLowForOpen = SimParams.IsDIDetLowForOpen;
-                    ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
-                    ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
-                    ZL6042Sim.DIStateCh3 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
-                    ZL6042Sim.DIStateCh4 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                    AppendTrace(EnumTraceType.Information, string.Format("Set DI for door open detection to: {0}\n", IsDIDetLowForOpen ? "Low" : "High"));     
+                    
+                    if(!TcpSvr.IsAutoNotifyMode)
+                    {
+                        if (IsDoor1Open)
+                        {
+                            ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                        }
+                        else
+                        {
+                            ZL6042Sim.DIStateCh1 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                        }
+
+                        if (IsDoor2Open)
+                        {
+                            ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                        }
+                        else
+                        {
+                            ZL6042Sim.DIStateCh2 = IsDIDetLowForOpen ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                        }
+                    }          
                 }
             }
         }
