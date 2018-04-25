@@ -176,14 +176,14 @@
                                  Checked="RadioBtnDoor2State_Changed"/>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Grid.Column="2" Header="Open Detection" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,15,0"
-                          IsEnabled="{Binding ElementName=RadioBtnAutoNotify, Path=IsChecked, Mode=OneWay}">
+                <GroupBox Grid.Column="2" Header="Open Detection" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,15,0">
+                    <!--IsEnabled="{Binding ElementName=RadioBtnAutoNotify, Path=IsChecked, Mode=OneWay}">-->
                     <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
                         <RadioButton Content="DI-Low" Margin="0,2" 
-                                     IsChecked="{Binding Source={StaticResource simParams}, Path=IsDIDetHighToLow, Mode=TwoWay, Converter={StaticResource contraDIDetHighToLow}}"
+                                     IsChecked="{Binding Source={StaticResource simParams}, Path=IsDIDetLow, Mode=TwoWay, Converter={StaticResource contraDIDetHighToLow}}"
                                      Checked="RadioBtnDIDetect_Changed"/>
                         <RadioButton Content="DI-High"
-                                     IsChecked="{Binding Source={StaticResource simParams}, Path=IsDIDetHighToLow, Mode=TwoWay}"
+                                     IsChecked="{Binding Source={StaticResource simParams}, Path=IsDIDetLow, Mode=TwoWay}"
                                      Checked="RadioBtnDIDetect_Changed"/>
                     </StackPanel>
                 </GroupBox>

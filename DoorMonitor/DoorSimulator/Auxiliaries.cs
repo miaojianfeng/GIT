@@ -23,7 +23,7 @@ namespace DoorSimulator
         private int timeout_ms = 200;
         private UInt16 portNum = 9001;
         private bool isAutoNotify = true;
-        private bool isDIDetHighToLow = true;
+        private bool isDIDetLow = true;
         private bool isDoor1Closed = true;
         private bool isDoor2Closed = true;        
 
@@ -71,16 +71,16 @@ namespace DoorSimulator
             }
         }
 
-        public bool IsDIDetHighToLow
+        public bool IsDIDetLow
         {
             set
             {
-                this.isDIDetHighToLow = value;
-                NotifyPropertyChanged("IsDIDetHighToLow");
+                this.isDIDetLow = value;
+                NotifyPropertyChanged("IsDIDetLow");
             }
             get
             {
-                return this.isDIDetHighToLow;
+                return this.isDIDetLow;
             }
         }
 

@@ -373,13 +373,13 @@ namespace ETSL.TcpSocket
 
                         // Process received message
                         sendMsg.Clear();
-                        sendMsg.Append(ProcessRecMessage(recMsg.ToString().ToUpper()));
+                        sendMsg.Append(ProcessRecMessage(recMsg.ToString()));
                           
                         Thread.Sleep(QueryTimeout_ms);
 
                         byte[] bytesSend = Utilities.Auxiliaries.strToToHexByte(sendMsg.ToString());
                         nwkStream.Write(bytesSend, 0, bytesSend.Length);
-                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, sendMsg.ToString()));
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, sendMsg.ToString().ToUpper()));
 
                         MsgTransState = EnumMsgTransState.Silence;
                     }                    
