@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
+using System.IO;
 
 namespace DoorSimulator
 {
@@ -46,7 +47,17 @@ namespace DoorSimulator
 
         private void btnSaveTrace_Click(object sender, RoutedEventArgs e)
         {
-            // Not Implement Yet
+            string timeStamp = ETSL.Utilities.Auxiliaries.DateTimeInfoGenerate();
+            string fileName = string.Format(@"c:\temp\SvrTrace_{0}.txt", timeStamp);
+
+            using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                fs.Lock(0, fs.Length);
+                StreamWriter sw = new StreamWriter(fs);
+                sw.Write(this.tboxTrace.Text);
+                fs.Unlock(0, fs.Length);//一定要用在Flush()方法以前，否则抛出异常。
+                sw.Flush();
+            }
         }
 
         private void btnClearTrace_Click(object sender, RoutedEventArgs e)
