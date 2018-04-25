@@ -35,6 +35,8 @@ namespace ETSL.TcpSocket
         Message = 3
     }
 
+    public delegate void EventHandler(Object sender, EventArgs e);       
+
     public class ModbusTcpSocketServer: INotifyPropertyChanged
     {
         // ---------- Type Definition ----------
@@ -46,6 +48,7 @@ namespace ETSL.TcpSocket
         private EnumServerState serverState = EnumServerState.ServerStopped;
         private EnumMsgTransState msgTransState = EnumMsgTransState.Silence;
         private bool enableTrace = false;
+        private bool isDIChanged = false;
 
         private StringBuilder traceRecord = new StringBuilder();
         private int queryTimeout_ms = 200;
@@ -56,20 +59,26 @@ namespace ETSL.TcpSocket
         // ---------- Constructor ---------- 
         public ModbusTcpSocketServer()
         {
-            IsAutoNotifyMode = false;
+            IsAutoNotifyMode = true;
+            //IsDIChanged = false;
+            AutoNotificationMessage = string.Empty;
         }
 
         public ModbusTcpSocketServer(UInt16 svrPort)
         {
             ServerPort = svrPort;
-            IsAutoNotifyMode = false;
+            IsAutoNotifyMode = true;
+            //IsDIChanged = false;
+            AutoNotificationMessage = string.Empty;
         }
 
         public ModbusTcpSocketServer(string svrName, UInt16 svrPort)
         {
             ServerName = svrName;
             ServerPort = svrPort;
-            IsAutoNotifyMode = false;
+            IsAutoNotifyMode = true;
+            //IsDIChanged = false;
+            AutoNotificationMessage = string.Empty;
         }
 
         public ModbusTcpSocketServer(string svrName, UInt16 svrPort, Action<string> svrTraceHandler = null, Func<string, string> svrMsgHandler = null)            
@@ -78,9 +87,14 @@ namespace ETSL.TcpSocket
             ServerPort = svrPort;
             UpdateTrace = svrTraceHandler;
             ProcessMessage = svrMsgHandler;
-            IsAutoNotifyMode = false;
+            IsAutoNotifyMode = true;
+            //IsDIChanged = false;
+            AutoNotificationMessage = string.Empty;
         }
 
+        // Event
+        public event EventHandler DIChangedEvent; 
+        
         // ---------- Property ----------
         public string ServerName
         {
@@ -168,11 +182,30 @@ namespace ETSL.TcpSocket
         }
 
         public bool IsAutoNotifyMode { set; get; }
+        public string AutoNotificationMessage { set; get; }
+        public bool IsDIChanged
+        {
+            set
+            {
+                lock(locker)
+                {
+                    this.isDIChanged = value;
+                    NotifyPropertyChanged("IsDIChanged");
+                }
+            }
+            get
+            {
+                lock (locker)
+                {
+                    return this.isDIChanged;
+                }
+            }
+        }
         
         public Action<string> UpdateTrace { get; set; }
 
         public Func<string, string> ProcessMessage { get; set; }
-
+        
         public void ClearTraceRecord()
         {
             this.traceRecord.Clear();
@@ -273,7 +306,7 @@ namespace ETSL.TcpSocket
                         
                         if(IsAutoNotifyMode)
                         {
-
+                            SendNotificationMessageTask(newClient, clientNum);
                         }   
                         else
                         {
@@ -366,6 +399,48 @@ namespace ETSL.TcpSocket
                     return;
                 }
             }            
+        }
+
+        private void SendNotificationMessageTask(TcpClient client, int num)
+        {
+            Task.Run(() => SendNotificationMessage(client, num));
+        }
+
+        private void SendNotificationMessage(TcpClient client, int num)
+        {
+            NetworkStream nwkStream = client.GetStream();
+            byte[] bytesReceived = new byte[1024];
+            StringBuilder sendMsg = new StringBuilder();
+
+            while (true)
+            {
+                try
+                {
+                    MsgTransState = EnumMsgTransState.Silence;
+
+                    if (IsDIChanged && AutoNotificationMessage!=string.Empty)
+                    {
+                        sendMsg.Clear();
+                        sendMsg.Append(AutoNotificationMessage);
+                        byte[] bytesSend = Utilities.Auxiliaries.strToToHexByte(sendMsg.ToString());
+                        nwkStream.Write(bytesSend, 0, bytesSend.Length);
+
+                        // Invoke DIChangedEvent here
+                        if (DIChangedEvent != null) DIChangedEvent(this, new EventArgs());
+
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, sendMsg.ToString()));
+                        MsgTransState = EnumMsgTransState.Working;
+                        isDIChanged = false;
+                    }                                
+                }
+                catch
+                {
+                    MsgTransState = EnumMsgTransState.Silence;
+                    ServerState = EnumServerState.ServerStarted;
+                    AppendTrace(EnumTraceType.Information, String.Format("Client{0} has disconnected\n", num, ServerName));
+                    return;
+                }
+            }
         }
     }
 }

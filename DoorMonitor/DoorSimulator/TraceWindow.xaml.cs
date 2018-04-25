@@ -30,6 +30,8 @@ namespace DoorSimulator
             DestroyWndFlag = false;
         }
 
+        static private object locker = new object();
+
         public Action CloseTraceWnd { set; get; }
         public bool DestroyWndFlag { set; get; }
 
@@ -39,12 +41,17 @@ namespace DoorSimulator
         /// <param name="trace"></param>
         public void UpdateTrace(string trace)
         {
-            this.Dispatcher.Invoke(() => { this.tboxTrace.AppendText(trace); });
+            this.Dispatcher.Invoke(() => { lock(locker) { this.tboxTrace.AppendText(trace);}});
         }
 
         private void btnSaveTrace_Click(object sender, RoutedEventArgs e)
         {
-            // Not implement yet
+            // Not Implement Yet
+        }
+
+        private void btnClearTrace_Click(object sender, RoutedEventArgs e)
+        {
+            this.Dispatcher.Invoke(() => { lock (locker) { this.tboxTrace.Clear(); } });
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

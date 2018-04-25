@@ -18,7 +18,7 @@ namespace ETSL.TcpSocket
         HighLevel = 1
     }
 
-    public enum EnumDIStateChangeCase
+    public enum EnumDIStateChange
     {
         LowToHigh,
         HighToLow
@@ -98,29 +98,29 @@ namespace ETSL.TcpSocket
             return diStaQueryResult;
         }
 
-        public string GetDIStateChangeAutoNotifyMessage(int diChannel, EnumDIStateChangeCase staChangeCase)
+        public string GetDIStateChangeAutoNotifyMessage(int diChannel, EnumDIStateChange staChangeCase)
         {
             string message = string.Empty;
 
             switch(diChannel)
             {
                 case 1:
-                    message = staChangeCase == EnumDIStateChangeCase.LowToHigh ? 
+                    message = staChangeCase == EnumDIStateChange.LowToHigh ? 
                               "00 00 00 00 00 08 00 05 00 10 ff 00 8C 2E" :
                               "00 00 00 00 00 08 00 05 00 10 00 00 CD 2E";
                     break;
                 case 2:
-                    message = staChangeCase == EnumDIStateChangeCase.LowToHigh ?
+                    message = staChangeCase == EnumDIStateChange.LowToHigh ?
                               "00 00 00 00 00 08 00 05 00 11 ff 00 DD EE" :
                               "00 00 00 00 00 08 00 05 00 11 00 00 9C 1E";
                     break;
                 case 3:
-                    message = staChangeCase == EnumDIStateChangeCase.LowToHigh ?
+                    message = staChangeCase == EnumDIStateChange.LowToHigh ?
                               "00 00 00 00 00 08 00 05 00 12 ff 00 2D EE" :
                               "00 00 00 00 00 08 00 05 00 12 00 00 6C 1E";
                     break;
                 case 4:
-                    message = staChangeCase == EnumDIStateChangeCase.LowToHigh ?
+                    message = staChangeCase == EnumDIStateChange.LowToHigh ?
                               "00 00 00 00 00 08 00 05 00 13 ff 00 7C 2E" :
                               "00 00 00 00 00 08 00 05 00 13 00 00 3D DE";
                     break;

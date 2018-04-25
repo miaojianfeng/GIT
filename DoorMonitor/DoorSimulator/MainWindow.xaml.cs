@@ -25,7 +25,7 @@ namespace DoorSimulator
     {
         // Field
         private TraceWindow traceWnd;
-        private bool isTraceWndOpened = false;        
+        private bool isTraceWndOpened = false;
 
         // Constructor
         public MainWindow()
@@ -40,7 +40,7 @@ namespace DoorSimulator
             ZL6042Sim = (ZL6042DISimulator)this.FindResource("zl6042Sim");
 
             // Simulator Settings
-            SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");        
+            SimParams = (DoorSimulatorParams)this.TryFindResource("simParams");
             Timeout_ms = SimParams.Timeout_ms;
             IsAutoNotifyMode = SimParams.IsAutoNotifyMode;
             IsDoor1Closed = SimParams.IsDoor1Closed;
@@ -53,14 +53,18 @@ namespace DoorSimulator
             this.traceWnd = new TraceWindow();
             this.traceWnd.CloseTraceWnd = CloseTraceWindow;
             HideTraceWnd();
+
+            // Register event handler for ModbusTcpSocketServer.DIChangedEvent
+            TcpSvr.DIChangedEvent += DIChangedEventHandler;
         }
 
         // Property
         public ModbusTcpSocketServer TcpSvr { get; private set; }
         public ZL6042DISimulator ZL6042Sim { get; private set; }
         public DoorSimulatorParams SimParams { get; private set; }
-        
+
         private bool IsAutoNotifyMode { set; get; }
+        private bool IsDIDetHighToLow { set; get; }
         private bool IsDoor1Closed { set; get; }
         private bool IsDoor2Closed { set; get; }
         private int Timeout_ms { set; get; }        
@@ -171,14 +175,39 @@ namespace DoorSimulator
             {
                 if (IsDoor1Closed != SimParams.IsDoor1Closed)
                 {
-                    IsDoor1Closed = SimParams.IsDoor1Closed;
+                    IsDoor1Closed = SimParams.IsDoor1Closed;                    
+                                     
                     if (IsDoor1Closed)
                     {
-                        ZL6042Sim.DIStateCh1 = EnumDIState.HighLevel;
+                        if(IsAutoNotifyMode)
+                        {
+                            EnumDIStateChange diStateChange = IsDIDetHighToLow ? EnumDIStateChange.HighToLow : EnumDIStateChange.LowToHigh;
+                            string msg = ZL6042Sim.GetDIStateChangeAutoNotifyMessage(1, diStateChange);
+                            TcpSvr.AutoNotificationMessage = msg;
+                            TcpSvr.IsDIChanged = true;
+                            traceWnd.UpdateTrace(string.Format("Door1 Closed ==> Set DI1 to: {0}\n", IsDIDetHighToLow ? "High" : "Low"));
+                        }
+                        else
+                        {
+                            ZL6042Sim.DIStateCh1 = IsDIDetHighToLow? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                            traceWnd.UpdateTrace(string.Format("Door1 Closed ==> Set DI1 to: {0}\n", IsDIDetHighToLow ? "High" : "Low"));
+                        }
                     }
                     else
                     {
-                        ZL6042Sim.DIStateCh1 = EnumDIState.LowLevel;
+                        if (IsAutoNotifyMode)
+                        {
+                            EnumDIStateChange diStateChange = IsDIDetHighToLow ? EnumDIStateChange.LowToHigh : EnumDIStateChange.HighToLow;
+                            string msg = ZL6042Sim.GetDIStateChangeAutoNotifyMessage(1, diStateChange);
+                            TcpSvr.AutoNotificationMessage = msg;
+                            TcpSvr.IsDIChanged = true;
+                            traceWnd.UpdateTrace(string.Format("Door1 Open ==> Set DI1 to: {0}\n", IsDIDetHighToLow ? "Low" : "High"));
+                        }
+                        else
+                        {
+                            ZL6042Sim.DIStateCh1 = IsDIDetHighToLow ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                            traceWnd.UpdateTrace(string.Format("Door1 Open ==> Set DI1 to: {0}\n", IsDIDetHighToLow ? "Low" : "High"));
+                        }
                     }
                 }
             }
@@ -190,23 +219,70 @@ namespace DoorSimulator
             {
                 if (IsDoor2Closed != SimParams.IsDoor2Closed)
                 {
-                    IsDoor2Closed = SimParams.IsDoor2Closed;
+                    IsDoor2Closed = SimParams.IsDoor2Closed;                    
+
                     if (IsDoor2Closed)
                     {
-                        ZL6042Sim.DIStateCh2 = EnumDIState.HighLevel;
+                        if (IsAutoNotifyMode)
+                        {
+                            EnumDIStateChange diStateChange = IsDIDetHighToLow ? EnumDIStateChange.HighToLow : EnumDIStateChange.LowToHigh;
+                            string msg = ZL6042Sim.GetDIStateChangeAutoNotifyMessage(2, diStateChange);                            
+                            TcpSvr.AutoNotificationMessage = msg;
+                            TcpSvr.IsDIChanged = true;
+                            traceWnd.UpdateTrace(string.Format("Door2 Closed ==> Set DI2 to: {0}\n", IsDIDetHighToLow ? "High" : "Low"));
+                        }
+                        else
+                        {
+                            ZL6042Sim.DIStateCh2 = IsDIDetHighToLow ? EnumDIState.HighLevel : EnumDIState.LowLevel;
+                            traceWnd.UpdateTrace(string.Format("Door1 Closed ==> Set DI2 to: {0}\n", IsDIDetHighToLow ? "High" : "Low"));
+                        }
                     }
                     else
                     {
-                        ZL6042Sim.DIStateCh2 = EnumDIState.LowLevel;
+                        if (IsAutoNotifyMode)
+                        {
+                            EnumDIStateChange diStateChange = IsDIDetHighToLow ? EnumDIStateChange.LowToHigh : EnumDIStateChange.HighToLow;
+                            string msg = ZL6042Sim.GetDIStateChangeAutoNotifyMessage(2, diStateChange);
+                            TcpSvr.AutoNotificationMessage = msg;
+                            TcpSvr.IsDIChanged = true;
+                            traceWnd.UpdateTrace(string.Format("Door2 Open ==> Set DI2 to: {0}\n", IsDIDetHighToLow ? "Low" : "High"));
+                        }
+                        else
+                        {
+                            ZL6042Sim.DIStateCh2 = IsDIDetHighToLow ? EnumDIState.LowLevel : EnumDIState.HighLevel;
+                            traceWnd.UpdateTrace(string.Format("Door1 Closed ==> Set DI2 to: {0}\n", IsDIDetHighToLow ? "Low" : "High"));
+                        }
                     }
+                }
+            }
+        }
+
+        private void RadioBtnDIDetect_Changed(object sender, RoutedEventArgs e)
+        {
+            if (SimParams != null)
+            {
+                if(IsDIDetHighToLow!=SimParams.IsDIDetHighToLow)
+                {
+                    IsDIDetHighToLow = SimParams.IsDIDetHighToLow;
+                }
+            }
+        }
+
+        private void RadioBtnDIReportMode_Changed(object sender, RoutedEventArgs e)
+        {
+            if (SimParams != null)
+            {
+                if (IsAutoNotifyMode != SimParams.IsAutoNotifyMode)
+                {
+                    TcpSvr.IsAutoNotifyMode = IsAutoNotifyMode = SimParams.IsAutoNotifyMode;
                 }
             }
         }
 
         private async void BtnRun_Click(object sender, RoutedEventArgs e)
         {
-            TcpSvr.IsAutoNotifyMode = IsAutoNotifyMode;
-            TcpSvr.ProcessMessage = ZL6042Sim.ProcessDIStateQueryMessage;
+            //TcpSvr.IsAutoNotifyMode = IsAutoNotifyMode;
+            //TcpSvr.ProcessMessage = ZL6042Sim.ProcessDIStateQueryMessage;
             TcpSvr.EnableTrace = true;
             TcpSvr.UpdateTrace = this.traceWnd.UpdateTrace; // Update Trace
             
@@ -248,6 +324,11 @@ namespace DoorSimulator
         private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {            
             ShowTraceWnd();
+        }
+
+        private void DIChangedEventHandler(object sender, EventArgs e)
+        {
+            traceWnd.UpdateTrace("Detect DI Changed!");
         }
     }
 }

@@ -7,9 +7,24 @@
         mc:Ignorable="d"
         Title="Trace" Height="300" Width="525"        
         Icon="Resources/Trace.ico" Closing="Window_Closing">
+    <Window.Resources>
+        <local:StrLenToClrTraceBtnEnableConverter x:Key="strLenToClrTraceBtnEnable"/>
+        <LinearGradientBrush x:Key="GrayButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="LightGray" Offset="0"/>
+            <GradientStop Color="Gray" Offset="0.5"/>
+            <GradientStop Color="DarkGray" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Resources>
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5,0,5,5" HorizontalAlignment="Right">
-            <Button x:Name="btnSaveTrace" Content="Save Trace" Padding="10,2" Click="btnSaveTrace_Click"/>
+            <Button x:Name="btnClearTrace" Content="Clear Trace" Padding="10,2" 
+                    Background="{StaticResource GrayButton}" FontWeight="Bold" Foreground="DarkBlue"
+                    Click="btnClearTrace_Click"
+                    IsEnabled="{Binding ElementName=tboxTrace, Path=Text, Mode=OneWay, Converter={StaticResource strLenToClrTraceBtnEnable}}"/>
+            <Button x:Name="btnSaveTrace" Margin="10,0,0,0" Content="Save Trace" Padding="10,2" 
+                    Background="{StaticResource GrayButton}" FontWeight="Bold" Foreground="DarkBlue"
+                    Click="btnSaveTrace_Click"
+                     IsEnabled="{Binding ElementName=tboxTrace, Path=Text, Mode=OneWay, Converter={StaticResource strLenToClrTraceBtnEnable}}"/>
         </StackPanel>
         <TextBox x:Name="tboxTrace" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="5"/>
     </DockPanel>

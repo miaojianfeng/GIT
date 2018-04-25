@@ -23,8 +23,9 @@ namespace DoorSimulator
         private int timeout_ms = 200;
         private UInt16 portNum = 9001;
         private bool isAutoNotify = true;
+        private bool isDIDetHighToLow = true;
         private bool isDoor1Closed = true;
-        private bool isDoor2Closed = true;
+        private bool isDoor2Closed = true;        
 
         public DoorSimulatorParams()
         {
@@ -67,6 +68,19 @@ namespace DoorSimulator
             get
             {
                 return this.isAutoNotify;
+            }
+        }
+
+        public bool IsDIDetHighToLow
+        {
+            set
+            {
+                this.isDIDetHighToLow = value;
+                NotifyPropertyChanged("IsDIDetHighToLow");
+            }
+            get
+            {
+                return this.isDIDetHighToLow;
             }
         }
 
@@ -118,6 +132,21 @@ namespace DoorSimulator
     }
 
     public class ContraAutoNotifyStaConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool state = (bool)value;
+            return !state;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool state = (bool)value;
+            return !state;
+        }
+    }
+
+    public class ContraDIDetHighToLowConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -337,6 +366,21 @@ namespace DoorSimulator
             }
 
             return text;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class StrLenToClrTraceBtnEnableConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string str = (string)value;
+            if (str != string.Empty) return true;
+            else return false;             
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
