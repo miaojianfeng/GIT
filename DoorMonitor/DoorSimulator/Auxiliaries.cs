@@ -23,9 +23,9 @@ namespace DoorSimulator
         private int timeout_ms = 200;
         private UInt16 portNum = 9001;
         private bool isAutoNotify = true;
-        private bool isDIDetLow = true;
-        private bool isDoor1Closed = true;
-        private bool isDoor2Closed = true;        
+        private bool isDIDetLowForOpen = true;
+        private bool isDoor1Open = false;
+        private bool isDoor2Open = false;        
 
         public DoorSimulatorParams()
         {
@@ -71,42 +71,42 @@ namespace DoorSimulator
             }
         }
 
-        public bool IsDIDetLow
+        public bool IsDIDetLowForOpen
         {
             set
             {
-                this.isDIDetLow = value;
-                NotifyPropertyChanged("IsDIDetLow");
+                this.isDIDetLowForOpen = value;
+                NotifyPropertyChanged("IsDIDetLowForOpen");
             }
             get
             {
-                return this.isDIDetLow;
+                return this.isDIDetLowForOpen;
             }
         }
 
-        public bool IsDoor1Closed
+        public bool IsDoor1Open
         {
             set
             {
-                this.isDoor1Closed = value;
-                NotifyPropertyChanged("IsDoor1Closed");
+                this.isDoor1Open = value;
+                NotifyPropertyChanged("IsDoor1Open");
             }
             get
             {
-                return this.isDoor1Closed;
+                return this.isDoor1Open;
             }
         }
 
-        public bool IsDoor2Closed
+        public bool IsDoor2Open
         {
             set
             {
-                this.isDoor2Closed = value;
-                NotifyPropertyChanged("IsDoor2Closed");
+                this.isDoor2Open = value;
+                NotifyPropertyChanged("IsDoor2Open");
             }
             get
             {
-                return this.isDoor2Closed;
+                return this.isDoor2Open;
             }
         }
 
@@ -161,7 +161,7 @@ namespace DoorSimulator
         }
     }
 
-    public class ContraDoorClosedStaConverter : IValueConverter
+    public class ContraDoorOpenStaConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

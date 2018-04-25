@@ -22,7 +22,7 @@
         <local:ExpdrStateToExpdrTextConverter x:Key="expdrStaToExpdrText"/>
         <local:ContraAutoNotifyStaConverter x:Key="contraAutoNotifySta"/>
         <local:ContraDIDetHighToLowConverter x:Key="contraDIDetHighToLow"/>
-        <local:ContraDoorClosedStaConverter x:Key="contraDoorClosedSta"/>
+        <local:ContraDoorOpenStaConverter x:Key="contraDoorOpenSta"/>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
@@ -159,20 +159,20 @@
                 <GroupBox Grid.Column="0" Header="Door 1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="15,0,0,0">
                     <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
                         <RadioButton Content="Open" Margin="0,2" 
-                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor1Closed, Mode=TwoWay, Converter={StaticResource contraDoorClosedSta}}"
+                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor1Open, Mode=TwoWay}"
                                  Checked="RadioBtnDoor1State_Changed"/>
                         <RadioButton Content="Close" 
-                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor1Closed, Mode=TwoWay}"
+                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor1Open, Mode=TwoWay, Converter={StaticResource contraDoorOpenSta}}"
                                  Checked="RadioBtnDoor1State_Changed"/>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Grid.Column="1" Header="Door 2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,5,0">
                     <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
                         <RadioButton Content="Open" Margin="0,2" 
-                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor2Closed, Mode=TwoWay, Converter={StaticResource contraDoorClosedSta}}"
+                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor2Open, Mode=TwoWay}"
                                  Checked="RadioBtnDoor2State_Changed"/>
                         <RadioButton Content="Close" 
-                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor2Closed, Mode=TwoWay}"
+                                 IsChecked="{Binding Source={StaticResource simParams}, Path=IsDoor2Open, Mode=TwoWay, Converter={StaticResource contraDoorOpenSta}}"
                                  Checked="RadioBtnDoor2State_Changed"/>
                     </StackPanel>
                 </GroupBox>
@@ -180,10 +180,10 @@
                     <!--IsEnabled="{Binding ElementName=RadioBtnAutoNotify, Path=IsChecked, Mode=OneWay}">-->
                     <StackPanel Orientation="Vertical" Margin="5,5,5,0" HorizontalAlignment="Center">
                         <RadioButton Content="DI-Low" Margin="0,2" 
-                                     IsChecked="{Binding Source={StaticResource simParams}, Path=IsDIDetLow, Mode=TwoWay, Converter={StaticResource contraDIDetHighToLow}}"
+                                     IsChecked="{Binding Source={StaticResource simParams}, Path=IsDIDetLowForOpen, Mode=TwoWay}"
                                      Checked="RadioBtnDIDetect_Changed"/>
                         <RadioButton Content="DI-High"
-                                     IsChecked="{Binding Source={StaticResource simParams}, Path=IsDIDetLow, Mode=TwoWay}"
+                                     IsChecked="{Binding Source={StaticResource simParams}, Path=IsDIDetLowForOpen, Mode=TwoWay, Converter={StaticResource contraDIDetHighToLow}}"
                                      Checked="RadioBtnDIDetect_Changed"/>
                     </StackPanel>
                 </GroupBox>

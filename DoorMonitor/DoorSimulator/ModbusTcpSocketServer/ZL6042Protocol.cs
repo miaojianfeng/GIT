@@ -6,12 +6,6 @@ using System.Threading.Tasks;
 
 namespace ETSL.TcpSocket
 {
-    //public enum EnumDIReportMode
-    //{
-    //    Polling = 0,
-    //    AutoNotify = 1
-    //}
-
     public enum EnumDIState
     {
         LowLevel = 0,
@@ -29,21 +23,87 @@ namespace ETSL.TcpSocket
         // Constructor
         public ZL6042DISimulator()
         {
-            DIStateCh1 = EnumDIState.HighLevel;
-            DIStateCh2 = EnumDIState.HighLevel;
-            DIStateCh3 = EnumDIState.HighLevel;
-            DIStateCh4 = EnumDIState.HighLevel;
+            
         }
 
         // Field
+        private EnumDIState diStaCh1 = EnumDIState.HighLevel;
+        private EnumDIState diStaCh2 = EnumDIState.HighLevel;
+        private EnumDIState diStaCh3 = EnumDIState.HighLevel;
+        private EnumDIState diStaCh4 = EnumDIState.HighLevel;
+
+        private static object thisLock = new object();
 
         // Property
-        //public EnumDIReportMode DIReportMode { set; get; }
+        public EnumDIState DIStateCh1
+        {
+            set
+            {
+                lock(thisLock)
+                {
+                    diStaCh1 = value;
+                }
+            }
+            get
+            {
+                lock(thisLock)
+                {
+                    return diStaCh1;
+                }
+            }
+        }
+        public EnumDIState DIStateCh2
+        {
+            set
+            {
+                lock (thisLock)
+                {
+                    diStaCh2 = value;
+                }
+            }
+            get
+            {
+                lock (thisLock)
+                {
+                    return diStaCh2;
+                }
+            }
+        }
+        public EnumDIState DIStateCh3
+        {
+            set
+            {
+                lock (thisLock)
+                {
+                    diStaCh3 = value;
+                }
+            }
+            get
+            {
+                lock (thisLock)
+                {
+                    return diStaCh3;
+                }
+            }
+        }
+        public EnumDIState DIStateCh4
+        {
+            set
+            {
+                lock (thisLock)
+                {
+                    diStaCh4 = value;
+                }
+            }
+            get
+            {
+                lock (thisLock)
+                {
+                    return diStaCh4;
+                }
+            }
+        }
 
-        public EnumDIState DIStateCh1 { private get; set; }
-        public EnumDIState DIStateCh2 { private get; set; }
-        public EnumDIState DIStateCh3 { private get; set; }
-        public EnumDIState DIStateCh4 { private get; set; }
 
         // Method
         public string ProcessDIStateQueryMessage(string diStaQueryMessage)
