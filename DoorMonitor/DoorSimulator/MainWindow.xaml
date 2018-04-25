@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="TILE! Door Simulator (ZL6042)" Height="180" Width="380" 
         Background="LightBlue"
-        ResizeMode="CanMinimize" Icon="Resources/TrafficLight.ico" Closing="Window_Closing" Topmost="True">
+        ResizeMode="CanMinimize" Icon="Resources/TrafficLight.ico" Closing="Window_Closing">
     <Window.Resources>
         <!--Object Definition-->
         <socket:ModbusTcpSocketServer x:Key="tcpSvr"/>

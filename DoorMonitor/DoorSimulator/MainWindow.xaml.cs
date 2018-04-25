@@ -110,6 +110,7 @@ namespace DoorSimulator
         public void ShowTraceWnd()
         {
             this.traceWnd.Show();
+            this.traceWnd.WindowState = WindowState.Normal;
             IsTraceWndOpened = true;
         }
 
