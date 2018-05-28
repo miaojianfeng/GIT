@@ -437,7 +437,7 @@ namespace ETSL.TcpSocket
                 {
                     MsgTransState = EnumMsgTransState.Silence;
                     ServerState = EnumServerState.ServerStarted;
-                    AppendTrace(EnumTraceType.Information, String.Format("Client{0} has disconnected\n", num, ServerName));
+                    AppendTrace(EnumTraceType.Information, String.Format("Client{0} has disconnected\n", num));
                     return;
                 }
             }

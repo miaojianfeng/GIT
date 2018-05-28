@@ -37,8 +37,8 @@
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5" HorizontalAlignment="Left">
             <CheckBox x:Name="chkboxShowTrace" Content="Show Trace Window" Padding="2" VerticalContentAlignment="Center" Checked="chkboxShowTrace_Checked" Unchecked="chkboxShowTrace_Unchecked"                      
                       />
-            <Button x:Name="btnStartServer" Content="Start Server" Margin="70, 0, 0, 0" Padding="10,2" Click="btnStartServer_Click"/>
-            <Button x:Name="btnStopServer" Content="Stop Server" Margin="10, 0, 0, 0" Padding="10,2" Click="btnStopServer_Click"/>
+            <Button x:Name="btnStartMonitor" Content="Start Monitor" Margin="70, 0, 0, 0" Padding="10,2" Click="btnStartMonitor_Click"/>
+            <Button x:Name="btnStopMonitor" Content="Stop Monitor" Margin="10, 0, 0, 0" Padding="10,2" Click="btnStopMonitor_Click"/>
         </StackPanel>
         <TextBox x:Name="tbMessage" Margin="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
                  FontSize="60" 

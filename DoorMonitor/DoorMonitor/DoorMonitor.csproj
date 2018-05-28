@@ -63,6 +63,7 @@
     <Compile Include="NotifyIcon\BalloonTipIcon.cs" />
     <Compile Include="NotifyIcon\NotifyIcon.cs" />
     <Compile Include="NotifyIcon\NotifyIcon.Interop.cs" />
+    <Compile Include="TcpSocket\ModbusTcpSocketClient.cs" />
     <Compile Include="TcpSocket\TcpSocketServer.cs" />
     <Compile Include="TraceWindow.xaml.cs">
       <DependentUpon>TraceWindow.xaml</DependentUpon>

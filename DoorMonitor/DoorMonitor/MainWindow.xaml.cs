@@ -28,6 +28,7 @@ namespace DoorMonitor
     {
         // Field
         private TcpSocketServer tcpSvr;
+        private ModbusTcpSocketClient modbusTcpClient; 
         private TraceWindow traceWnd;
         private bool isTraceWndOpened = false;
 
@@ -201,9 +202,17 @@ namespace DoorMonitor
             this.Close();
         }
 
-        private async void btnStartServer_Click(object sender, RoutedEventArgs e)
+        private async void btnStartMonitor_Click(object sender, RoutedEventArgs e)
         {
-            if (tcpSvr == null)
+            // Modbus_TCP with ZL6042
+            if (modbusTcpClient == null)
+            {
+                this.modbusTcpClient = new ModbusTcpSocketClient("192.168.0.200", 502);
+                this.modbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
+                this.modbusTcpClient.StartMonitor();
+            }
+
+            if (this.tcpSvr == null)
             {
                 this.tcpSvr = new TcpSocketServer("Server", 8001);
                 this.tcpSvr.EnableTrace = true;
@@ -211,7 +220,7 @@ namespace DoorMonitor
                 this.tcpSvr.ProcessMessage = ProcessCommand;
                 this.tcpSvr.UpdateTrace = this.traceWnd.UpdateTrace;
                 await tcpSvr.Start();
-            }                                                       
+            }
         }
 
         /// <summary>
@@ -219,9 +228,10 @@ namespace DoorMonitor
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnStopServer_Click(object sender, RoutedEventArgs e)
+        private void btnStopMonitor_Click(object sender, RoutedEventArgs e)
         {
-            if(tcpSvr!=null) tcpSvr.Stop();
+            if (this.modbusTcpClient != null) this.modbusTcpClient.StopMonitor();
+            if (this.tcpSvr!=null) this.tcpSvr.Stop();            
         }
 
         private void chkboxShowTrace_Checked(object sender, RoutedEventArgs e)
