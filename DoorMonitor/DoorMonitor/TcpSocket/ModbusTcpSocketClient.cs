@@ -152,6 +152,9 @@ namespace ETSL.TcpSocket
 
         public Action<string> UpdateTrace { get; set; }
 
+        public Action ShowAlertMessage { get; set; }
+        //public Action ShowMainWindow { get; set; }
+
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -258,6 +261,7 @@ namespace ETSL.TcpSocket
         protected void CheckDiStatus(string msgReceived)
         {
             string[] msgArray = msgReceived.Split(new string[] { " " }, StringSplitOptions.None);
+
             if (msgArray.Length == 10)
             {
                 // Convert text to nunmber
@@ -272,16 +276,16 @@ namespace ETSL.TcpSocket
                 {
                     if ((diValue & DI1) == DI1)  // Closed           
                     {
-                        IsDoor1Open = EnumDoorStatus.Closed;
+                        IsDoor1Open = EnumDoorStatus.Closed;                        
                     }
                     else  // Open
                     {
-                        IsDoor1Open = EnumDoorStatus.Open;
+                        IsDoor1Open = EnumDoorStatus.Open;                        
                     }
                 }
                 else
                 {
-                    IsDoor1Open = EnumDoorStatus.Ignore;
+                    IsDoor1Open = EnumDoorStatus.Ignore;                    
                 }
 
                 // DI2
@@ -289,17 +293,22 @@ namespace ETSL.TcpSocket
                 {
                     if ((diValue & DI2) == DI2)  // Closed           
                     {
-                        IsDoor2Open = EnumDoorStatus.Closed;
+                        IsDoor2Open = EnumDoorStatus.Closed;                        
                     }
                     else  // Open
                     {
-                        IsDoor2Open = EnumDoorStatus.Open;
+                        IsDoor2Open = EnumDoorStatus.Open;                        
                     }
                 }
                 else
                 {
                     IsDoor2Open = EnumDoorStatus.Ignore;
-                }
+                }  
+                
+                if(IsDoor1Open==EnumDoorStatus.Open || IsDoor2Open==EnumDoorStatus.Open)
+                {
+                    ShowAlertMessage();
+                }       
             }
         }
 
@@ -370,6 +379,7 @@ namespace ETSL.TcpSocket
                         if (msgArray[10].ToUpper() == "00")  // Door Open
                         {
                             IsDoor1Open = EnumDoorStatus.Open;
+                            //ShowMainWindow();                         
                         }
                     }
                 }
@@ -390,13 +400,14 @@ namespace ETSL.TcpSocket
                         if (msgArray[10].ToUpper() == "00")  // Door Open
                         {
                             IsDoor2Open = EnumDoorStatus.Open;
+                            //ShowMainWindow();
                         }
                     }
                 }
                 else
                 {
                     IsDoor2Open = EnumDoorStatus.Ignore;
-                }
+                }                
             }            
         }
         

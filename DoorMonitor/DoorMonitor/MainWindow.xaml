@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:DoorMonitor"    
         xmlns:socket="clr-namespace:ETSL.TcpSocket"
         mc:Ignorable="d"        
-        Title="Door Monitor" Height="150" Width="300" 
+        Title="DoorMonitor" Height="150" Width="300" 
         WindowStartupLocation="Manual"        
-        ShowInTaskbar="False"        
+        ShowInTaskbar="False"         
         Closing="Window_Closing" 
-        Icon="Resources/Door.ico" Topmost="True" ResizeMode="CanMinimize">
+        Icon="Resources/Door.ico" Topmost="True" ResizeMode="CanMinimize" >
     <Window.Resources>
         <!--Object Definition-->
         <socket:ModbusTcpSocketClient x:Key="modbusTcpClient"/>

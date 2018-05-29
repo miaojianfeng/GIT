@@ -182,24 +182,24 @@ namespace DoorMonitor
         //    }
         //}
 
+        public void ShowMainWindow()
+        {
+            this.Show();
+            this.WindowState = this.lastWindowState;
+        }
+
         private void OnNotifyIconDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
             {
-                this.Left = MainWndLeftPos;
-                this.Top = MainWndTopPos;
-                this.Show();
-                this.WindowState = this.lastWindowState;
+                ShowMainWindow();
             }
         }
 
         // NotifyIcon Context Menu Item <Open>
         private void OnOpenClick(object sender, RoutedEventArgs e)
         {
-            this.Left = MainWndLeftPos;
-            this.Top = MainWndTopPos;
-            this.Show();
-            this.WindowState = this.lastWindowState;                       
+            ShowMainWindow();                                  
         }
 
         // NotifyIcon Context Menu Item <Exit>
@@ -218,6 +218,8 @@ namespace DoorMonitor
             ModbusTcpClient.IPAddress = "192.168.0.200";
             ModbusTcpClient.Port = 502;
             ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
+            ModbusTcpClient.ShowAlertMessage = this.ShowBalloonTip;
+            //ModbusTcpClient.ShowMainWindow = this.ShowMainWindow;
             ModbusTcpClient.StartMonitor();
             
             TcpServer.ServerName = "Server";
@@ -274,6 +276,8 @@ namespace DoorMonitor
             ModbusTcpClient.StopMonitor();
             System.Threading.Thread.Sleep(200);
             ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
+            ModbusTcpClient.ShowAlertMessage = this.ShowBalloonTip;
+            //ModbusTcpClient.ShowMainWindow = this.ShowMainWindow;
             ModbusTcpClient.StartMonitor();
         }
 
@@ -299,6 +303,24 @@ namespace DoorMonitor
             {
                 ModbusTcpClient.IsDoor2Open = EnumDoorStatus.Ignore;                
             }
+        }
+
+        public void ShowBalloonTip()
+        {   
+            StringBuilder msg = new StringBuilder();
+            if (ModbusTcpClient.IsDoor1Open == EnumDoorStatus.Open)
+            {
+                msg.Append("Door1");
+            }
+
+            if (ModbusTcpClient.IsDoor2Open == EnumDoorStatus.Open)
+            {
+                msg.Append(" Door2");
+            }
+
+            this.notifyIcon.BalloonTipText = string.Format("{0} Opened!", msg.ToString().Trim());
+            this.notifyIcon.BalloonTipTitle = "Alert";
+            this.notifyIcon.ShowBalloonTip(2);
         }
     }
 }
