@@ -60,6 +60,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Auxiliaries.cs" />
     <Compile Include="NotifyIcon\BalloonTipIcon.cs" />
     <Compile Include="NotifyIcon\NotifyIcon.cs" />
     <Compile Include="NotifyIcon\NotifyIcon.Interop.cs" />

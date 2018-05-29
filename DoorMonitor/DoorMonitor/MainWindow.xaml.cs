@@ -27,12 +27,15 @@ namespace DoorMonitor
     public partial class MainWindow : Window
     {
         // Field
-        private TcpSocketServer tcpSvr;
-        private ModbusTcpSocketClient modbusTcpClient; 
+        //private TcpSocketServer tcpSvr;
+        //private ModbusTcpSocketClient modbusTcpClient; 
         private TraceWindow traceWnd;
         private bool isTraceWndOpened = false;
 
         private WindowState lastWindowState;
+
+        private TcpSocketServer TcpServer { set; get; }
+        private ModbusTcpSocketClient ModbusTcpClient { set; get; }
 
         /// <summary>
         /// Constructor
@@ -53,6 +56,11 @@ namespace DoorMonitor
             this.Left = MainWndLeftPos = left;
             this.Top = MainWndTopPos = top;
             this.Show();
+
+            // Start monitor
+            TcpServer = (TcpSocketServer)this.FindResource("tcpServer");
+            ModbusTcpClient = (ModbusTcpSocketClient)this.FindResource("modbusTcpClient");
+            StartMonitor();
         }
 
         // Property
@@ -200,38 +208,32 @@ namespace DoorMonitor
         {
             DestroyMainWnd = true;
             this.Close();
+
+            // Stop Monitor
+            StopMonitor();
         }
 
-        private async void btnStartMonitor_Click(object sender, RoutedEventArgs e)
+        private async void StartMonitor()
         {
             // Modbus_TCP with ZL6042
-            if (modbusTcpClient == null)
-            {
-                this.modbusTcpClient = new ModbusTcpSocketClient("192.168.0.200", 502);
-                this.modbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
-                this.modbusTcpClient.StartMonitor();
-            }
-
-            if (this.tcpSvr == null)
-            {
-                this.tcpSvr = new TcpSocketServer("Server", 8001);
-                this.tcpSvr.EnableTrace = true;
-                this.tcpSvr.QueryTimeout_ms = 100;
-                this.tcpSvr.ProcessMessage = ProcessCommand;
-                this.tcpSvr.UpdateTrace = this.traceWnd.UpdateTrace;
-                await tcpSvr.Start();
-            }
+            ModbusTcpClient.IPAddress = "192.168.0.200";
+            ModbusTcpClient.Port = 502;
+            ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
+            ModbusTcpClient.StartMonitor();
+            
+            TcpServer.ServerName = "Server";
+            TcpServer.ServerPort = 8001;
+            TcpServer.EnableTrace = true;
+            TcpServer.QueryTimeout_ms = 100;
+            TcpServer.ProcessMessage = ProcessCommand;
+            TcpServer.UpdateTrace = this.traceWnd.UpdateTrace;
+            await TcpServer.Start();
         }
-
-        /// <summary>
-        /// btnStopServer_Click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnStopMonitor_Click(object sender, RoutedEventArgs e)
+        
+        private void StopMonitor()
         {
-            if (this.modbusTcpClient != null) this.modbusTcpClient.StopMonitor();
-            if (this.tcpSvr!=null) this.tcpSvr.Stop();            
+            if (ModbusTcpClient != null) ModbusTcpClient.StopMonitor();
+            if (TcpServer!=null) TcpServer.Stop();            
         }
 
         private void chkboxShowTrace_Checked(object sender, RoutedEventArgs e)

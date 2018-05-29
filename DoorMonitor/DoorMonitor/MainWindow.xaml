@@ -3,13 +3,79 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DoorMonitor"       
+        xmlns:local="clr-namespace:DoorMonitor"    
+        xmlns:socket="clr-namespace:ETSL.TcpSocket"
         mc:Ignorable="d"        
-        Title="TILE! Door Monitor" Height="200" Width="400" 
+        Title="Door Monitor" Height="150" Width="320" 
         WindowStartupLocation="Manual"        
         ShowInTaskbar="False"        
         Closing="Window_Closing" 
         Icon="Resources/Door.ico" Topmost="True" ResizeMode="CanMinimize">
+    <Window.Resources>
+        <!--Object Definition-->
+        <socket:ModbusTcpSocketClient x:Key="modbusTcpClient"/>
+        <socket:TcpSocketServer x:Key="tcpServer"/>
+        <!--Converter-->
+        <local:DoorStatusToFormColorConverter x:Key="doorStaToFormColor"/>
+        <local:DoorStatusToFontColorConverter x:Key="doorStaToFontColor"/>
+        <local:Door1StatusToMessageConverter x:Key="door1StaToMsg"/>
+        <local:Door2StatusToMessageConverter x:Key="door2StaToMsg"/>
+        <!--UI Proerty-->
+        <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="LightYellow" Offset="0"/>
+            <GradientStop Color="Yellow" Offset="0.5"/>
+            <GradientStop Color="YellowGreen" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="RedLED" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="Pink" Offset="0"/>
+            <GradientStop Color="Red" Offset="0.5"/>
+            <GradientStop Color="DarkRed" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="LightGreenLED" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="White" Offset="0"/>
+            <GradientStop Color="LightGreen" Offset="0.35"/>
+            <GradientStop Color="LimeGreen" Offset="0.85"/>
+            <GradientStop Color="Green" Offset="0.9"/>
+            <GradientStop Color="DarkGreen" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="DarkGreenLED" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="DarkGreen" Offset="0"/>
+            <GradientStop Color="Green" Offset="0.75"/>
+            <GradientStop Color="LimeGreen" Offset="0.85"/>
+            <GradientStop Color="LightGreen" Offset="0.9"/>
+            <GradientStop Color="white" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GrayButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="LightGray" Offset="0"/>
+            <GradientStop Color="Gray" Offset="0.5"/>
+            <GradientStop Color="DarkGray" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="RedButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="Pink" Offset="0"/>
+            <GradientStop Color="Red" Offset="0.5"/>
+            <GradientStop Color="DarkRed" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GreenButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="LightGreen" Offset="0"/>
+            <GradientStop Color="Green" Offset="0.5"/>
+            <GradientStop Color="DarkGreen" Offset="1"/>
+        </LinearGradientBrush>
+        <!--Style-->
+        <Style x:Key="SettingsLabel" TargetType="Label">
+            <Setter Property="Foreground" Value="DarkBlue"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="SettingsTextBox" TargetType="TextBox">
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
     <DockPanel LastChildFill="True">
         <local:NotifyIcon
 			x:Name="notifyIcon"
@@ -34,16 +100,25 @@
                 </ContextMenu>
             </local:NotifyIcon.ContextMenu>
         </local:NotifyIcon>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5" HorizontalAlignment="Left">
-            <CheckBox x:Name="chkboxShowTrace" Content="Show Trace Window" Padding="2" VerticalContentAlignment="Center" Checked="chkboxShowTrace_Checked" Unchecked="chkboxShowTrace_Unchecked"                      
-                      />
-            <Button x:Name="btnStartMonitor" Content="Start Monitor" Margin="70, 0, 0, 0" Padding="10,2" Click="btnStartMonitor_Click"/>
-            <Button x:Name="btnStopMonitor" Content="Stop Monitor" Margin="10, 0, 0, 0" Padding="10,2" Click="btnStopMonitor_Click"/>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <CheckBox x:Name="chkboxMonitorDoor1" Content="Door1"  Padding="2" Margin="0,0,25,0" VerticalContentAlignment="Center"
+            IsChecked="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor1, Mode=TwoWay}"/>
+            <CheckBox x:Name="chkboxMonitorDoor2" Content="Door2"  Padding="2" Margin="0,0,25,0" VerticalContentAlignment="Center"
+            IsChecked="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor2, Mode=TwoWay}"/>
+            <CheckBox x:Name="chkboxShowTrace" Content="TRACE" Padding="2" Margin="50,0,10,0" VerticalContentAlignment="Center"
+            Checked="chkboxShowTrace_Checked" Unchecked="chkboxShowTrace_Unchecked"/>            
         </StackPanel>
-        <TextBox x:Name="tbMessage" Margin="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
-                 FontSize="60" 
-                 Text="Door Closed"
-                 Foreground="Blue"
-                 Background="Green"/>        
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+            <TextBox Margin="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30"
+                     Text="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor1Open, Converter={StaticResource door1StaToMsg}, Mode=OneWay}"
+                     Foreground="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor1Open, Converter={StaticResource doorStaToFontColor}, Mode=OneWay}"
+                     Background="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor1Open, Converter={StaticResource doorStaToFormColor}, Mode=OneWay}"
+                     IsEnabled="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor1, Mode=OneWay}"/>
+            <TextBox Margin="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30"
+                     Text="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor2Open, Converter={StaticResource door2StaToMsg}, Mode=OneWay}"
+                     Foreground="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor2Open, Converter={StaticResource doorStaToFontColor}, Mode=OneWay}"
+                     Background="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor2Open, Converter={StaticResource doorStaToFormColor}, Mode=OneWay}"
+                     IsEnabled="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor2, Mode=OneWay}"/>
+        </StackPanel>                
     </DockPanel>
 </Window>
