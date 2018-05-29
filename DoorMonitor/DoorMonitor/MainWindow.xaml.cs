@@ -167,14 +167,13 @@ namespace DoorMonitor
         }
 
         // The following two function code shows how to operate NotifyIcon behaviors
-        
+
         //private void OnVisibilityClick(object sender, RoutedEventArgs e)
         //{
         //    this.notifyIcon.Visibility = this.notifyIcon.Visibility == Visibility.Visible ?
         //        Visibility.Collapsed : Visibility.Visible;
         //}
 
-        
         //private void OnBalloonClick(object sender, RoutedEventArgs e)
         //{
         //    if (!string.IsNullOrEmpty(this.notifyIcon.BalloonTipText))
@@ -267,6 +266,37 @@ namespace DoorMonitor
             {
                 e.Cancel = true;  // Bypass window destroy procedure but just minimize the window
                 WindowState = WindowState.Minimized;
+            }
+        }
+
+        private void ResetMonitor()
+        {
+            ModbusTcpClient.StopMonitor();
+            System.Threading.Thread.Sleep(200);
+            ModbusTcpClient.StartMonitor();
+        }
+
+        private void chkboxMonitorDoor_Checked(object sender, RoutedEventArgs e)
+        {
+            if (ModbusTcpClient != null)
+            {
+                ResetMonitor();
+            }
+        }        
+
+        private void chkboxMonitorDoor1_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (ModbusTcpClient != null)
+            {
+                ModbusTcpClient.IsDoor1Open = EnumDoorStatus.Ignore;
+            }
+        }
+
+        private void chkboxMonitorDoor2_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (ModbusTcpClient != null)
+            {
+                ModbusTcpClient.IsDoor2Open = EnumDoorStatus.Ignore;                
             }
         }
     }

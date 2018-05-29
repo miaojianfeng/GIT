@@ -16,9 +16,9 @@ namespace ETSL.TcpSocket
 {
     public enum EnumDoorStatus
     {
-        NotMonitor = -1, 
-        Closed     =  0, 
-        Open       =  1
+        Ignore = -1, 
+        Closed =  0, 
+        Open   =  1
     }
 
     public class ModbusTcpSocketClient: INotifyPropertyChanged
@@ -26,7 +26,7 @@ namespace ETSL.TcpSocket
         // ----- Constructor -----
         public ModbusTcpSocketClient()
         {
-            
+           
         }
 
         public ModbusTcpSocketClient(string ipAddress, UInt16 portNum)
@@ -41,11 +41,12 @@ namespace ETSL.TcpSocket
         private UInt16 port = 502;
         private bool monitorDoor1 = true;
         private bool monitorDoor2 = true;
-        private EnumDoorStatus isDoor1Open = EnumDoorStatus.NotMonitor;
-        private EnumDoorStatus isDoor2Open = EnumDoorStatus.NotMonitor;
+        private EnumDoorStatus isDoor1Open = EnumDoorStatus.Ignore;
+        private EnumDoorStatus isDoor2Open = EnumDoorStatus.Ignore;
         private EnumMsgTransState msgTransState = EnumMsgTransState.Silence;
         static private object locker = new object();
         private StringBuilder traceRecord = new StringBuilder();
+        private const string diQueryMsg = "00 00 00 00 00 06 01 01 00 00 00 04";  // DI querying message
 
         // ----- Property -----
         public string IPAddress
@@ -80,6 +81,7 @@ namespace ETSL.TcpSocket
             {
                 this.monitorDoor1 = value;
                 NotifyPropertyChanged("MonitorDoor1");
+                AppendTrace(EnumTraceType.Information, string.Format("MonitorDoor1: <{0}>", value));
             }
             get
             {
@@ -93,6 +95,7 @@ namespace ETSL.TcpSocket
             {
                 this.monitorDoor2 = value;
                 NotifyPropertyChanged("MonitorDoor2");
+                AppendTrace(EnumTraceType.Information, string.Format("MonitorDoor2: <{0}>", value));
             }
             get
             {
@@ -104,8 +107,12 @@ namespace ETSL.TcpSocket
         {
             set
             {
-                this.isDoor1Open = value;
-                NotifyPropertyChanged("IsDoor1Open");
+                lock (locker)
+                {
+                    this.isDoor1Open = value;
+                    NotifyPropertyChanged("IsDoor1Open");
+                    AppendTrace(EnumTraceType.Information, string.Format("IsDoor1Open: <{0}>", value.ToString()));
+                } 
             }
             get
             {
@@ -117,8 +124,12 @@ namespace ETSL.TcpSocket
         {
             set
             {
-                this.isDoor2Open = value;
-                NotifyPropertyChanged("IsDoor2Open");
+                lock (locker)
+                {
+                    this.isDoor2Open = value;
+                    NotifyPropertyChanged("IsDoor2Open");
+                    AppendTrace(EnumTraceType.Information, string.Format("IsDoor2Open: <{0}>", value.ToString()));
+                }
             }
             get
             {
@@ -137,7 +148,7 @@ namespace ETSL.TcpSocket
             {
                 return this.msgTransState;
             }
-        }        
+        }
 
         public Action<string> UpdateTrace { get; set; }
 
@@ -161,11 +172,11 @@ namespace ETSL.TcpSocket
             try
             {
                 this.tcpClient = new TcpClient(IPAddress, Port);
-                AppendTrace(EnumTraceType.Information, string.Format("Connected with ZL6042({0}::{1}) successfully!", IPAddress, Port));
+                AppendTrace(EnumTraceType.Information, string.Format("Connect to ZLAN6042({0}::{1}) successfully!", IPAddress, Port));
             }
             catch
             {
-                AppendTrace(EnumTraceType.Exception, string.Format("Connected with ZL6042({0}::{1}) failed!", IPAddress, Port));
+                AppendTrace(EnumTraceType.Exception, string.Format("Connect to ZLAN6042({0}::{1}) failed!", IPAddress, Port));
                 return;
             }
 
@@ -176,6 +187,8 @@ namespace ETSL.TcpSocket
         public void StopMonitor()
         {
             this.tcpClient.Close();
+            this.tcpClient = null;
+            this.UpdateTrace = null;
         }
 
         private void ReceiveFromClientTask(TcpClient client)
@@ -203,7 +216,8 @@ namespace ETSL.TcpSocket
                     #region NetworkStream Read/Write   
                     MsgTransState = EnumMsgTransState.Silence;
 
-                    while ((i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length)) != 0)
+                    // Listening loop for DI automatical notification 
+                    while ((i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length)) != 0)                    
                     {
                         MsgTransState = EnumMsgTransState.Working;
 
@@ -221,6 +235,7 @@ namespace ETSL.TcpSocket
                         ProcessDiAutoNotificationMsg(recMsg.ToString());
 
                         MsgTransState = EnumMsgTransState.Silence;
+                                               
                     }
                     #endregion
 
@@ -232,34 +247,83 @@ namespace ETSL.TcpSocket
                 }
                 catch
                 {
-                    MsgTransState = EnumMsgTransState.Silence;                    
+                    nwkStream.Close();
+                    MsgTransState = EnumMsgTransState.Silence;
                     AppendTrace(EnumTraceType.Information, "PC has disconnected\n");
                     return;
                 }
             }
         }
 
+        protected void CheckDiStatus(string msgReceived)
+        {
+            string[] msgArray = msgReceived.Split(new string[] { " " }, StringSplitOptions.None);
+            if (msgArray.Length == 10)
+            {
+                // Convert text to nunmber
+                Int16 diValue = Convert.ToInt16(msgArray[9]);
+                Int16 DI1 = 0x1;
+                Int16 DI2 = 0x2;
+                //Int16 DI3 = 0x4;
+                //Int16 DI4 = 0x8;
+
+                // DI1
+                if (MonitorDoor1)
+                {
+                    if ((diValue & DI1) == DI1)  // Closed           
+                    {
+                        IsDoor1Open = EnumDoorStatus.Closed;
+                    }
+                    else  // Open
+                    {
+                        IsDoor1Open = EnumDoorStatus.Open;
+                    }
+                }
+                else
+                {
+                    IsDoor1Open = EnumDoorStatus.Ignore;
+                }
+
+                // DI2
+                if (MonitorDoor2)
+                {
+                    if ((diValue & DI2) == DI2)  // Closed           
+                    {
+                        IsDoor2Open = EnumDoorStatus.Closed;
+                    }
+                    else  // Open
+                    {
+                        IsDoor2Open = EnumDoorStatus.Open;
+                    }
+                }
+                else
+                {
+                    IsDoor2Open = EnumDoorStatus.Ignore;
+                }
+            }
+        }
+
         private void CheckDoorStatus(TcpClient client)
         {
-            NetworkStream nwkStream = client.GetStream();
-            byte[] bytesReceived = new byte[1024];
+            NetworkStream nwkStream = client.GetStream();            
             StringBuilder sendMsg = new StringBuilder();
             StringBuilder recMsg = new StringBuilder();
-            string diQueryMsg = "00 00 00 00 00 06 01 01 00 00 00 04";
+            byte[] bytesReceived = new byte[1024];            
 
             try
             {
-                MsgTransState = EnumMsgTransState.Working;
+                MsgTransState = EnumMsgTransState.Silence;
+
                 sendMsg.Clear();
                 sendMsg.Append(diQueryMsg);
                 byte[] bytesSend = Utilities.Auxiliaries.strToToHexByte(sendMsg.ToString());
                 nwkStream.Write(bytesSend, 0, bytesSend.Length);
-                AppendTrace(EnumTraceType.Message, String.Format("PC ==> ZL6042:  {0}", sendMsg.ToString().ToUpper()));
-                MsgTransState = EnumMsgTransState.Silence;
+                AppendTrace(EnumTraceType.Message, String.Format("PC ==> ZLAN6042:  {0}", sendMsg.ToString().ToUpper()));
+                MsgTransState = EnumMsgTransState.Working;
 
                 System.Threading.Thread.Sleep(200);
 
-                MsgTransState = EnumMsgTransState.Working;
+                MsgTransState = EnumMsgTransState.Silence;
                 int i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length);                
                 
                 recMsg.Clear();
@@ -270,23 +334,72 @@ namespace ETSL.TcpSocket
                     if (j != i - 1) recMsg.Append(" ");
                 }
                 AppendTrace(EnumTraceType.Message, String.Format("PC <== ZLAN6042 :  {0}", recMsg.ToString().ToUpper()));
+                MsgTransState = EnumMsgTransState.Working;
 
                 // Process received message
                 CheckDiStatus(recMsg.ToString());
 
-                MsgTransState = EnumMsgTransState.Silence;               
-
+                //nwkStream.Close();
+                MsgTransState = EnumMsgTransState.Silence;
             }
             catch
             {
+                nwkStream.Close();
                 MsgTransState = EnumMsgTransState.Silence;                
                 AppendTrace(EnumTraceType.Information, String.Format("PC has disconnected\n"));
                 return;
             }
 
             MsgTransState = EnumMsgTransState.Silence;
-        }
+        }        
 
+        protected void ProcessDiAutoNotificationMsg(string msgReceived)
+        {
+            string[] msgArray = msgReceived.Split(new string[] { " " }, StringSplitOptions.None);
+            if(msgArray.Length==12)
+            {
+                if (MonitorDoor1)
+                {
+                    if (msgArray[9].ToUpper() == "10") // DI1:10 / DI2:11 / DI3:12 / DI4:13
+                    {
+                        if (msgArray[10].ToUpper() == "FF")   // Door Closed
+                        {
+                            IsDoor1Open = EnumDoorStatus.Closed;
+                        }
+
+                        if (msgArray[10].ToUpper() == "00")  // Door Open
+                        {
+                            IsDoor1Open = EnumDoorStatus.Open;
+                        }
+                    }
+                }
+                else
+                {
+                    IsDoor1Open = EnumDoorStatus.Ignore;
+                }
+
+                if (MonitorDoor2)
+                {
+                    if (msgArray[9].ToUpper() == "11") // DI1:10 / DI2:11 / DI3:12 / DI4:13
+                    {
+                        if (msgArray[10].ToUpper() == "FF")   // Door Closed
+                        {
+                            IsDoor2Open = EnumDoorStatus.Closed;
+                        }
+
+                        if (msgArray[10].ToUpper() == "00")  // Door Open
+                        {
+                            IsDoor2Open = EnumDoorStatus.Open;
+                        }
+                    }
+                }
+                else
+                {
+                    IsDoor2Open = EnumDoorStatus.Ignore;
+                }
+            }            
+        }
+        
         private void AppendTrace(EnumTraceType traceType, string message)
         {
             // Add time stamp in the beginning of the trace record
@@ -327,101 +440,6 @@ namespace ETSL.TcpSocket
                 if (UpdateTrace != null)
                 {
                     UpdateTrace(traceText);
-                }
-            }
-        }
-
-        protected void ProcessDiAutoNotificationMsg(string msgReceived)
-        {
-            string[] msgArray = msgReceived.Split(new string[] { " " }, StringSplitOptions.None);
-            if(msgArray.Length==12)
-            {
-                if (MonitorDoor1)
-                {
-                    if (msgArray[9].ToUpper() == "10") // DI1:10 / DI2:11 / DI3:12 / DI4:13
-                    {
-                        if (msgArray[10].ToUpper() == "FF")   // Door Closed
-                        {
-                            IsDoor1Open = EnumDoorStatus.Closed;
-                        }
-
-                        if (msgArray[10].ToUpper() == "00")  // Door Open
-                        {
-                            IsDoor1Open = EnumDoorStatus.Open;
-                        }
-                    }
-                }
-                else
-                {
-                    IsDoor1Open = EnumDoorStatus.NotMonitor;
-                }
-
-                if (MonitorDoor2)
-                {
-                    if (msgArray[9].ToUpper() == "11") // DI1:10 / DI2:11 / DI3:12 / DI4:13
-                    {
-                        if (msgArray[10].ToUpper() == "FF")   // Door Closed
-                        {
-                            IsDoor2Open = EnumDoorStatus.Closed;
-                        }
-
-                        if (msgArray[10].ToUpper() == "00")  // Door Open
-                        {
-                            IsDoor2Open = EnumDoorStatus.Open;
-                        }
-                    }
-                }
-                else
-                {
-                    IsDoor2Open = EnumDoorStatus.NotMonitor;
-                }
-            }            
-        }
-
-        protected void CheckDiStatus(string msgReceived)
-        {
-            string[] msgArray = msgReceived.Split(new string[] { " " }, StringSplitOptions.None);
-            if (msgArray.Length == 10)
-            {
-                // Convert text to nunmber
-                Int16 diValue = Convert.ToInt16(msgArray[9]);
-                Int16 DI1 = 0x1;
-                Int16 DI2 = 0x2;
-                //Int16 DI3 = 0x4;
-                //Int16 DI4 = 0x8;
-
-                // DI1
-                if (MonitorDoor1)
-                {
-                    if ((diValue & DI1) == DI1)  // Closed           
-                    {
-                        IsDoor1Open = EnumDoorStatus.Closed;
-                    }
-                    else  // Open
-                    {
-                        IsDoor1Open = EnumDoorStatus.Open;
-                    }
-                }
-                else
-                {
-                    IsDoor1Open = EnumDoorStatus.NotMonitor;
-                }
-
-                // DI2
-                if (MonitorDoor1)
-                {
-                    if ((diValue & DI2) == DI2)  // Closed           
-                    {
-                        IsDoor2Open = EnumDoorStatus.Closed;
-                    }
-                    else  // Open
-                    {
-                        IsDoor2Open = EnumDoorStatus.Open;
-                    }
-                }
-                else
-                {
-                    IsDoor2Open = EnumDoorStatus.NotMonitor;
                 }
             }
         }

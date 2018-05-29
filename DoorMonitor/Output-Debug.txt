@@ -1,0 +1,47 @@
+﻿'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\assembly\GAC_MSIL\Microsoft.VisualStudio.HostingProcess.Utilities\14.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.HostingProcess.Utilities.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Windows.Forms\v4.0_4.0.0.0__b77a5c561934e089\System.Windows.Forms.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Drawing\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Drawing.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\assembly\GAC_MSIL\Microsoft.VisualStudio.HostingProcess.Utilities.Sync\14.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.HostingProcess.Utilities.Sync.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\assembly\GAC_MSIL\Microsoft.VisualStudio.Debugger.Runtime\14.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.Debugger.Runtime.dll'. 
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'D:\SourceCode\GIT\DoorMonitor\DoorMonitor\bin\Debug\DoorMonitor.vshost.exe'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_32\System.Data\v4.0_4.0.0.0__b77a5c561934e089\System.Data.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Core\v4.0_4.0.0.0__b77a5c561934e089\System.Core.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Xml\v4.0_4.0.0.0__b77a5c561934e089\System.Xml.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\Microsoft.CSharp\v4.0_4.0.0.0__b03f5f7f11d50a3a\Microsoft.CSharp.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Xml.Linq\v4.0_4.0.0.0__b77a5c561934e089\System.Xml.Linq.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Data.DataSetExtensions\v4.0_4.0.0.0__b77a5c561934e089\System.Data.DataSetExtensions.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Net.Http\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Net.Http.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Xaml\v4.0_4.0.0.0__b77a5c561934e089\System.Xaml.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\WindowsBase\v4.0_4.0.0.0__31bf3856ad364e35\WindowsBase.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_32\PresentationCore\v4.0_4.0.0.0__31bf3856ad364e35\PresentationCore.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\PresentationFramework\v4.0_4.0.0.0__31bf3856ad364e35\PresentationFramework.dll'. Cannot find or open the PDB file.
+The thread 0x5c4c has exited with code 0 (0x0).
+The thread 0x4b18 has exited with code 0 (0x0).
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'D:\SourceCode\GIT\DoorMonitor\DoorMonitor\bin\Debug\DoorMonitor.exe'. Symbols loaded.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Configuration\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Configuration.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\PresentationFramework.Aero2\v4.0_4.0.0.0__31bf3856ad364e35\PresentationFramework.Aero2.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\PresentationFramework-SystemXmlLinq\v4.0_4.0.0.0__b77a5c561934e089\PresentationFramework-SystemXmlLinq.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\PresentationFramework-SystemXml\v4.0_4.0.0.0__b77a5c561934e089\PresentationFramework-SystemXml.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\Users\miaojianfeng.CORP\AppData\Local\Temp\VisualStudio.XamlDiagnostics.16152\WpfXamlDiagnosticsTap.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\assembly\GAC\Microsoft.VisualStudio.OLE.Interop\7.1.40304.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.OLE.Interop.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\UIAutomationTypes\v4.0_4.0.0.0__31bf3856ad364e35\UIAutomationTypes.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\PresentationFramework-SystemData\v4.0_4.0.0.0__b77a5c561934e089\PresentationFramework-SystemData.dll'. Cannot find or open the PDB file.
+Exception thrown: 'System.Net.Sockets.SocketException' in System.dll
+Exception thrown: 'System.IO.IOException' in System.dll
+Exception thrown: 'System.Net.Sockets.SocketException' in System.dll
+Exception thrown: 'System.IO.IOException' in System.dll
+Exception thrown: 'System.Net.Sockets.SocketException' in System.dll
+Exception thrown: 'System.IO.IOException' in System.dll
+Exception thrown: 'System.Net.Sockets.SocketException' in System.dll
+Exception thrown: 'System.IO.IOException' in System.dll
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\UIAutomationProvider\v4.0_4.0.0.0__31bf3856ad364e35\UIAutomationProvider.dll'. Cannot find or open the PDB file.
+'DoorMonitor.vshost.exe' (CLR v4.0.30319: DoorMonitor.vshost.exe): Loaded 'C:\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\Accessibility\v4.0_4.0.0.0__b03f5f7f11d50a3a\Accessibility.dll'. Cannot find or open the PDB file.
+The thread 0x5fec has exited with code 0 (0x0).
+Exception thrown: 'System.Net.Sockets.SocketException' in System.dll
+Exception thrown: 'System.IO.IOException' in System.dll
+Exception thrown: 'System.ObjectDisposedException' in System.dll
+The thread 0x2ebc has exited with code 0 (0x0).
+The thread 0x3250 has exited with code 0 (0x0).
+The program '[16152] DoorMonitor.vshost.exe' has exited with code 0 (0x0).

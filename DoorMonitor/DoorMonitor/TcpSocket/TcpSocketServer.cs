@@ -279,7 +279,8 @@ namespace ETSL.TcpSocket
         {
             if (ServerState != EnumServerState.ServerStopped)
             {
-                tcpListener.Stop();                
+                tcpListener.Stop();
+                tcpListener = null;               
                 ServerState = EnumServerState.ServerStopped;
                 MsgTransState = EnumMsgTransState.Silence;
                 AppendTrace(EnumTraceType.Information, string.Format("{0} (localhost::{1}) stopped.\n", ServerName, ServerPort));

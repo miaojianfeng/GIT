@@ -87,7 +87,7 @@ namespace DoorMonitor
             }
             else
             {
-                return "Door1 Not Monitored";
+                return "Door1 Ignored";
             }
         }
 
@@ -114,7 +114,7 @@ namespace DoorMonitor
             }
             else
             {
-                return "Door2 Not Monitored";
+                return "Door2 Ignored";
             }
         }
 
