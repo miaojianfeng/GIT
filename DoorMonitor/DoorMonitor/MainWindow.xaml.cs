@@ -273,6 +273,7 @@ namespace DoorMonitor
         {
             ModbusTcpClient.StopMonitor();
             System.Threading.Thread.Sleep(200);
+            ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
             ModbusTcpClient.StartMonitor();
         }
 
