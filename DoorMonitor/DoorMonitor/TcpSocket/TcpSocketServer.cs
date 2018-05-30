@@ -373,7 +373,8 @@ namespace ETSL.TcpSocket
                         // Send back a response.
                         if (responseArray.ToString().ToUpper() != string.Empty)
                         {
-                            byte[] bytesSend = System.Text.Encoding.ASCII.GetBytes(responseArray.ToString());
+                            string respMsg = responseArray.ToString();                            
+                            byte[] bytesSend = System.Text.Encoding.ASCII.GetBytes(respMsg);
                             nwkStream.Write(bytesSend, 0, bytesSend.Length);
                             AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, responseArray.ToString()));
                         }

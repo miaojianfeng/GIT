@@ -127,10 +127,25 @@ namespace DoorMonitor
         private string ProcessCommand(string command)
         {
             string respMsg = "No Response";
-            switch (command.ToLower())
+            switch (command.Trim())
             {
-                case "hello?":
-                    respMsg = "World!";
+                case "0-Door Check":
+                    if(this.ModbusTcpClient!=null)
+                    {
+                        if (this.ModbusTcpClient.IsDoor1Open == EnumDoorStatus.Open || this.ModbusTcpClient.IsDoor2Open == EnumDoorStatus.Open)
+                        {
+                            respMsg = "Fail";
+                        }
+                        else
+                        {
+                            respMsg = "Pass";
+                        }
+                    }
+                    else
+                    {
+                        respMsg = "Pass";
+                    }
+                                        
                     break;
                 default:
                     break;
@@ -251,7 +266,7 @@ namespace DoorMonitor
             TcpServer.ServerName = "Server";
             TcpServer.ServerPort = 8001;
             TcpServer.EnableTrace = true;
-            TcpServer.QueryTimeout_ms = 100;
+            TcpServer.QueryTimeout_ms = 300;
             TcpServer.ProcessMessage = ProcessCommand;
             TcpServer.UpdateTrace = this.traceWnd.UpdateTrace;
             await TcpServer.Start();
