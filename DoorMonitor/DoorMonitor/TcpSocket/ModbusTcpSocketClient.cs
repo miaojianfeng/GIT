@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -180,6 +181,10 @@ namespace ETSL.TcpSocket
             catch
             {
                 AppendTrace(EnumTraceType.Exception, string.Format("Connect to ZLAN6042({0}::{1}) failed!", IPAddress, Port));
+                
+                this.tcpClient = null;
+                this.UpdateTrace = null;
+                MessageBox.Show("Failed to connect to ZLAN6042!\nPlease check network connection.", "Information");
                 return;
             }
 
@@ -189,9 +194,12 @@ namespace ETSL.TcpSocket
 
         public void StopMonitor()
         {
-            this.tcpClient.Close();
-            this.tcpClient = null;
-            this.UpdateTrace = null;
+            if (this.tcpClient != null)
+            {
+                this.tcpClient.Close();
+                this.tcpClient = null;
+                this.UpdateTrace = null;
+            }
         }
 
         private void ReceiveFromClientTask(TcpClient client)
