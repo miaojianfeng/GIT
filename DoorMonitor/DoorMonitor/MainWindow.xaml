@@ -127,7 +127,7 @@
                            Source="Resources/Settings.ico"   
                            VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="None"/>
                     <Label Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                           FontSize="11" Foreground="Black" x:Name="expdrText"                        
+                           FontSize="11" Foreground="Black" FontWeight="SemiBold"                       
                            Content="Settings"/>
                 </Grid>
             </Expander.Header>
@@ -142,7 +142,7 @@
                           Unchecked="chkboxMonitorDoor2_Unchecked"/>
                 <CheckBox x:Name="chkboxShowTrace" Content="Trace" Margin="15,0,0,0" Padding="2" VerticalContentAlignment="Center" FontSize="11"
                           Checked="chkboxShowTrace_Checked" Unchecked="chkboxShowTrace_Unchecked"/>
-                <Button Content="More..." Margin="10,0,0,0" Padding="10,0" FontSize="11" Background="{StaticResource ResourceKey=GrayButton}"/>
+                <Button Content="More..." Margin="10,0,0,0" Padding="15,0" FontSize="11" Background="{StaticResource ResourceKey=GrayButton}" Click="Button_Click"/>
             </StackPanel>
         </Expander>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,0">

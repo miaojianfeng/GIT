@@ -26,9 +26,7 @@ namespace DoorMonitor
     /// </summary>
     public partial class MainWindow : Window
     {
-        // Field
-        //private TcpSocketServer tcpSvr;
-        //private ModbusTcpSocketClient modbusTcpClient; 
+        // Field                
         private TraceWindow traceWnd;
         private bool isTraceWndOpened = false;
 
@@ -347,6 +345,12 @@ namespace DoorMonitor
             {
                 ModbusTcpClient.IsDoor2Open = EnumDoorStatus.Ignore;                
             }
-        }        
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            SettingWindow settingWnd = new SettingWindow();
+            settingWnd.ShowDialog();
+        }
     }
 }
