@@ -115,7 +115,7 @@
                      Background="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor2Open, Converter={StaticResource doorStaToFormColor}, Mode=OneWay}"
                      IsEnabled="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor2, Mode=OneWay}"/>
         </StackPanel>
-        <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Bottom" Margin="5,0,5,0" 
+        <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Bottom" Margin="5,0,5,0"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Expander.Header>
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -127,8 +127,8 @@
                            Source="Resources/Settings.ico"   
                            VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="None"/>
                     <Label Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                           FontSize="12" FontWeight="Bold" Foreground="Black" x:Name="expdrText"                        
-                           Content="Settings..."/>
+                           FontSize="11" Foreground="Black" x:Name="expdrText"                        
+                           Content="Settings"/>
                 </Grid>
             </Expander.Header>
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Right" VerticalAlignment="Stretch">
@@ -140,24 +140,24 @@
                           IsChecked="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor2, Mode=TwoWay}" 
                           Checked="chkboxMonitorDoor_Checked" 
                           Unchecked="chkboxMonitorDoor2_Unchecked"/>
-                <CheckBox x:Name="chkboxShowTrace" Content="TRACE" Margin="15,0,0,0" Padding="2" VerticalContentAlignment="Center" FontSize="11"
+                <CheckBox x:Name="chkboxShowTrace" Content="Trace" Margin="15,0,0,0" Padding="2" VerticalContentAlignment="Center" FontSize="11"
                           Checked="chkboxShowTrace_Checked" Unchecked="chkboxShowTrace_Unchecked"/>
                 <Button Content="More..." Margin="10,0,0,0" Padding="10,0" FontSize="11" Background="{StaticResource ResourceKey=GrayButton}"/>
             </StackPanel>
         </Expander>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,0">
-            <Ellipse Width="9" Height="9" VerticalAlignment="Stretch" Margin="0,2,0,0"
+            <Ellipse Width="10" Height="10" VerticalAlignment="Stretch" Margin="0,2,0,0"
                      Fill="{Binding Source={StaticResource modbusTcpClient}, Path=ZLAN6042LinkStatus, Converter={StaticResource zlan6042LinkStaToFillColor}, Mode=OneWay}"/>
-            <Label Content="ZLAN6042 Link" VerticalContentAlignment="Stretch" FontSize="8"/>
-            <Ellipse Width="9" Height="9" Margin="0,2,0,0"
+            <Label Content="Remote I/O Link" VerticalContentAlignment="Stretch" FontSize="9"/>
+            <Ellipse Width="10" Height="10" Margin="0,2,0,0"
                      Fill="{Binding Source={StaticResource modbusTcpClient}, Path=MsgTransState, Converter={StaticResource msgTransStaToFillColor}, Mode=OneWay}"/>
-            <Label Content="DI MSG" VerticalContentAlignment="Center" FontSize="8"/>
-            <Ellipse Width="9" Height="9" Margin="20,2,0,0"
+            <Label Content="I/O MSG" VerticalContentAlignment="Center" FontSize="9"/>
+            <Ellipse Width="10" Height="10" Margin="15,2,0,0"
                      Fill="{Binding Source={StaticResource tcpServer}, Path=ServerState, Converter={StaticResource svrStaToFillColor}, Mode=OneWay}"/>
-            <Label Content="TILE! Link" VerticalContentAlignment="Center" FontSize="8"/>
-            <Ellipse Width="9" Height="9" Margin="0,2,0,0"
+            <Label Content="TILE! Link" VerticalContentAlignment="Center" FontSize="9"/>
+            <Ellipse Width="10" Height="10" Margin="0,2,0,0"
                      Fill="{Binding Source={StaticResource tcpServer}, Path=MsgTransState, Converter={StaticResource msgTransStaToFillColor}, Mode=OneWay}"/>
-            <Label Content="DoorCheck MSG" VerticalContentAlignment="Center" FontSize="8"/>
+            <Label Content="TILE! MSG" VerticalContentAlignment="Center" FontSize="9"/>
         </StackPanel>
     </DockPanel>
 </Window>

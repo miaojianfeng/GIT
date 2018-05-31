@@ -188,6 +188,7 @@ namespace DoorMonitor
             GradientStopCollection redLED = new GradientStopCollection() { new GradientStop(Colors.Pink, 0),
                                                                            new GradientStop(Colors.Red, 0.5),
                                                                            new GradientStop(Colors.DarkRed, 1)};
+            
 
             // LightGreen LED
             GradientStopCollection lightGreenLED = new GradientStopCollection() { new GradientStop(Colors.White, 0),
@@ -195,6 +196,7 @@ namespace DoorMonitor
                                                                                   new GradientStop(Colors.LimeGreen, 0.85),
                                                                                   new GradientStop(Colors.Green, 0.9),
                                                                                   new GradientStop(Colors.DarkGreen, 1)};
+
             switch (state)
             {
                 case EnumZLAN6042LinkStatus.Disconnected:
@@ -222,14 +224,12 @@ namespace DoorMonitor
             LinearGradientBrush brush = new LinearGradientBrush();
             brush.StartPoint = new Point(0, 0);
             brush.EndPoint = new Point(1, 1);
-
-            // DarkGreen LED
-            GradientStopCollection darkGreenLED = new GradientStopCollection() { new GradientStop(Colors.DarkGreen, 0),
-                                                                                 new GradientStop(Colors.Green, 0.75),
-                                                                                 new GradientStop(Colors.LimeGreen, 0.85),
-                                                                                 new GradientStop(Colors.LightGreen, 0.9),
-                                                                                 new GradientStop(Colors.LightGreen, 1)};
-
+            
+            // RedLED
+            GradientStopCollection redLED = new GradientStopCollection() { new GradientStop(Colors.Pink, 0),
+                                                                           new GradientStop(Colors.Red, 0.5),
+                                                                           new GradientStop(Colors.DarkRed, 1)};
+            
             // LightGreen LED
             GradientStopCollection lightGreenLED = new GradientStopCollection() { new GradientStop(Colors.White, 0),
                                                                                   new GradientStop(Colors.LightGreen, 0.35),
@@ -240,7 +240,7 @@ namespace DoorMonitor
             switch (state)
             {
                 case EnumMsgTransState.Silence:
-                    brush.GradientStops = new GradientStopCollection(darkGreenLED);
+                    brush.GradientStops = new GradientStopCollection(redLED);
                     break;
                 case EnumMsgTransState.Working:
                     brush.GradientStops = new GradientStopCollection(lightGreenLED);
