@@ -112,6 +112,14 @@ namespace DoorMonitor
             top = heightWorkArea - this.Height;            
         }
 
+        private void GetMainWndAlertPopupPosition(out double left, out double top)
+        {
+            double widthWorkArea = SystemParameters.WorkArea.Width;  // Get the work area width
+            double heightWorkArea = SystemParameters.WorkArea.Height; // Get the work area Height
+            left = (widthWorkArea - this.Width) / 2;
+            top = (heightWorkArea - this.Height) / 2;
+        }
+
         public void ShowTraceWnd()
         {
             this.traceWnd.Show();
@@ -201,20 +209,24 @@ namespace DoorMonitor
         {
             this.Dispatcher.Invoke(() =>
             {
-                StringBuilder msg = new StringBuilder();
-                if (ModbusTcpClient.IsDoor1Open == EnumDoorStatus.Open)
+                if (this.WindowState == WindowState.Minimized)
                 {
-                    msg.Append("Door1");
-                }
+                    StringBuilder msg = new StringBuilder();
+                    if (ModbusTcpClient.IsDoor1Open == EnumDoorStatus.Open)
+                    {
+                        msg.Append("Door1");
+                    }
 
-                if (ModbusTcpClient.IsDoor2Open == EnumDoorStatus.Open)
-                {
-                    msg.Append(" Door2");
-                }
 
-                this.notifyIcon.BalloonTipText = string.Format("{0} Opened!\nSignal generator is shut down.", msg.ToString().Trim());
-                this.notifyIcon.BalloonTipTitle = "Alert";
-                this.notifyIcon.ShowBalloonTip(2000);
+                    if (ModbusTcpClient.IsDoor2Open == EnumDoorStatus.Open)
+                    {
+                        msg.Append(" Door2");
+                    }
+
+                    this.notifyIcon.BalloonTipText = string.Format("{0} Opened!\nSignal generator is shut down.", msg.ToString().Trim());
+                    this.notifyIcon.BalloonTipTitle = "Alert";
+                    this.notifyIcon.ShowBalloonTip(10);
+                }
             });            
         }
 
@@ -222,6 +234,10 @@ namespace DoorMonitor
         {
             this.Dispatcher.Invoke(() => 
             {
+                double left, top;
+                GetMainWndAlertPopupPosition(out left, out top);
+                this.Left = left;
+                this.Top = top;
                 this.Show();
                 this.WindowState = this.lastWindowState;
             });            
