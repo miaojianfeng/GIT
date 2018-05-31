@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Background="LightBlue"
         Icon="Resources/Settings.ico"
-        Title="Settings" Height="350" Width="300" ResizeMode="NoResize">
+        Title="Settings" Height="380" Width="300" ResizeMode="NoResize">
     <Window.Resources>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
