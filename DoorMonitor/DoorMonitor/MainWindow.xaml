@@ -10,7 +10,7 @@
         WindowStartupLocation="Manual"        
         ShowInTaskbar="False"         
         Closing="Window_Closing" 
-        Icon="Resources/Door.ico" Topmost="True" ResizeMode="CanMinimize" >
+        Icon="Resources/Door.ico" Topmost="True" ResizeMode="NoResize" >
     <Window.Resources>
         <!--Object Definition-->
         <socket:ModbusTcpSocketClient x:Key="modbusTcpClient"/>
