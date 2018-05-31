@@ -239,7 +239,7 @@ namespace ETSL.TcpSocket
 
             //// Tricky skill here: 
             //// BinaryReader is used for the purpose of detecting whether client has disconnected.           
-            BinaryReader br = new BinaryReader(nwkStream);
+            //BinaryReader br = new BinaryReader(nwkStream);
 
             while (true)
             {
@@ -276,13 +276,13 @@ namespace ETSL.TcpSocket
                     // If client is disconnected, BinaryReader.ReaderString will throw an exception
                     // One important point is: this "br.ReadString()" must be put after NetworkStream Read/Write while loop
                     // Otherwise the message sent from client cannot be readout
-                    br.ReadString();
+                    //br.ReadString();
                 }
                 catch
                 {
                     nwkStream.Close();
                     MsgTransState = EnumMsgTransState.Silence;
-                    AppendTrace(EnumTraceType.Information, "PC has disconnected\n");
+                    AppendTrace(EnumTraceType.Information, "ZLAN6042 has disconnected\n");
                     return;
                 }
             }
@@ -350,35 +350,31 @@ namespace ETSL.TcpSocket
             byte[] bytesReceived = new byte[1024];            
 
             try
-            {
+            {                
                 MsgTransState = EnumMsgTransState.Silence;
-
                 sendMsg.Clear();
                 sendMsg.Append(diQueryMsg);
                 byte[] bytesSend = Utilities.Auxiliaries.strToToHexByte(sendMsg.ToString());
                 nwkStream.Write(bytesSend, 0, bytesSend.Length);
                 AppendTrace(EnumTraceType.Message, String.Format("PC ==> ZLAN6042:  {0}", sendMsg.ToString().ToUpper()));
                 MsgTransState = EnumMsgTransState.Working;
+                System.Threading.Thread.Sleep(300);
 
-                System.Threading.Thread.Sleep(200);
-
-                MsgTransState = EnumMsgTransState.Silence;
-                int i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length);                
-                
+                MsgTransState = EnumMsgTransState.Silence;                
+                int i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length);              
                 recMsg.Clear();
                 for (int j = 0; j < i; j++)
                 {
                     recMsg.Append(bytesReceived[j].ToString("X2"));
-
                     if (j != i - 1) recMsg.Append(" ");
                 }
                 AppendTrace(EnumTraceType.Message, String.Format("PC <== ZLAN6042 :  {0}", recMsg.ToString().ToUpper()));
+                System.Threading.Thread.Sleep(100);
                 MsgTransState = EnumMsgTransState.Working;
-
+                
                 // Process received message
                 CheckDiStatus(recMsg.ToString());
-
-                //nwkStream.Close();
+                System.Threading.Thread.Sleep(100);
                 MsgTransState = EnumMsgTransState.Silence;
             }
             catch

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DoorMonitor"    
         xmlns:socket="clr-namespace:ETSL.TcpSocket"
         mc:Ignorable="d"        
-        Title="DoorMonitor" Height="175" Width="300" 
+        Title="DoorMonitor" Height="200" Width="300" 
         WindowStartupLocation="CenterScreen"        
         ShowInTaskbar="False"         
         Closing="Window_Closing" 
@@ -104,12 +104,12 @@
             </local:NotifyIcon.ContextMenu>
         </local:NotifyIcon>
         <StackPanel DockPanel.Dock="Top" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-            <TextBox Margin="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30"
+            <TextBox Margin="5,2,5,0" Padding="0,5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30"
                      Text="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor1Open, Converter={StaticResource door1StaToMsg}, Mode=OneWay}"
                      Foreground="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor1Open, Converter={StaticResource doorStaToFontColor}, Mode=OneWay}"
                      Background="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor1Open, Converter={StaticResource doorStaToFormColor}, Mode=OneWay}"
                      IsEnabled="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor1, Mode=OneWay}"/>
-            <TextBox Margin="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30"
+            <TextBox Margin="5,2,5,0" Padding="0,5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30"
                      Text="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor2Open, Converter={StaticResource door2StaToMsg}, Mode=OneWay}"
                      Foreground="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor2Open, Converter={StaticResource doorStaToFontColor}, Mode=OneWay}"
                      Background="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor2Open, Converter={StaticResource doorStaToFormColor}, Mode=OneWay}"
