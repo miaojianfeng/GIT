@@ -22,6 +22,12 @@ namespace ETSL.TcpSocket
         Open   =  1
     }
 
+    public enum EnumZLAN6042LinkStatus
+    {
+        Connected    = 0,
+        Disconnected = 1,
+    }
+
     public class ModbusTcpSocketClient: INotifyPropertyChanged
     {
         // ----- Constructor -----
@@ -44,6 +50,7 @@ namespace ETSL.TcpSocket
         private bool monitorDoor2 = true;
         private EnumDoorStatus isDoor1Open = EnumDoorStatus.Ignore;
         private EnumDoorStatus isDoor2Open = EnumDoorStatus.Ignore;
+        private EnumZLAN6042LinkStatus zlan6042LinkStatus = EnumZLAN6042LinkStatus.Disconnected;
         private EnumMsgTransState msgTransState = EnumMsgTransState.Silence;
         static private object locker = new object();
         private StringBuilder traceRecord = new StringBuilder();
@@ -103,6 +110,19 @@ namespace ETSL.TcpSocket
                 return this.monitorDoor2;
             }
         }
+
+        public EnumZLAN6042LinkStatus ZLAN6042LinkStatus
+        {
+            set
+            {
+                this.zlan6042LinkStatus = value;
+                NotifyPropertyChanged("ZLAN6042LinkStatus");
+            }
+            get
+            {
+                return this.zlan6042LinkStatus;
+            }
+        }            
 
         public EnumDoorStatus IsDoor1Open
         {
@@ -176,12 +196,13 @@ namespace ETSL.TcpSocket
             try
             {
                 this.tcpClient = new TcpClient(IPAddress, Port);
+                ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Connected;
                 AppendTrace(EnumTraceType.Information, string.Format("Connect to ZLAN6042({0}::{1}) successfully!", IPAddress, Port));
             }
             catch
             {
                 AppendTrace(EnumTraceType.Exception, string.Format("Connect to ZLAN6042({0}::{1}) failed!", IPAddress, Port));
-                
+                ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Disconnected;
                 this.tcpClient = null;
                 this.UpdateTrace = null;
                 MessageBox.Show("Failed to connect to ZLAN6042!\nPlease check network connection.", "Information");
@@ -198,6 +219,7 @@ namespace ETSL.TcpSocket
             {
                 this.tcpClient.Close();
                 this.tcpClient = null;
+                ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Disconnected;
                 this.UpdateTrace = null;
             }
         }
@@ -382,13 +404,16 @@ namespace ETSL.TcpSocket
                         if (msgArray[10].ToUpper() == "FF")   // Door Closed
                         {
                             IsDoor1Open = EnumDoorStatus.Closed;
+                            System.Threading.Thread.Sleep(200);
                         }
 
                         if (msgArray[10].ToUpper() == "00")  // Door Open
                         {
                             IsDoor1Open = EnumDoorStatus.Open;
+                            //System.Threading.Thread.Sleep(200);
+
                             ShowAlertMessage();
-                            System.Threading.Thread.Sleep(1000);
+                            System.Threading.Thread.Sleep(500);
                             ShowMainWindow();
                         }
                     }
@@ -405,13 +430,16 @@ namespace ETSL.TcpSocket
                         if (msgArray[10].ToUpper() == "FF")   // Door Closed
                         {
                             IsDoor2Open = EnumDoorStatus.Closed;
+                            System.Threading.Thread.Sleep(200);
                         }
 
                         if (msgArray[10].ToUpper() == "00")  // Door Open
                         {
                             IsDoor2Open = EnumDoorStatus.Open;
+                            //System.Threading.Thread.Sleep(200);
+
                             ShowAlertMessage();
-                            System.Threading.Thread.Sleep(1000);
+                            System.Threading.Thread.Sleep(500);
                             ShowMainWindow();
                         }
                     }

@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:DoorMonitor"    
         xmlns:socket="clr-namespace:ETSL.TcpSocket"
         mc:Ignorable="d"        
-        Title="DoorMonitor" Height="150" Width="300" 
-        WindowStartupLocation="Manual"        
+        Title="DoorMonitor" Height="175" Width="300" 
+        WindowStartupLocation="CenterScreen"        
         ShowInTaskbar="False"         
         Closing="Window_Closing" 
         Icon="Resources/Door.ico" Topmost="True" ResizeMode="NoResize" >
@@ -20,6 +20,9 @@
         <local:DoorStatusToFontColorConverter x:Key="doorStaToFontColor"/>
         <local:Door1StatusToMessageConverter x:Key="door1StaToMsg"/>
         <local:Door2StatusToMessageConverter x:Key="door2StaToMsg"/>
+        <local:SvrStateToFillColorConverter x:Key="svrStaToFillColor"/>
+        <local:ZLAN6042LinkStateToFillColorConverter x:Key="zlan6042LinkStaToFillColor"/>
+        <local:MsgTransStateToFillColorConverter x:Key="msgTransStaToFillColor"/>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
@@ -100,19 +103,7 @@
                 </ContextMenu>
             </local:NotifyIcon.ContextMenu>
         </local:NotifyIcon>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center">
-            <CheckBox x:Name="chkboxMonitorDoor1" Content="Door1"  Padding="2" Margin="0,0,25,0" VerticalContentAlignment="Center"
-                      IsChecked="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor1, Mode=TwoWay}" 
-                      Checked="chkboxMonitorDoor_Checked" 
-                      Unchecked="chkboxMonitorDoor1_Unchecked"/>
-            <CheckBox x:Name="chkboxMonitorDoor2" Content="Door2"  Padding="2" Margin="0,0,25,0" VerticalContentAlignment="Center"
-                      IsChecked="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor2, Mode=TwoWay}" 
-                      Checked="chkboxMonitorDoor_Checked" 
-                      Unchecked="chkboxMonitorDoor2_Unchecked"/>
-            <CheckBox x:Name="chkboxShowTrace" Content="TRACE" Padding="2" Margin="50,0,10,0" VerticalContentAlignment="Center"
-                      Checked="chkboxShowTrace_Checked" Unchecked="chkboxShowTrace_Unchecked"/>            
-        </StackPanel>
-        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+        <StackPanel DockPanel.Dock="Top" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Stretch">
             <TextBox Margin="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30"
                      Text="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor1Open, Converter={StaticResource door1StaToMsg}, Mode=OneWay}"
                      Foreground="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor1Open, Converter={StaticResource doorStaToFontColor}, Mode=OneWay}"
@@ -123,6 +114,50 @@
                      Foreground="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor2Open, Converter={StaticResource doorStaToFontColor}, Mode=OneWay}"
                      Background="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor2Open, Converter={StaticResource doorStaToFormColor}, Mode=OneWay}"
                      IsEnabled="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor2, Mode=OneWay}"/>
-        </StackPanel>                
+        </StackPanel>
+        <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Bottom" Margin="5,0,5,0" 
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Expander.Header>
+                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="30*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="1" 
+                           Source="Resources/Settings.ico"   
+                           VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="None"/>
+                    <Label Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                           FontSize="12" FontWeight="Bold" Foreground="Black" x:Name="expdrText"                        
+                           Content="Settings..."/>
+                </Grid>
+            </Expander.Header>
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Right" VerticalAlignment="Stretch">
+                <CheckBox x:Name="chkboxMonitorDoor1" Content="Door1" Padding="2" VerticalContentAlignment="Center" FontSize="11"
+                          IsChecked="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor1, Mode=TwoWay}" 
+                          Checked="chkboxMonitorDoor_Checked" 
+                          Unchecked="chkboxMonitorDoor1_Unchecked"/>
+                <CheckBox x:Name="chkboxMonitorDoor2" Content="Door2" Margin="10,0,0,0" Padding="2" VerticalContentAlignment="Center" FontSize="11"
+                          IsChecked="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor2, Mode=TwoWay}" 
+                          Checked="chkboxMonitorDoor_Checked" 
+                          Unchecked="chkboxMonitorDoor2_Unchecked"/>
+                <CheckBox x:Name="chkboxShowTrace" Content="TRACE" Margin="15,0,0,0" Padding="2" VerticalContentAlignment="Center" FontSize="11"
+                          Checked="chkboxShowTrace_Checked" Unchecked="chkboxShowTrace_Unchecked"/>
+                <Button Content="More..." Margin="10,0,0,0" Padding="10,0" FontSize="11" Background="{StaticResource ResourceKey=GrayButton}"/>
+            </StackPanel>
+        </Expander>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,0">
+            <Ellipse Width="9" Height="9" VerticalAlignment="Stretch" Margin="0,2,0,0"
+                     Fill="{Binding Source={StaticResource modbusTcpClient}, Path=ZLAN6042LinkStatus, Converter={StaticResource zlan6042LinkStaToFillColor}, Mode=OneWay}"/>
+            <Label Content="ZLAN6042 Link" VerticalContentAlignment="Stretch" FontSize="8"/>
+            <Ellipse Width="9" Height="9" Margin="0,2,0,0"
+                     Fill="{Binding Source={StaticResource modbusTcpClient}, Path=MsgTransState, Converter={StaticResource msgTransStaToFillColor}, Mode=OneWay}"/>
+            <Label Content="DI MSG" VerticalContentAlignment="Center" FontSize="8"/>
+            <Ellipse Width="9" Height="9" Margin="20,2,0,0"
+                     Fill="{Binding Source={StaticResource tcpServer}, Path=ServerState, Converter={StaticResource svrStaToFillColor}, Mode=OneWay}"/>
+            <Label Content="TILE! Link" VerticalContentAlignment="Center" FontSize="8"/>
+            <Ellipse Width="9" Height="9" Margin="0,2,0,0"
+                     Fill="{Binding Source={StaticResource tcpServer}, Path=MsgTransState, Converter={StaticResource msgTransStaToFillColor}, Mode=OneWay}"/>
+            <Label Content="DoorCheck MSG" VerticalContentAlignment="Center" FontSize="8"/>
+        </StackPanel>
     </DockPanel>
 </Window>

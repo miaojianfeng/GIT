@@ -50,11 +50,7 @@ namespace DoorMonitor
             HideTraceWnd();
 
             // Flag used to decide whether to destroy window or just minimize the window
-            DestroyMainWnd = false;
-            double left, top;        
-            GetMainWndStartupPosition(out left, out top);
-            this.Left = MainWndLeftPos = left;
-            this.Top = MainWndTopPos = top;
+            DestroyMainWnd = false;            
             this.Show();
 
             // Start monitor
@@ -104,24 +100,15 @@ namespace DoorMonitor
             }
         }
 
-        private void GetMainWndStartupPosition(out double left, out double top)
-        {
-            double widthWorkArea  = SystemParameters.WorkArea.Width;  // Get the work area width
-            double heightWorkArea = SystemParameters.WorkArea.Height; // Get the work area Height
-            left = widthWorkArea  - this.Width;
-            top = heightWorkArea - this.Height;            
-        }
-
-        private void GetMainWndAlertPopupPosition(out double left, out double top)
-        {
-            double widthWorkArea = SystemParameters.WorkArea.Width;  // Get the work area width
-            double heightWorkArea = SystemParameters.WorkArea.Height; // Get the work area Height
-            left = (widthWorkArea - this.Width) / 2;
-            top = (heightWorkArea - this.Height) / 2;
-        }
-
         public void ShowTraceWnd()
         {
+            double left, top;
+            double widthWorkArea = SystemParameters.WorkArea.Width;  // Get the work area width
+            double heightWorkArea = SystemParameters.WorkArea.Height; // Get the work area Height
+            left = widthWorkArea - this.traceWnd.Width;
+            top = heightWorkArea - this.traceWnd.Height;
+            this.traceWnd.Left = left;
+            this.traceWnd.Top = top;
             this.traceWnd.Show();
             IsTraceWndOpened = true;            
         }
@@ -230,14 +217,14 @@ namespace DoorMonitor
             });            
         }
 
-        public void ShowMainWindow()
+        public void PopupMainWindow()
         {
             this.Dispatcher.Invoke(() => 
             {
-                double left, top;
-                GetMainWndAlertPopupPosition(out left, out top);
-                this.Left = left;
-                this.Top = top;
+                //double left, top;
+                //GetCenterScreenPosition(out left, out top);
+                //this.Left = left;
+                //this.Top = top;
                 this.Show();
                 this.WindowState = this.lastWindowState;
             });            
@@ -276,7 +263,7 @@ namespace DoorMonitor
             ModbusTcpClient.Port = 502;
             ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
             ModbusTcpClient.ShowAlertMessage = this.ShowBalloonTip;
-            ModbusTcpClient.ShowMainWindow = this.ShowMainWindow;
+            ModbusTcpClient.ShowMainWindow = this.PopupMainWindow;
             ModbusTcpClient.StartMonitor();
             
             TcpServer.ServerName = "Server";
@@ -334,7 +321,7 @@ namespace DoorMonitor
             System.Threading.Thread.Sleep(200);
             ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
             ModbusTcpClient.ShowAlertMessage = this.ShowBalloonTip;
-            ModbusTcpClient.ShowMainWindow = this.ShowMainWindow;
+            ModbusTcpClient.ShowMainWindow = this.PopupMainWindow;
             ModbusTcpClient.StartMonitor();
         }
 
