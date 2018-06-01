@@ -9,6 +9,8 @@
         Icon="Resources/Settings.ico"
         Title="Settings" Height="450" Width="300" ResizeMode="NoResize">
     <Window.Resources>
+        <!--Object Definition-->
+        <local:DoorMonitorParams x:Key="doorMonitorParams"/>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
@@ -69,24 +71,28 @@
                     <RowDefinition Height="25*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50*"/>
-                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="45*"/>
+                    <ColumnDefinition Width="55*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="Remote I/O IP Address:" FontSize="11" HorizontalAlignment="Right"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left"/>
-                <Label Grid.Row="1" Grid.Column="0" Content="Remote I/O Port:" FontSize="11" HorizontalAlignment="Right"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left"/>
-                <Label Grid.Row="2" Grid.Column="0" Content="TILE! Server Name:" FontSize="11" HorizontalAlignment="Right"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left"/>
-                <Label Grid.Row="3" Grid.Column="0" Content="TILE! Server Port:" FontSize="11" HorizontalAlignment="Right"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left"/>                
+                <Label Grid.Row="0" Grid.Column="0" Content="Remote I/O IP Address:" FontSize="11" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                         Text="{Binding Source={StaticResource doorMonitorParams}, Path=RemoteIoIpAddress, Mode=TwoWay}"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Remote I/O Port:" FontSize="11" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                         Text="{Binding Source={StaticResource doorMonitorParams}, Path=RemoteIoPort, Mode=TwoWay}"/>
+                <Label Grid.Row="2" Grid.Column="0" Content="TILE! Server Name:" FontSize="11" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                         Text="{Binding Source={StaticResource doorMonitorParams}, Path=TileServerName, Mode=TwoWay}"/>
+                <Label Grid.Row="3" Grid.Column="0" Content="TILE! Server Port:" FontSize="11" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                         Text="{Binding Source={StaticResource doorMonitorParams}, Path=TileServerPort, Mode=TwoWay}"/>                
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="1" Margin="5,2,5,0">
             <GroupBox.Header>
                 <Label Content="Signal Generator" FontWeight="SemiBold"/>
             </GroupBox.Header>
-            <StackPanel Orientation="Vertical" Margin="5,2" VerticalAlignment="Stretch">
+            <StackPanel Orientation="Vertical" Margin="5,0" VerticalAlignment="Stretch">
                 <Label Content="Instrument VISA Address:" FontSize="11" HorizontalContentAlignment="Left" />
                 <Button Content="Search Signal Generator" Padding="0,2" Background="{StaticResource GrayButton}"/>
                 <!--IsEnabled="{Binding ElementName=checkboxUseSimVNA, Path=IsChecked, Converter={StaticResource UncheckedToEnable}, Mode=OneWay}"
@@ -96,13 +102,15 @@
                           <!--IsEnabled="{Binding ElementName=checkboxUseSimVNA, Path=IsChecked, Converter={StaticResource UncheckedToEnable}, Mode=OneWay}"
                           ItemsSource="{Binding Source={StaticResource VisaAddressCollection}}"/>-->
                 <Label Margin="0,5,0,0" Content="RF Shut Down Commands:" FontSize="11" HorizontalContentAlignment="Left" />
-                <TextBox Padding="0,3" Margin="0,0,0,5"/>
+                <TextBox Padding="0,3" Margin="0,0,0,5" VerticalContentAlignment="Center"
+                         Text="{Binding Source={StaticResource doorMonitorParams}, Path=SgRfOffCommand, Mode=TwoWay}"/>
             </StackPanel>
         </GroupBox>
         <DockPanel Grid.Row="2" LastChildFill="True">
-            <Label DockPanel.Dock="Left" Content="Config File:" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontWeight="SemiBold"/>
-            <TextBlock Text="C:\Temp\Config.xml" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="Wrap"/>
-            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Browse" Padding="5,2" 
+            <Label DockPanel.Dock="Left" Margin="5,0,0,0" Content="ConfigFile:" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontWeight="SemiBold"/>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="Wrap"
+                       Text="{Binding Source={StaticResource doorMonitorParams}, Path=ConfigFilePath, Mode=TwoWay}"/>
+            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Browse" Padding="5,2" 
                     Margin="5,10,10,10" Background="{StaticResource GrayButton}" Foreground="Blue" FontSize="11" />
         </DockPanel>
         <StackPanel Grid.Row="3" Margin="10,0,10,5" Orientation="Horizontal" HorizontalAlignment="Center">            

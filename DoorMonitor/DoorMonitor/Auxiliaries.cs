@@ -12,6 +12,8 @@ using System.Windows;
 using System.ComponentModel;
 using System.Windows.Media;
 using System.Runtime.CompilerServices;
+using System.IO;
+using System.Xml.Linq;
 using ETSL.TcpSocket;
 
 namespace DoorMonitor
@@ -21,7 +23,13 @@ namespace DoorMonitor
         // ---------- Constructor ---------- 
         public DoorMonitorParams()
         {
-
+            // Load Configuration XML file if it exists, otherwise create it            
+            if (!File.Exists(this.configFilePath))
+            {
+                CreateConfigXML();  // create
+            }
+            
+            LoadConfigXML(); // load Configuration XML file            
         }
 
         // ---------- Field ----------
@@ -29,9 +37,9 @@ namespace DoorMonitor
         private UInt16 tileSvrPort = 8001;
         private string remoteIoIpAddr = "192.168.0.200";
         private UInt16 remoteIoPort = 502;
-
         private string sgVisaAddr = string.Empty;
         private string sgRfOffCmd = string.Empty;
+        private string configFilePath = string.Empty;
 
         // ---------- Property ----------
         public string TileServerName
@@ -112,6 +120,19 @@ namespace DoorMonitor
             }
         }
 
+        public string ConfigFilePath
+        {
+            set
+            {
+                this.configFilePath = value;
+                NotifyPropertyChanged("ConfigFilePath");
+            }
+            get
+            {
+                return this.configFilePath;
+            }
+        }
+
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -131,7 +152,54 @@ namespace DoorMonitor
             }
         }
 
+        private void CreateConfigXML()
+        {
+            //string strCurFdr = System.IO.Directory.GetCurrentDirectory(); // Get current directory            
+            
+            try
+            {
+                XDocument configXmlDoc = new XDocument(new XElement("Configuration",
+                                                           new XElement("RemoteIoAddress", "192.168.0.200"),
+                                                           new XElement("RemoteIoPort", "502"),
+                                                           new XElement("TileServerName", "TILE! DoorMonitor Server"),
+                                                           new XElement("TileServerPort", "8001"),
+                                                           new XElement("SgVisaAddress", ""),                                
+                                                           new XElement("SgRfOffCommand", "")));
 
+                this.configFilePath = @"C:\Temp\Configuration.xml";
+                configXmlDoc.Save(this.configFilePath);                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+        }
+
+        private void LoadConfigXML()
+        {              
+            try
+            {
+                XDocument configXmlDoc = XDocument.Load(this.configFilePath);
+                XElement rootNode = configXmlDoc.Element("Configuration");
+                string strRemoteIoAddr = rootNode.Element("RemoteIoAddress").Value;
+                string strRemoteIoPort = rootNode.Element("RemoteIoPort").Value;
+                string strTileSvrName = rootNode.Element("TileServerName").Value;
+                string strTileSvrPort = rootNode.Element("TileServerPort").Value;
+                string strSgVisaAddr = rootNode.Element("SgVisaAddress").Value;
+                string strSgRfOffCmd = rootNode.Element("SgRfOffCommand").Value;
+
+                this.remoteIoIpAddr = strRemoteIoAddr;
+                this.RemoteIoPort = Convert.ToUInt16(strRemoteIoPort);
+                this.tileSvrName = strTileSvrName;
+                this.TileServerPort = Convert.ToUInt16(strTileSvrPort);
+                this.sgVisaAddr = strSgVisaAddr;
+                this.sgRfOffCmd = strSgRfOffCmd;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+        }
 
         #endregion
     }
