@@ -107,11 +107,9 @@
             </StackPanel>
         </GroupBox>
         <DockPanel Grid.Row="2" LastChildFill="True">
-            <Label DockPanel.Dock="Left" Margin="5,0,0,0" Content="ConfigFile:" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontWeight="SemiBold"/>
+            <Label DockPanel.Dock="Left" Margin="5,0,0,0" Content="Config File:" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontWeight="SemiBold"/>
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="Wrap"
-                       Text="{Binding Source={StaticResource doorMonitorParams}, Path=ConfigFilePath, Mode=TwoWay}"/>
-            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Browse" Padding="5,2" 
-                    Margin="5,10,10,10" Background="{StaticResource GrayButton}" Foreground="Blue" FontSize="11" />
+                       Text="{Binding Source={StaticResource doorMonitorParams}, Path=ConfigFilePath, Mode=TwoWay}"/>            
         </DockPanel>
         <StackPanel Grid.Row="3" Margin="10,0,10,5" Orientation="Horizontal" HorizontalAlignment="Center">            
             <Button Margin="0,6,5,6" Width="100" FontWeight="SemiBold"

@@ -28,6 +28,7 @@ namespace DoorMonitor
     {
         // Field                
         private TraceWindow traceWnd;
+        private SettingWindow settingWnd;
         private bool isTraceWndOpened = false;
         private WindowState lastWindowState;
 
@@ -237,6 +238,12 @@ namespace DoorMonitor
 
             // Stop Monitor
             StopMonitor();
+
+            // Close Settings Window if it is open
+            if(this.settingWnd!=null)
+            {
+                this.settingWnd.Close();
+            }            
         }
 
         private async void StartMonitor()
@@ -332,10 +339,11 @@ namespace DoorMonitor
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void btnMoreSettings_Click(object sender, RoutedEventArgs e)
         {
-            SettingWindow settingWnd = new SettingWindow();
+            this.settingWnd = new SettingWindow();
             settingWnd.ShowDialog();
+            this.settingWnd = null;
         }
     }
 }

@@ -143,7 +143,7 @@
                           Unchecked="chkboxMonitorDoor2_Unchecked"/>
                 <CheckBox x:Name="chkboxShowTrace" Content="Trace" Margin="15,0,0,0" Padding="2" VerticalContentAlignment="Center" FontSize="11"
                           Checked="chkboxShowTrace_Checked" Unchecked="chkboxShowTrace_Unchecked"/>
-                <Button Content="More..." Margin="10,0,0,0" Padding="15,0" FontSize="11" Background="{StaticResource ResourceKey=GrayButton}" Click="Button_Click"/>
+                <Button Content="More..." Margin="10,0,0,0" Padding="15,0" FontSize="11" Background="{StaticResource ResourceKey=GrayButton}" Click="btnMoreSettings_Click"/>
             </StackPanel>
         </Expander>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,0">
