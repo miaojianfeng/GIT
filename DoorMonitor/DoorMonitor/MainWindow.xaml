@@ -13,6 +13,7 @@
         Icon="Resources/Door.ico" Topmost="True" ResizeMode="NoResize" >
     <Window.Resources>
         <!--Object Definition-->
+        <local:DoorMonitorParams x:Key="doorMonitorParams"/>
         <socket:ModbusTcpSocketClient x:Key="modbusTcpClient"/>
         <socket:TcpSocketServer x:Key="tcpServer"/>
         <!--Converter-->
@@ -115,7 +116,7 @@
                      Background="{Binding Source={StaticResource modbusTcpClient}, Path=IsDoor2Open, Converter={StaticResource doorStaToFormColor}, Mode=OneWay}"
                      IsEnabled="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor2, Mode=OneWay}"/>
         </StackPanel>
-        <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Bottom" Margin="5,0,5,0"
+        <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Bottom" Margin="5,0,5,2"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Expander.Header>
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">

@@ -191,7 +191,7 @@ namespace ETSL.TcpSocket
             }
         }
 
-        public void StartMonitor()
+        public void Start()
         {
             try
             {
@@ -213,7 +213,7 @@ namespace ETSL.TcpSocket
             ReceiveFromClientTask(this.tcpClient);           
         }
 
-        public void StopMonitor()
+        public void Stop()
         {
             if (this.tcpClient != null)
             {

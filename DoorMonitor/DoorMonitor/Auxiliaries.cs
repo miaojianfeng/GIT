@@ -16,6 +16,127 @@ using ETSL.TcpSocket;
 
 namespace DoorMonitor
 {
+    public class DoorMonitorParams: INotifyPropertyChanged
+    {
+        // ---------- Constructor ---------- 
+        public DoorMonitorParams()
+        {
+
+        }
+
+        // ---------- Field ----------
+        private string tileSvrName = "TILE! DoorMonitor Server";
+        private UInt16 tileSvrPort = 8001;
+        private string remoteIoIpAddr = "192.168.0.200";
+        private UInt16 remoteIoPort = 502;
+
+        private string sgVisaAddr = string.Empty;
+        private string sgRfOffCmd = string.Empty;
+
+        // ---------- Property ----------
+        public string TileServerName
+        {
+            set
+            {
+                tileSvrName = value;
+                NotifyPropertyChanged("TileServerName");
+            }
+            get
+            {
+                return this.tileSvrName;
+            }
+        }
+
+        public UInt16 TileServerPort
+        {
+            set
+            {
+                this.tileSvrPort = value;
+                NotifyPropertyChanged("TileServerPort");
+            }
+            get
+            {
+                return this.tileSvrPort;
+            }
+        }
+
+        public string RemoteIoIpAddress
+        {
+            set
+            {
+                this.remoteIoIpAddr = value;
+                NotifyPropertyChanged("RemoteIoIpAddress");
+            }
+            get
+            {
+                return this.remoteIoIpAddr;
+            }
+        }
+
+        public UInt16 RemoteIoPort
+        {
+            set
+            {
+                this.remoteIoPort = value;
+                NotifyPropertyChanged("RemoteIoPort");
+            }
+            get
+            {
+                return this.remoteIoPort;
+            }
+        }
+
+        public string SgVisaAddress
+        {
+            set
+            {
+                this.sgVisaAddr = value;
+                NotifyPropertyChanged("SgVisaAddress");
+            }
+            get
+            {
+                return this.sgVisaAddr;
+            }
+        }
+
+        public string SgRfOffCommand
+        {
+            set
+            {
+                this.sgRfOffCmd = value;
+                NotifyPropertyChanged("SgRfOffCommand");
+            }
+            get
+            {
+                return this.sgRfOffCmd;
+            }
+        }
+
+        // ---------- Event ----------
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // ---------- Method ----------
+        #region Method
+        /// <summary>
+        /// This method is called by the Set accessor of each property. 
+        /// The CallerMemberName attribute that is applied to the optional propertyName 
+        /// parameter causes the property name of the caller to be substituted as an argument.
+        /// </summary>
+        /// <param name="propertyName"></param>
+        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+
+
+        #endregion
+    }
+
+    // ---------- Converter Class ----------
     public class DoorStatusToFormColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

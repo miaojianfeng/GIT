@@ -29,9 +29,9 @@ namespace DoorMonitor
         // Field                
         private TraceWindow traceWnd;
         private bool isTraceWndOpened = false;
-
         private WindowState lastWindowState;
 
+        private DoorMonitorParams MonitorParams { set; get; }
         private TcpSocketServer TcpServer { set; get; }
         private ModbusTcpSocketClient ModbusTcpClient { set; get; }
 
@@ -52,6 +52,7 @@ namespace DoorMonitor
             this.Show();
 
             // Start monitor
+            MonitorParams = (DoorMonitorParams)this.FindResource("doorMonitorParams");
             TcpServer = (TcpSocketServer)this.FindResource("tcpServer");
             ModbusTcpClient = (ModbusTcpSocketClient)this.FindResource("modbusTcpClient");
             StartMonitor();
@@ -173,23 +174,7 @@ namespace DoorMonitor
                 this.lastWindowState = this.WindowState;
             }
         }
-
-        // The following two function code shows how to operate NotifyIcon behaviors
-
-        //private void OnVisibilityClick(object sender, RoutedEventArgs e)
-        //{
-        //    this.notifyIcon.Visibility = this.notifyIcon.Visibility == Visibility.Visible ?
-        //        Visibility.Collapsed : Visibility.Visible;
-        //}
-
-        //private void OnBalloonClick(object sender, RoutedEventArgs e)
-        //{
-        //    if (!string.IsNullOrEmpty(this.notifyIcon.BalloonTipText))
-        //    {
-        //        this.notifyIcon.ShowBalloonTip(2000);
-        //    }
-        //}
-
+        
         public void ShowBalloonTip()
         {
             this.Dispatcher.Invoke(() =>
@@ -257,15 +242,15 @@ namespace DoorMonitor
         private async void StartMonitor()
         {
             // Modbus_TCP with ZL6042
-            ModbusTcpClient.IPAddress = "192.168.0.200";
-            ModbusTcpClient.Port = 502;
+            ModbusTcpClient.IPAddress = MonitorParams.RemoteIoIpAddress; // "192.168.0.200";
+            ModbusTcpClient.Port = MonitorParams.RemoteIoPort;           // 502;
             ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
             ModbusTcpClient.ShowAlertMessage = this.ShowBalloonTip;
             ModbusTcpClient.ShowMainWindow = this.PopupMainWindow;
-            ModbusTcpClient.StartMonitor();
-            
-            TcpServer.ServerName = "Server";
-            TcpServer.ServerPort = 8001;
+            ModbusTcpClient.Start();
+
+            TcpServer.ServerName = MonitorParams.TileServerName; //"Server";
+            TcpServer.ServerPort = MonitorParams.TileServerPort; //8001;
             TcpServer.EnableTrace = true;
             TcpServer.QueryTimeout_ms = 300;
             TcpServer.ProcessMessage = ProcessCommand;
@@ -275,7 +260,7 @@ namespace DoorMonitor
         
         private void StopMonitor()
         {
-            if (ModbusTcpClient != null) ModbusTcpClient.StopMonitor();
+            if (ModbusTcpClient != null) ModbusTcpClient.Stop();
             if (TcpServer!=null) TcpServer.Stop();            
         }
 
@@ -315,12 +300,12 @@ namespace DoorMonitor
 
         private void ResetMonitor()
         {
-            ModbusTcpClient.StopMonitor();
+            ModbusTcpClient.Stop();
             System.Threading.Thread.Sleep(200);
             ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
             ModbusTcpClient.ShowAlertMessage = this.ShowBalloonTip;
             ModbusTcpClient.ShowMainWindow = this.PopupMainWindow;
-            ModbusTcpClient.StartMonitor();
+            ModbusTcpClient.Start();
         }
 
         private void chkboxMonitorDoor_Checked(object sender, RoutedEventArgs e)
