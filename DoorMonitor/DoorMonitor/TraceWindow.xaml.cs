@@ -33,14 +33,22 @@ namespace DoorMonitor
 
         public Action CloseTraceWnd { set; get; }  
         public bool DestroyWndFlag { set; get; }
-        
+
+        static private object locker = new object();
+
         /// <summary>
         /// Invoked by the TcpSocket task 
         /// </summary>
         /// <param name="trace"></param>
         public void UpdateTrace(string trace)
         {
-            this.Dispatcher.Invoke(() => { this.tboxTrace.AppendText(trace); });
+            this.Dispatcher.Invoke(() => 
+            {
+                lock (locker)
+                {
+                    this.tboxTrace.AppendText(trace);
+                }
+            });
         }
 
         private void btnSaveTrace_Click(object sender, RoutedEventArgs e)

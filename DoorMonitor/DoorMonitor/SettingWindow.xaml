@@ -3,14 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:InstrDrvBase="clr-namespace:ETSL.InstrDriver.Base"
         xmlns:local="clr-namespace:DoorMonitor"
         mc:Ignorable="d"
         Background="LightBlue"
         Icon="Resources/Settings.ico"
         Title="Settings" Height="480" Width="300" ResizeMode="NoResize">
     <Window.Resources>
-        <!--Object Definition-->
-        <local:DoorMonitorParams x:Key="doorMonitorParams"/>
+        <!--Object Definition-->        
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
@@ -52,6 +52,17 @@
             <GradientStop Color="DarkGreen" Offset="1"/>
         </LinearGradientBrush>
     </Window.Resources>
+    <Window.CommandBindings>
+        <!--Standard Pre-defined Commands -->
+        <!--<CommandBinding Command="ApplicationCommands.Open" Executed="OpenCommand_Executed"/>-->
+        <!--Customed Commands-->
+        <CommandBinding Command="local:DoorMonitorCommands.SetDoorMonitorParams"  
+                        CanExecute="SetDoorMonitorParams_CanExecute" 
+                        Executed="SetDoorMonitorParams_Executed"/>
+        <CommandBinding Command="local:DoorMonitorCommands.TestRfOffCommand"  
+                        CanExecute="TestRfOffCommand_CanExecute" 
+                        Executed="TestRfOffCommand_Executed"/>
+    </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="36*"/>
@@ -75,17 +86,13 @@
                     <ColumnDefinition Width="55*"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Content="Remote I/O IP Address:" FontSize="11" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                         Text="{Binding Source={StaticResource doorMonitorParams}, Path=RemoteIoIpAddress, Mode=TwoWay}"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" x:Name="tbRemoteIoIpAddr"/>
                 <Label Grid.Row="1" Grid.Column="0" Content="Remote I/O Port:" FontSize="11" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                         Text="{Binding Source={StaticResource doorMonitorParams}, Path=RemoteIoPort, Mode=TwoWay}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" x:Name="tbRemoteIoPort"/>
                 <Label Grid.Row="2" Grid.Column="0" Content="TILE! Server Name:" FontSize="11" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                         Text="{Binding Source={StaticResource doorMonitorParams}, Path=TileServerName, Mode=TwoWay}"/>
-                <Label Grid.Row="3" Grid.Column="0" Content="TILE! Server Port:" FontSize="11" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                         Text="{Binding Source={StaticResource doorMonitorParams}, Path=TileServerPort, Mode=TwoWay}"/>                
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" x:Name="tbTileSvrName"/>
+                <Label Grid.Row="3" Grid.Column="0" Content="TILE! Server Port:" FontSize="11" HorizontalAlignment="Right" VerticalContentAlignment="Center" />
+                <TextBox Grid.Row="3" Grid.Column="1" Margin="0,4" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" x:Name="tbTileSvrPort"/>
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="1" Margin="5,2,5,0">
@@ -93,43 +100,32 @@
                 <Label Content="Signal Generator" FontWeight="SemiBold"/>
             </GroupBox.Header>
             <StackPanel Orientation="Vertical" Margin="5,0" VerticalAlignment="Stretch">
-                <Label Content="VISA Address:" FontSize="11" HorizontalContentAlignment="Left" />
-                <Button Content="Search Signal Generator" Padding="0,2" Background="{StaticResource GrayButton}"/>
-                <!--IsEnabled="{Binding ElementName=checkboxUseSimVNA, Path=IsChecked, Converter={StaticResource UncheckedToEnable}, Mode=OneWay}"
-                        Click="btnFindVisaResources_Click"/>-->
-                <ComboBox x:Name="cboxVisaAddrSG" Margin="0,5,0,0" 
-                          HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
-                          <!--IsEnabled="{Binding ElementName=checkboxUseSimVNA, Path=IsChecked, Converter={StaticResource UncheckedToEnable}, Mode=OneWay}"
-                          ItemsSource="{Binding Source={StaticResource VisaAddressCollection}}"/>-->
-                <TextBox Padding="0,3" Margin="0,5,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" IsReadOnly="True"/>
+                <Label FontSize="11" HorizontalContentAlignment="Left" Content="VISA Address:"
+                       />
+                <Button x:Name="btnSearchSG" Content="Search Signal Generator" Padding="0,2" Background="{StaticResource GrayButton}" Click="btnSearchSG_Click"/>                
+                <TextBox Padding="0,3" Margin="0,6,0,0" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Left" x:Name="tbAddr"
+                         IsReadOnly="True" Text="Select the SG address from the following list" Foreground="Blue" Background="Yellow"/>
+                <ComboBox x:Name="cbVisaAddrList" Margin="0,1,0,0"
+                          HorizontalContentAlignment="Center" VerticalAlignment="Center"/>                                
                 <Label Margin="0,5,0,0" Content="SCPI Commands to shut down RF:" FontSize="11" HorizontalContentAlignment="Left" />
-                <TextBox Padding="0,3" Margin="0,0,0,5" VerticalContentAlignment="Center"
-                         Text="{Binding Source={StaticResource doorMonitorParams}, Path=SgRfOffCommand, Mode=TwoWay}"/>
-                <Button Margin="80,0" Content="Test" Background="{StaticResource GrayButton}" Foreground="Blue"/>
+                <TextBox Padding="0,3" Margin="0,0,0,5" VerticalContentAlignment="Center" x:Name="tbRfOffCmd"/>
+                <Button Margin="80,0" Content="Test" Background="{StaticResource GrayButton}" Foreground="Blue"
+                        Command="local:DoorMonitorCommands.TestRfOffCommand"/>
             </StackPanel>
         </GroupBox>
         <DockPanel Grid.Row="2" LastChildFill="True" VerticalAlignment="Stretch">
             <Label DockPanel.Dock="Left" Margin="5,0,0,0" Content="ConfigFile: " VerticalAlignment="Center" HorizontalAlignment="Stretch" FontWeight="SemiBold"/>
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="Wrap"
-                       Text="{Binding Source={StaticResource doorMonitorParams}, Path=ConfigFilePath, Mode=TwoWay}"/>            
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="Wrap" x:Name="tbConfigFile"/>
         </DockPanel>
         <StackPanel Grid.Row="3" Margin="10,0,10,0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Stretch">            
             <Button Margin="0,0,5,8" Width="100" FontWeight="SemiBold"
                     VerticalContentAlignment="Center" Foreground="White" 
-                    Background="{StaticResource GreenButton}"
-                    x:Name="btnOK"
-                    Content="OK"/>
-                    <!--IsEnabled="{Binding Source={StaticResource tcpSvr}, Path=ServerState,
-                                Converter={StaticResource svrStaToRunSvrEnable},Mode=OneWay}" 
-                    Click="BtnRun_Click"/>-->
+                    Background="{StaticResource GreenButton}" Content="OK" 
+                    Command="local:DoorMonitorCommands.SetDoorMonitorParams"/>                    
             <Button  Margin="15,0,5,8" FontWeight="SemiBold"
                      VerticalContentAlignment="Center" Foreground="White" Width="100"
-                     Background="{StaticResource RedButton}"
-                     x:Name="btnStop"
-                     Content="Cancel"/>
-                        <!--IsEnabled="{Binding Source={StaticResource tcpSvr}, Path=ServerState,
-                                    Converter={StaticResource svrStaToStopSvrEnable},Mode=OneWay}" 
-                        Click="BtnStop_Click"/>-->
+                     Background="{StaticResource RedButton}"                     
+                     Content="Cancel" Click="btnStop_Click"/>                       
         </StackPanel>        
     </Grid>
 </Window>

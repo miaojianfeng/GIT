@@ -18,6 +18,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Controls.Primitives;
 using ETSL.TcpSocket;
 using ETSL.Utilities;
+using ETSL.InstrDriver.Base;
 
 namespace DoorMonitor
 {
@@ -36,6 +37,9 @@ namespace DoorMonitor
         private TcpSocketServer TcpServer { set; get; }
         private ModbusTcpSocketClient ModbusTcpClient { set; get; }
 
+        public InstrumentManager InstrMgr { private set; get; }
+        public VisaInstrDriver InstrDrv { private set; get; }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -51,11 +55,13 @@ namespace DoorMonitor
             // Flag used to decide whether to destroy window or just minimize the window
             DestroyMainWnd = false;            
             this.Show();
-
-            // Start monitor
+                        
+            InstrMgr = (InstrumentManager)this.FindResource("InstrMgr");
+            InstrDrv = (VisaInstrDriver)this.FindResource("VisaInstrDrv");
             MonitorParams = (DoorMonitorParams)this.FindResource("doorMonitorParams");
             TcpServer = (TcpSocketServer)this.FindResource("tcpServer");
             ModbusTcpClient = (ModbusTcpSocketClient)this.FindResource("modbusTcpClient");
+            
             StartMonitor();
         }
 
@@ -341,9 +347,52 @@ namespace DoorMonitor
 
         private void btnMoreSettings_Click(object sender, RoutedEventArgs e)
         {
-            this.settingWnd = new SettingWindow();
+            this.settingWnd = new SettingWindow(MonitorParams, InstrMgr, InstrDrv);
+
+            // Set Bindings
+            // <1> RemoteIoIpAddress
+            Binding binding1 = new Binding("RemoteIoIpAddress") { Source = MonitorParams };
+            binding1.Mode = BindingMode.TwoWay;
+            this.settingWnd.tbRemoteIoIpAddr.SetBinding(TextBox.TextProperty, binding1);
+
+            // <2> RemoteIoPort
+            Binding binding2 = new Binding("RemoteIoPort") { Source = MonitorParams };
+            binding2.Mode = BindingMode.TwoWay;
+            this.settingWnd.tbRemoteIoPort.SetBinding(TextBox.TextProperty, binding2);
+
+            // <3> TileServerName
+            Binding binding3= new Binding("TileServerName") { Source = MonitorParams };
+            binding3.Mode = BindingMode.TwoWay;
+            this.settingWnd.tbTileSvrName.SetBinding(TextBox.TextProperty, binding3);
+
+            // <4> TileServerPort
+            Binding binding4 = new Binding("TileServerPort") { Source = MonitorParams };
+            binding4.Mode = BindingMode.TwoWay;
+            this.settingWnd.tbTileSvrPort.SetBinding(TextBox.TextProperty, binding4);
+
+            // <5> SgRfOffCommand
+            Binding binding5 = new Binding("SgRfOffCommand") { Source = MonitorParams };
+            binding5.Mode = BindingMode.TwoWay;
+            this.settingWnd.tbRfOffCmd.SetBinding(TextBox.TextProperty, binding5);
+
+            // <6> ConfigFilePath
+            Binding binding6 = new Binding("ConfigFilePath") { Source = MonitorParams };
+            binding6.Mode = BindingMode.OneWay;
+            this.settingWnd.tbConfigFile.SetBinding(TextBlock.TextProperty, binding6);
+
+            // <7> VisaAddressList
+            this.settingWnd.cbVisaAddrList.ItemsSource = MonitorParams.VisaAddressList;
+
+            // <8> VisaAddrListSelIndex
+            Binding binding7 = new Binding("VisaAddrListSelIndex") { Source = MonitorParams };
+            binding7.Mode = BindingMode.TwoWay;
+            this.settingWnd.cbVisaAddrList.SetBinding(ComboBox.SelectedIndexProperty, binding7);
+
+            this.settingWnd.UpdateTrace = this.traceWnd.UpdateTrace;
+
             settingWnd.ShowDialog();
-            this.settingWnd = null;
+            this.settingWnd.UpdateTrace = null;
+            this.settingWnd = null;           
         }
     }
 }

@@ -4,6 +4,7 @@
   <RemoteIoPort>502</RemoteIoPort>
   <TileServerName>TILE! DoorMonitor Server</TileServerName>
   <TileServerPort>8001</TileServerPort>
-  <SgVisaAddress>""</SgVisaAddress>
+  <VisaAddressList></VisaAddressList>
+  <VisaAddrListSelIndex></VisaAddrListSelIndex>    
   <SgRfOffCommand>""</SgRfOffCommand>  
 </Configuration>

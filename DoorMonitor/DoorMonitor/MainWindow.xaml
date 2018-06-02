@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DoorMonitor"    
         xmlns:socket="clr-namespace:ETSL.TcpSocket"
+        xmlns:InstrDrvBase="clr-namespace:ETSL.InstrDriver.Base"
         mc:Ignorable="d"        
         Title="DoorMonitor" Height="200" Width="300" 
         WindowStartupLocation="CenterScreen"        
@@ -16,6 +17,8 @@
         <local:DoorMonitorParams x:Key="doorMonitorParams"/>
         <socket:ModbusTcpSocketClient x:Key="modbusTcpClient"/>
         <socket:TcpSocketServer x:Key="tcpServer"/>
+        <InstrDrvBase:InstrumentManager x:Key="InstrMgr" />
+        <InstrDrvBase:VisaInstrDriver x:Key="VisaInstrDrv" />
         <!--Converter-->
         <local:DoorStatusToFormColorConverter x:Key="doorStaToFormColor"/>
         <local:DoorStatusToFontColorConverter x:Key="doorStaToFontColor"/>

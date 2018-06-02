@@ -38,6 +38,25 @@
     <ApplicationIcon>Resources\Door.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NationalInstruments.Common, Version=15.0.40.49154, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Reference\NationalInstruments.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.Common.Native">
+      <HintPath>Reference\NationalInstruments.Common.Native.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.MStudioCLM, Version=15.0.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>Reference\NationalInstruments.MStudioCLM.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.NiLmClientDLL, Version=15.0.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Reference\NationalInstruments.NiLmClientDLL.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.VisaNS">
+      <HintPath>Reference\NationalInstruments.VisaNS.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -61,6 +80,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Auxiliaries.cs" />
+    <Compile Include="DoorMonitorCommands.cs" />
     <Compile Include="NotifyIcon\BalloonTipIcon.cs" />
     <Compile Include="NotifyIcon\NotifyIcon.cs" />
     <Compile Include="NotifyIcon\NotifyIcon.Interop.cs" />
@@ -73,6 +93,8 @@
       <DependentUpon>TraceWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities.cs" />
+    <Compile Include="VisaInstrument\InstrumentManager.cs" />
+    <Compile Include="VisaInstrument\VisaInstrDriver.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -137,6 +159,7 @@
   <ItemGroup>
     <Resource Include="Configuration.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

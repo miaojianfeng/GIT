@@ -23,6 +23,8 @@ namespace DoorMonitor
         // ---------- Constructor ---------- 
         public DoorMonitorParams()
         {
+            VisaAddressList = new ObservableCollection<string>();
+
             // Load Configuration XML file if it exists, otherwise create it            
             if (!File.Exists(this.configFilePath))
             {
@@ -37,9 +39,10 @@ namespace DoorMonitor
         private UInt16 tileSvrPort = 8001;
         private string remoteIoIpAddr = "192.168.0.200";
         private UInt16 remoteIoPort = 502;
-        private string sgVisaAddr = string.Empty;
+        private int visaAddrListSelIndex = -1;
+        private string sgVisaAddr = string.Empty;        
         private string sgRfOffCmd = string.Empty;
-        private string configFilePath = string.Empty;
+        private string configFilePath = @"C:\Temp\Configuration.xml";
 
         // ---------- Property ----------
         public string TileServerName
@@ -94,6 +97,19 @@ namespace DoorMonitor
             }
         }
 
+        public int VisaAddrListSelIndex
+        {
+            set
+            {
+                this.visaAddrListSelIndex = value;
+                NotifyPropertyChanged("VisaAddrListSelIndex");
+            }
+            get
+            {
+                return this.visaAddrListSelIndex;
+            }
+        }
+
         public string SgVisaAddress
         {
             set
@@ -133,6 +149,8 @@ namespace DoorMonitor
             }
         }
 
+        public ObservableCollection<string> VisaAddressList { set; get; }        
+
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -163,7 +181,8 @@ namespace DoorMonitor
                                                            new XElement("RemoteIoPort", "502"),
                                                            new XElement("TileServerName", "TILE! DoorMonitor Server"),
                                                            new XElement("TileServerPort", "8001"),
-                                                           new XElement("SgVisaAddress", ""),                                
+                                                           new XElement("VisaAddressList", ""),
+                                                           new XElement("VisaAddressListSelIndex", "-1"),                                                                                        
                                                            new XElement("SgRfOffCommand", "")));
 
                 this.configFilePath = @"C:\Temp\Configuration.xml";
@@ -171,7 +190,7 @@ namespace DoorMonitor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "Create <C:\\Temp\\Configuration.xml> Error!");
             }
         }
 
@@ -185,15 +204,27 @@ namespace DoorMonitor
                 string strRemoteIoPort = rootNode.Element("RemoteIoPort").Value;
                 string strTileSvrName = rootNode.Element("TileServerName").Value;
                 string strTileSvrPort = rootNode.Element("TileServerPort").Value;
-                string strSgVisaAddr = rootNode.Element("SgVisaAddress").Value;
-                string strSgRfOffCmd = rootNode.Element("SgRfOffCommand").Value;
+                string strVisaAddrList = rootNode.Element("VisaAddressList").Value;
+                string strAddrListSelIndex = rootNode.Element("VisaAddressListSelIndex").Value;                
+                string strSgRfOffCmd = rootNode.Element("SgRfOffCommand").Value;                
 
                 this.remoteIoIpAddr = strRemoteIoAddr;
                 this.RemoteIoPort = Convert.ToUInt16(strRemoteIoPort);
                 this.tileSvrName = strTileSvrName;
-                this.TileServerPort = Convert.ToUInt16(strTileSvrPort);
-                this.sgVisaAddr = strSgVisaAddr;
+                this.TileServerPort = Convert.ToUInt16(strTileSvrPort);                
                 this.sgRfOffCmd = strSgRfOffCmd;
+                this.visaAddrListSelIndex = Convert.ToInt16(strAddrListSelIndex);
+
+                if (strVisaAddrList!=string.Empty)
+                {
+                    string[] list = strVisaAddrList.Split(new string[] { ";" }, StringSplitOptions.None);
+                    foreach(string addr in list)
+                    {
+                        VisaAddressList.Add(addr);
+                    }
+                }
+
+                this.sgVisaAddr = VisaAddressList[this.visaAddrListSelIndex];
             }
             catch (Exception ex)
             {
@@ -441,6 +472,14 @@ namespace DoorMonitor
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class VisaAddressList : ObservableCollection<string>
+    {
+        public VisaAddressList() : base()
+        {
+
         }
     }
 }
