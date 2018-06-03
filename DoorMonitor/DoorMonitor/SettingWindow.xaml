@@ -105,12 +105,10 @@
                 <Button x:Name="btnSearchSG" Content="Search Signal Generator" Padding="0,2" Background="{StaticResource GrayButton}" Click="btnSearchSG_Click"/>                
                 <TextBox Padding="0,3" Margin="0,6,0,0" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Left" x:Name="tbAddr"
                          IsReadOnly="True" Text="Select the SG address from the following list" Foreground="Blue" Background="Yellow"/>
-                <ComboBox x:Name="cbVisaAddrList" Margin="0,1,0,0"
-                          HorizontalContentAlignment="Center" VerticalAlignment="Center"/>                                
+                <ComboBox x:Name="cbVisaAddrList" Margin="0,1,0,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>                                
                 <Label Margin="0,5,0,0" Content="SCPI Commands to shut down RF:" FontSize="11" HorizontalContentAlignment="Left" />
                 <TextBox Padding="0,3" Margin="0,0,0,5" VerticalContentAlignment="Center" x:Name="tbRfOffCmd"/>
-                <Button Margin="80,0" Content="Test" Background="{StaticResource GrayButton}" Foreground="Blue"
-                        Command="local:DoorMonitorCommands.TestRfOffCommand"/>
+                <Button Margin="80,0" Content="Test" Background="{StaticResource GrayButton}" Foreground="Blue" Command="local:DoorMonitorCommands.TestRfOffCommand"/>
             </StackPanel>
         </GroupBox>
         <DockPanel Grid.Row="2" LastChildFill="True" VerticalAlignment="Stretch">

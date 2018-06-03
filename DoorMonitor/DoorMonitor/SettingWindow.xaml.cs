@@ -34,8 +34,7 @@ namespace DoorMonitor
             InstrMgr = instrMgr;
             InstrDrv = instrDrv;
 
-            InitFinished = true;
-            VisaAddrListChanged = false;   
+            InitFinished = true;             
         }
 
         // Property
@@ -46,8 +45,60 @@ namespace DoorMonitor
 
         private bool InitFinished { set; get; }
 
-        private bool VisaAddrListChanged { set; get; }
+        private bool HasVisaAddrListChanged
+        {        
+            get
+            {
+                bool flag = false;
 
+                try
+                {
+                    StringBuilder sb = new StringBuilder();
+                    int count = MonitorParams.VisaAddressList.Count;
+                    string addrListActual = string.Empty;
+                    if (count != 0)
+                    {
+                        for (int i = 0; i < count; i++)
+                        {
+                            if (i != count - 1)
+                            {
+                                sb.Append(MonitorParams.VisaAddressList[i] + ";");
+                            }
+                            else
+                            {
+                                sb.Append(MonitorParams.VisaAddressList[i]);
+                            }
+                        }
+                        addrListActual = sb.ToString();
+                    }
+                    else
+                    {
+                        addrListActual = string.Empty;
+                    }
+
+                    XDocument configXmlDoc = XDocument.Load(MonitorParams.ConfigFilePath);
+                    XElement rootNode = configXmlDoc.Element("Configuration");
+                    string addrListXML = rootNode.Element("VisaAddressList").Value;
+                    if (addrListXML == addrListActual)
+                    {
+                        flag = false;
+                    }
+                    else
+                    {
+                        flag = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Save <C:\\Temp\\Configuration.xml> Error!");
+                    flag = false;
+                }
+
+                return flag;
+            }                        
+        }
+
+        
         private async void btnSearchSG_Click(object sender, RoutedEventArgs e)
         {
             tbAddr.Text = "Search SG is in progress...";
@@ -63,23 +114,13 @@ namespace DoorMonitor
                 foreach (string addr in InstrMgr.VisaAddressList)
                 {
                     MonitorParams.VisaAddressList.Add(addr);
-                }                                
-
-                if(MonitorParams.VisaAddressList.Count!=0)
-                {
-                    MonitorParams.VisaAddrListSelIndex = cbVisaAddrList.SelectedIndex = 0;
-
-                    XDocument configXmlDoc = XDocument.Load(MonitorParams.ConfigFilePath);
-                    XElement rootNode = configXmlDoc.Element("Configuration");
-                    string visaList = GetVisaListString();
-                    if(rootNode.Element("VisaAddressList").Value != visaList)
-                    {
-                        VisaAddrListChanged = true;
-                    }
-
                 }
+                
+                if(HasVisaAddrListChanged)
+                {
+                    this.cbVisaAddrList.SelectedIndex = 0;
+                }                
 
-                System.Threading.Thread.Sleep(200);
                 tbAddr.Text = "Select the SG address from the following list";
             }
 
@@ -96,16 +137,13 @@ namespace DoorMonitor
             {
                 UInt16 remoteIoPort = Convert.ToUInt16(this.tbRemoteIoPort.Text);
                 UInt16 tileSvrPort = Convert.ToUInt16(this.tbTileSvrPort.Text);
-                
-                XDocument configXmlDoc = XDocument.Load(MonitorParams.ConfigFilePath);
-                XElement rootNode = configXmlDoc.Element("Configuration");
 
                 if (this.tbRemoteIoIpAddr.Text != MonitorParams.RemoteIoIpAddress ||
                      remoteIoPort != MonitorParams.RemoteIoPort ||
                      this.tbTileSvrName.Text != MonitorParams.TileServerName ||
                      tileSvrPort != MonitorParams.TileServerPort ||
                      this.tbRfOffCmd.Text != MonitorParams.SgRfOffCommand ||
-                     VisaAddrListChanged || 
+                     HasVisaAddrListChanged || 
                      this.cbVisaAddrList.SelectedIndex!=MonitorParams.VisaAddrListSelIndex)
                 {
                     e.CanExecute = true;
