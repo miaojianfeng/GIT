@@ -27,13 +27,11 @@ namespace DoorMonitor
         public SettingWindow(DoorMonitorParams monitorParams, InstrumentManager instrMgr, VisaInstrDriver instrDrv)
         {
             InitFinished = false;
-
             InitializeComponent();
 
             MonitorParams = monitorParams;
             InstrMgr = instrMgr;
             InstrDrv = instrDrv;
-
             InitFinished = true;             
         }
 
@@ -42,6 +40,7 @@ namespace DoorMonitor
         private InstrumentManager InstrMgr { set; get; }
         private VisaInstrDriver InstrDrv { set; get; }
         public Action<string> UpdateTrace { set; get; }
+        public Action<bool> SetParamsChangedFlag { set; get; }
 
         private bool InitFinished { set; get; }
 
@@ -96,8 +95,7 @@ namespace DoorMonitor
 
                 return flag;
             }                        
-        }
-
+        }       
         
         private async void btnSearchSG_Click(object sender, RoutedEventArgs e)
         {
@@ -127,6 +125,7 @@ namespace DoorMonitor
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
+            if (SetParamsChangedFlag != null) SetParamsChangedFlag(false);            
             Close();
         }
 
@@ -212,6 +211,8 @@ namespace DoorMonitor
                 }
 
                 configXmlDoc.Save(MonitorParams.ConfigFilePath);
+
+                if (SetParamsChangedFlag != null) SetParamsChangedFlag(true);
             }
             catch (Exception ex)
             {
@@ -219,7 +220,7 @@ namespace DoorMonitor
             }
 
             e.Handled = true;
-            Close();
+            Close();            
         }
 
         private void TestCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -283,7 +284,7 @@ namespace DoorMonitor
 
             string traceText = timeStamp + " " + typeStr + "   " + message;
             
-            UpdateTrace(traceText);
+            if(UpdateTrace!=null) UpdateTrace(traceText);
         }
 
         private string GetVisaListString()

@@ -197,11 +197,11 @@ namespace ETSL.TcpSocket
             {
                 this.tcpClient = new TcpClient(IPAddress, Port);
                 ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Connected;
-                AppendTrace(EnumTraceType.Information, string.Format("Connect to ZLAN6042({0}::{1}) successfully!", IPAddress, Port));
+                AppendTrace(EnumTraceType.Information, string.Format("<< Connect to ZLAN6042({0}::{1}) successfully! >>", IPAddress, Port));
             }
             catch
             {
-                AppendTrace(EnumTraceType.Exception, string.Format("Connect to ZLAN6042({0}::{1}) failed!", IPAddress, Port));
+                AppendTrace(EnumTraceType.Exception, string.Format("<< Connect to ZLAN6042({0}::{1}) failed! >>", IPAddress, Port));
                 ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Disconnected;
                 this.tcpClient = null;
                 this.UpdateTrace = null;
@@ -217,6 +217,7 @@ namespace ETSL.TcpSocket
         {
             if (this.tcpClient != null)
             {
+                AppendTrace(EnumTraceType.Information, string.Format("<< Disconnect to ZLAN6042({0}::{1}) >>", IPAddress, Port));
                 this.tcpClient.Close();
                 this.tcpClient = null;
                 ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Disconnected;
@@ -483,11 +484,11 @@ namespace ETSL.TcpSocket
             {
                 this.traceRecord.Append(traceText);
                 NotifyPropertyChanged("TraceRecord");
+            }
 
-                if (UpdateTrace != null)
-                {
-                    UpdateTrace(traceText);
-                }
+            if (UpdateTrace != null)
+            {
+                UpdateTrace(traceText);
             }
         }
     }

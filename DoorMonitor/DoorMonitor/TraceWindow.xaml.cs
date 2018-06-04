@@ -53,7 +53,7 @@ namespace DoorMonitor
 
         private void btnSaveTrace_Click(object sender, RoutedEventArgs e)
         {
-            // Not implement yet
+           
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

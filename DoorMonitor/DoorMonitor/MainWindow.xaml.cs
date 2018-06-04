@@ -39,9 +39,10 @@ namespace DoorMonitor
 
         public InstrumentManager InstrMgr { private set; get; }
         public VisaInstrDriver InstrDrv { private set; get; }
+        public bool ParamsChanged { set; get; }
 
         /// <summary>
-        /// Constructor
+        /// Constructor 
         /// </summary>
         public MainWindow()
         {
@@ -61,8 +62,8 @@ namespace DoorMonitor
             MonitorParams = (DoorMonitorParams)this.FindResource("doorMonitorParams");
             TcpServer = (TcpSocketServer)this.FindResource("tcpServer");
             ModbusTcpClient = (ModbusTcpSocketClient)this.FindResource("modbusTcpClient");
-            
-            StartMonitor();
+            ParamsChanged = false;
+            StartDoorMonitor();
         }
 
         // Property
@@ -243,7 +244,7 @@ namespace DoorMonitor
             this.Close();
 
             // Stop Monitor
-            StopMonitor();
+            StopDoorMonitor();
 
             // Close Settings Window if it is open
             if(this.settingWnd!=null)
@@ -252,7 +253,25 @@ namespace DoorMonitor
             }            
         }
 
-        private async void StartMonitor()
+        private void StartDoorMonitor()
+        {  
+            StartRemoteIO();
+            StartTileServer();
+        }
+
+        private void StopDoorMonitor()
+        {
+            StopRemoteIO();
+            StopTileServer();
+        }
+
+        private void ResetDoorMonitor()
+        {            
+            StopDoorMonitor();
+            StartDoorMonitor();                       
+        }
+
+        private void StartRemoteIO()
         {
             // Modbus_TCP with ZL6042
             ModbusTcpClient.IPAddress = MonitorParams.RemoteIoIpAddress; // "192.168.0.200";
@@ -261,20 +280,41 @@ namespace DoorMonitor
             ModbusTcpClient.ShowAlertMessage = this.ShowBalloonTip;
             ModbusTcpClient.ShowMainWindow = this.PopupMainWindow;
             ModbusTcpClient.Start();
+        }
 
+        private void StopRemoteIO()
+        {
+            if (ModbusTcpClient != null) ModbusTcpClient.Stop();                       
+        }
+
+        private void ResetRemoteIO()
+        {
+            StopRemoteIO();
+            System.Threading.Thread.Sleep(200);
+            StartRemoteIO();
+        }
+
+        private async void StartTileServer()
+        {
             TcpServer.ServerName = MonitorParams.TileServerName; //"Server";
             TcpServer.ServerPort = MonitorParams.TileServerPort; //8001;
             TcpServer.EnableTrace = true;
-            TcpServer.QueryTimeout_ms = 300;
+            TcpServer.QueryTimeout_ms = 200;
             TcpServer.ProcessMessage = ProcessCommand;
             TcpServer.UpdateTrace = this.traceWnd.UpdateTrace;
             await TcpServer.Start();
         }
-        
-        private void StopMonitor()
+
+        private void StopTileServer()
         {
-            if (ModbusTcpClient != null) ModbusTcpClient.Stop();
-            if (TcpServer!=null) TcpServer.Stop();            
+            if (TcpServer != null) TcpServer.Stop();
+        }
+
+        private void ResetTileSever()
+        {
+            StopTileServer();
+            System.Threading.Thread.Sleep(200);
+            StartTileServer();
         }
 
         private void chkboxShowTrace_Checked(object sender, RoutedEventArgs e)
@@ -311,21 +351,11 @@ namespace DoorMonitor
             }
         }
 
-        private void ResetMonitor()
-        {
-            ModbusTcpClient.Stop();
-            System.Threading.Thread.Sleep(200);
-            ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
-            ModbusTcpClient.ShowAlertMessage = this.ShowBalloonTip;
-            ModbusTcpClient.ShowMainWindow = this.PopupMainWindow;
-            ModbusTcpClient.Start();
-        }
-
         private void chkboxMonitorDoor_Checked(object sender, RoutedEventArgs e)
         {
             if (ModbusTcpClient != null)
             {
-                ResetMonitor();
+                ResetRemoteIO();
             }
         }        
 
@@ -343,6 +373,12 @@ namespace DoorMonitor
             {
                 ModbusTcpClient.IsDoor2Open = EnumDoorStatus.Ignore;                
             }
+        }
+
+        private void CheckParamsChanged(bool changedFlag)
+        {
+            if (changedFlag) ParamsChanged = true;
+            else ParamsChanged = false; 
         }
 
         private void btnMoreSettings_Click(object sender, RoutedEventArgs e)
@@ -395,10 +431,19 @@ namespace DoorMonitor
             this.settingWnd.cbVisaAddrList.SetBinding(ComboBox.SelectedIndexProperty, binding7);
 
             this.settingWnd.UpdateTrace = this.traceWnd.UpdateTrace;
+            this.settingWnd.SetParamsChangedFlag = CheckParamsChanged;
 
-            settingWnd.ShowDialog();
+            settingWnd.ShowDialog();            
             this.settingWnd.UpdateTrace = null;
-            this.settingWnd = null;           
+            this.settingWnd.SetParamsChangedFlag = null;
+            this.settingWnd = null;
+            
+            // Apply new settings
+            if(ParamsChanged)
+            {
+                ResetDoorMonitor();
+                ParamsChanged = false;
+            }                          
         }
     }
 }
