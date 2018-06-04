@@ -478,6 +478,27 @@ namespace DoorMonitor
         }
     }
 
+    public class TraceTextToSaveBtnEnableConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string text = (string)value;
+            if(text==string.Empty)
+            {
+                return false;
+            }   
+            else
+            {
+                return true;
+            }         
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
     public class VisaAddressList : ObservableCollection<string>
     {
         public VisaAddressList() : base()

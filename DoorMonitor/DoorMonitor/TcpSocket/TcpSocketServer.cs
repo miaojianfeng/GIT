@@ -201,13 +201,13 @@ namespace ETSL.TcpSocket
             switch(traceType)
             {
                 case EnumTraceType.Information:
-                    typeStr = "[ INFO ]";
+                    typeStr = "[ INF ]";
                     break;
                 case EnumTraceType.Error:
                     typeStr = "[ ERR ]";
                     break;
                 case EnumTraceType.Exception:
-                    typeStr = "[ EXCEPTION ]";
+                    typeStr = "[ EXC ]";
                     break;
                 case EnumTraceType.Message:
                     typeStr = "[ MSG ]";
@@ -226,12 +226,12 @@ namespace ETSL.TcpSocket
             lock (locker)
             {
                 this.traceRecord.Append(traceText);
-                NotifyPropertyChanged("TraceRecord");
+                NotifyPropertyChanged("TraceRecord");                
+            }
 
-                if (UpdateTrace != null)
-                {
-                    UpdateTrace(traceText);
-                }
+            if (UpdateTrace != null)
+            {
+                UpdateTrace(traceText);
             }
         }
 
@@ -327,7 +327,7 @@ namespace ETSL.TcpSocket
                         {
                             traceTextLine.Append(cmdReceived + "\n");
                         }
-                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1} :  {2}", num, ServerName, traceTextLine.ToString()));
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1}:  {2}", num, ServerName, traceTextLine.ToString()));
 
                         // Process the received message
                         // Remove the \r\n, as well as the ";"   
@@ -378,7 +378,7 @@ namespace ETSL.TcpSocket
                             string respMsg = responseArray.ToString();                            
                             byte[] bytesSend = System.Text.Encoding.ASCII.GetBytes(respMsg);
                             nwkStream.Write(bytesSend, 0, bytesSend.Length);
-                            AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, responseArray.ToString()));
+                            AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1}:  {2}", num, ServerName, responseArray.ToString()));
                         }
 
                         MsgTransState = EnumMsgTransState.Silence;

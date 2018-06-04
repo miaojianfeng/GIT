@@ -8,10 +8,35 @@
         Title="Trace" Height="300" Width="525"        
         Closing="Window_Closing" 
         Icon="Resources/Trace.ico">
+    <Window.Resources>
+        <!--Converter-->
+        <local:TraceTextToSaveBtnEnableConverter x:Key="traceTextToSaveBtnEnable"/>
+        <!--UI Related-->
+        <LinearGradientBrush x:Key="GreenButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="LightGreen" Offset="0"/>
+            <GradientStop Color="Green" Offset="0.5"/>
+            <GradientStop Color="DarkGreen" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="RedButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="Pink" Offset="0"/>
+            <GradientStop Color="Red" Offset="0.5"/>
+            <GradientStop Color="DarkRed" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GrayButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="LightGray" Offset="0"/>
+            <GradientStop Color="Gray" Offset="0.5"/>
+            <GradientStop Color="DarkGray" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Resources>
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5,0,5,5" HorizontalAlignment="Right">
-            <Button x:Name="btnSaveTrace" Content="Save Trace" Padding="10,2" Click="btnSaveTrace_Click"/>            
+            <Button x:Name="btnSaveTrace" Content="Save Trace" Padding="10,2" Background="{StaticResource GrayButton}" Width="100"
+                    IsEnabled="{Binding ElementName=tboxTrace, Path=Text, Converter={StaticResource traceTextToSaveBtnEnable}, Mode=OneWay}"
+                    Foreground="Black" Click="btnSaveTrace_Click"/>
+            <Button x:Name="btnClearTrace" Content="Clear Trace" Margin="10,0,0,0" Padding="10,2" Background="{StaticResource RedButton}" Width="100"
+                    IsEnabled="{Binding ElementName=tboxTrace, Path=Text, Converter={StaticResource traceTextToSaveBtnEnable}, Mode=OneWay}"
+                    Foreground="Black" Click="btnClearTrace_Click"/>
         </StackPanel>
-        <TextBox x:Name="tboxTrace" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="5"/>
+        <TextBox x:Name="tbTrace" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="5"/>
     </DockPanel>
 </Window>

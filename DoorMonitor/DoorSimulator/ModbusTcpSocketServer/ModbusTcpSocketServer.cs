@@ -239,13 +239,13 @@ namespace ETSL.TcpSocket
             switch(traceType)
             {
                 case EnumTraceType.Information:
-                    typeStr = "[ INFO ]";
+                    typeStr = "[ INF ]";
                     break;
                 case EnumTraceType.Error:
                     typeStr = "[ ERR ]";
                     break;
                 case EnumTraceType.Exception:
-                    typeStr = "[ EXCEPTION ]";
+                    typeStr = "[ EXC ]";
                     break;
                 case EnumTraceType.Message:
                     typeStr = "[ MSG ]";
@@ -369,7 +369,7 @@ namespace ETSL.TcpSocket
                             if (j!=i-1) recMsg.Append(" ");
                         }     
                                            
-                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1} :  {2}", num, ServerName, recMsg.ToString().ToUpper()));
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1}:  {2}", num, ServerName, recMsg.ToString().ToUpper()));
 
                         // Process received message
                         sendMsg.Clear();
@@ -379,7 +379,7 @@ namespace ETSL.TcpSocket
 
                         byte[] bytesSend = Utilities.Auxiliaries.strToToHexByte(sendMsg.ToString());
                         nwkStream.Write(bytesSend, 0, bytesSend.Length);
-                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, sendMsg.ToString().ToUpper()));
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1}:  {2}", num, ServerName, sendMsg.ToString().ToUpper()));
 
                         MsgTransState = EnumMsgTransState.Silence;
                     }                    
@@ -428,7 +428,7 @@ namespace ETSL.TcpSocket
                         // Invoke DIChangedEvent here
                         if (DIChangedEvent != null) DIChangedEvent(this, new EventArgs());
 
-                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1} :  {2}", num, ServerName, sendMsg.ToString().ToUpper()));
+                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1}:  {2}", num, ServerName, sendMsg.ToString().ToUpper()));
                         MsgTransState = EnumMsgTransState.Working;
                         isDIChanged = false;
                     }                                

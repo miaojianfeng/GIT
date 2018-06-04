@@ -263,7 +263,7 @@ namespace ETSL.TcpSocket
                             if (j != i - 1) recMsg.Append(" ");
                         }
 
-                        AppendTrace(EnumTraceType.Message, String.Format("PC <== ZLAN6042 :  {0}", recMsg.ToString().ToUpper()));
+                        AppendTrace(EnumTraceType.Message, String.Format("PC <== ZLAN6042:  {0}", recMsg.ToString().ToUpper()));
 
                         // Process received message
                         ProcessDiAutoNotificationMsg(recMsg.ToString());
@@ -369,7 +369,7 @@ namespace ETSL.TcpSocket
                     recMsg.Append(bytesReceived[j].ToString("X2"));
                     if (j != i - 1) recMsg.Append(" ");
                 }
-                AppendTrace(EnumTraceType.Message, String.Format("PC <== ZLAN6042 :  {0}", recMsg.ToString().ToUpper()));
+                AppendTrace(EnumTraceType.Message, String.Format("PC <== ZLAN6042:  {0}", recMsg.ToString().ToUpper()));
                 System.Threading.Thread.Sleep(100);
                 MsgTransState = EnumMsgTransState.Working;
                 
@@ -458,13 +458,13 @@ namespace ETSL.TcpSocket
             switch (traceType)
             {
                 case EnumTraceType.Information:
-                    typeStr = "[ INFO ]";
+                    typeStr = "[ INF ]";
                     break;
                 case EnumTraceType.Error:
                     typeStr = "[ ERR ]";
                     break;
                 case EnumTraceType.Exception:
-                    typeStr = "[ EXCEPTION ]";
+                    typeStr = "[ EXC ]";
                     break;
                 case EnumTraceType.Message:
                     typeStr = "[ MSG ]";

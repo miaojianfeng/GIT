@@ -263,13 +263,13 @@ namespace DoorMonitor
             switch (traceType)
             {
                 case EnumTraceType.Information:
-                    typeStr = "[ INFO ]";
+                    typeStr = "[ INF ]";
                     break;
                 case EnumTraceType.Error:
                     typeStr = "[ ERR ]";
                     break;
                 case EnumTraceType.Exception:
-                    typeStr = "[ EXCEPTION ]";
+                    typeStr = "[ EXC ]";
                     break;
                 case EnumTraceType.Message:
                     typeStr = "[ MSG ]";
