@@ -110,7 +110,6 @@ namespace DoorMonitor
                 tbAddr.Text = "VISA Instruments founded!";
                 
                 MonitorParams.VisaAddressList.Clear();
-                //VisaAddressCollection = InstrumentManager.VisaAddressList;
                 foreach (string addr in InstrMgr.VisaAddressList)
                 {
                     MonitorParams.VisaAddressList.Add(addr);
@@ -118,7 +117,7 @@ namespace DoorMonitor
                 
                 if(HasVisaAddrListChanged)
                 {
-                    this.cbVisaAddrList.SelectedIndex = 0;
+                    //this.cbVisaAddrList.SelectedIndex = 0;
                 }                
 
                 tbAddr.Text = "Select the SG address from the following list";
@@ -131,7 +130,7 @@ namespace DoorMonitor
             Close();
         }
 
-        private void SetDoorMonitorParams_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void SetParameters_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             if (InitFinished)
             {
@@ -143,8 +142,8 @@ namespace DoorMonitor
                      this.tbTileSvrName.Text != MonitorParams.TileServerName ||
                      tileSvrPort != MonitorParams.TileServerPort ||
                      this.tbRfOffCmd.Text != MonitorParams.SgRfOffCommand ||
-                     HasVisaAddrListChanged || 
-                     this.cbVisaAddrList.SelectedIndex!=MonitorParams.VisaAddrListSelIndex)
+                     //HasVisaAddrListChanged ||
+                     this.cbVisaAddrList.SelectedIndex != MonitorParams.VisaAddrListSelIndex)
                 {
                     e.CanExecute = true;
                 }
@@ -152,11 +151,12 @@ namespace DoorMonitor
                 {
                     e.CanExecute = false;
                 }
-            }
+            }                
+                    
             e.Handled = true;
         }
 
-        private void SetDoorMonitorParams_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void SetParameters_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
@@ -165,33 +165,33 @@ namespace DoorMonitor
 
                 if (this.tbRemoteIoIpAddr.Text != MonitorParams.RemoteIoIpAddress)
                 {
-                    MonitorParams.RemoteIoIpAddress = this.tbRemoteIoIpAddr.Text;                    
+                    MonitorParams.RemoteIoIpAddress = this.tbRemoteIoIpAddr.Text;
                     rootNode.SetElementValue("RemoteIoAddress", this.tbRemoteIoIpAddr.Text);
                 }
 
                 UInt16 remoteIoPort = Convert.ToUInt16(this.tbRemoteIoPort.Text);
                 if (remoteIoPort != MonitorParams.RemoteIoPort)
                 {
-                    MonitorParams.RemoteIoPort = remoteIoPort;                    
+                    MonitorParams.RemoteIoPort = remoteIoPort;
                     rootNode.SetElementValue("RemoteIoPort", this.tbRemoteIoPort.Text);
                 }
 
                 if (this.tbTileSvrName.Text != MonitorParams.TileServerName)
                 {
-                    MonitorParams.TileServerName = this.tbTileSvrName.Text;                    
+                    MonitorParams.TileServerName = this.tbTileSvrName.Text;
                     rootNode.SetElementValue("TileServerName", this.tbTileSvrName.Text);
                 }
 
                 UInt16 tileSvrPort = Convert.ToUInt16(this.tbTileSvrPort.Text);
                 if (tileSvrPort != MonitorParams.TileServerPort)
                 {
-                    MonitorParams.TileServerPort = tileSvrPort;                    
+                    MonitorParams.TileServerPort = tileSvrPort;
                     rootNode.SetElementValue("TileServerPort", this.tbTileSvrPort.Text);
                 }
 
                 if (this.tbRfOffCmd.Text != MonitorParams.SgRfOffCommand)
                 {
-                    MonitorParams.SgRfOffCommand = this.tbRfOffCmd.Text;                    
+                    MonitorParams.SgRfOffCommand = this.tbRfOffCmd.Text;
                     rootNode.SetElementValue("SgRfOffCommand", this.tbRfOffCmd.Text);
                 }
 
@@ -201,7 +201,7 @@ namespace DoorMonitor
                     if (this.cbVisaAddrList.SelectedIndex != MonitorParams.VisaAddrListSelIndex)
                     {
                         MonitorParams.VisaAddrListSelIndex = this.cbVisaAddrList.SelectedIndex;
-                        rootNode.SetElementValue("VisaAddrListSelIndex", this.cbVisaAddrList.SelectedIndex.ToString());
+                        rootNode.SetElementValue("VisaAddressListSelIndex", this.cbVisaAddrList.SelectedIndex.ToString());
                     }
 
                     if (rootNode.Element("VisaAddressList").Value != visaList)
@@ -209,19 +209,20 @@ namespace DoorMonitor
                         MonitorParams.SgVisaAddress = MonitorParams.VisaAddressList[this.cbVisaAddrList.SelectedIndex];
                         rootNode.SetElementValue("VisaAddressList", visaList);
                     }
-                } 
+                }
 
-                configXmlDoc.Save(MonitorParams.ConfigFilePath);                
+                configXmlDoc.Save(MonitorParams.ConfigFilePath);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Save <C:\\Temp\\Configuration.xml> Error!");
             }
 
-            e.Handled = true;            
+            e.Handled = true;
+            Close();
         }
 
-        private void TestRfOffCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void TestCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             if(this.tbRfOffCmd.Text!=string.Empty)
             {
@@ -235,11 +236,11 @@ namespace DoorMonitor
             e.Handled = true;
         }
 
-        private void TestRfOffCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void TestCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             if(this.tbRfOffCmd.Text != MonitorParams.SgRfOffCommand)
             {
-                MonitorParams.SgRfOffCommand = this.tbRfOffCmd.Text;
+                //MonitorParams.SgRfOffCommand = this.tbRfOffCmd.Text;
             }
 
             // Send SCPI Commands
@@ -301,6 +302,6 @@ namespace DoorMonitor
             }
 
             return sbVisaList.ToString();
-        }
+        }        
     }    
 }

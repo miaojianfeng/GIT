@@ -353,26 +353,31 @@ namespace DoorMonitor
             // <1> RemoteIoIpAddress
             Binding binding1 = new Binding("RemoteIoIpAddress") { Source = MonitorParams };
             binding1.Mode = BindingMode.TwoWay;
+            binding1.UpdateSourceTrigger = UpdateSourceTrigger.Explicit;
             this.settingWnd.tbRemoteIoIpAddr.SetBinding(TextBox.TextProperty, binding1);
 
             // <2> RemoteIoPort
             Binding binding2 = new Binding("RemoteIoPort") { Source = MonitorParams };
             binding2.Mode = BindingMode.TwoWay;
+            binding2.UpdateSourceTrigger = UpdateSourceTrigger.Explicit;
             this.settingWnd.tbRemoteIoPort.SetBinding(TextBox.TextProperty, binding2);
 
             // <3> TileServerName
             Binding binding3= new Binding("TileServerName") { Source = MonitorParams };
             binding3.Mode = BindingMode.TwoWay;
+            binding3.UpdateSourceTrigger = UpdateSourceTrigger.Explicit;
             this.settingWnd.tbTileSvrName.SetBinding(TextBox.TextProperty, binding3);
 
             // <4> TileServerPort
             Binding binding4 = new Binding("TileServerPort") { Source = MonitorParams };
             binding4.Mode = BindingMode.TwoWay;
+            binding4.UpdateSourceTrigger = UpdateSourceTrigger.Explicit;
             this.settingWnd.tbTileSvrPort.SetBinding(TextBox.TextProperty, binding4);
 
             // <5> SgRfOffCommand
             Binding binding5 = new Binding("SgRfOffCommand") { Source = MonitorParams };
             binding5.Mode = BindingMode.TwoWay;
+            binding5.UpdateSourceTrigger = UpdateSourceTrigger.Explicit;
             this.settingWnd.tbRfOffCmd.SetBinding(TextBox.TextProperty, binding5);
 
             // <6> ConfigFilePath
@@ -386,6 +391,7 @@ namespace DoorMonitor
             // <8> VisaAddrListSelIndex
             Binding binding7 = new Binding("VisaAddrListSelIndex") { Source = MonitorParams };
             binding7.Mode = BindingMode.TwoWay;
+            binding7.UpdateSourceTrigger = UpdateSourceTrigger.Explicit;
             this.settingWnd.cbVisaAddrList.SetBinding(ComboBox.SelectedIndexProperty, binding7);
 
             this.settingWnd.UpdateTrace = this.traceWnd.UpdateTrace;

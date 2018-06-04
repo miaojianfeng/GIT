@@ -214,7 +214,7 @@ namespace DoorMonitor
                 this.TileServerPort = Convert.ToUInt16(strTileSvrPort);                
                 this.sgRfOffCmd = strSgRfOffCmd;
                 this.visaAddrListSelIndex = Convert.ToInt16(strAddrListSelIndex);
-
+                
                 if (strVisaAddrList!=string.Empty)
                 {
                     string[] list = strVisaAddrList.Split(new string[] { ";" }, StringSplitOptions.None);
@@ -224,7 +224,10 @@ namespace DoorMonitor
                     }
                 }
 
-                this.sgVisaAddr = VisaAddressList[this.visaAddrListSelIndex];
+                if (this.visaAddrListSelIndex != -1)
+                {
+                    this.sgVisaAddr = VisaAddressList[this.visaAddrListSelIndex];
+                }
             }
             catch (Exception ex)
             {

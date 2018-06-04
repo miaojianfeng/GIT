@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Background="LightBlue"
         Icon="Resources/Settings.ico"
-        Title="Settings" Height="480" Width="300" ResizeMode="NoResize">
+        Title="DoorMonitor Settings" Height="480" Width="300" ResizeMode="NoResize">
     <Window.Resources>
         <!--Object Definition-->        
         <!--UI Proerty-->
@@ -56,12 +56,10 @@
         <!--Standard Pre-defined Commands -->
         <!--<CommandBinding Command="ApplicationCommands.Open" Executed="OpenCommand_Executed"/>-->
         <!--Customed Commands-->
-        <CommandBinding Command="local:DoorMonitorCommands.SetDoorMonitorParams"  
-                        CanExecute="SetDoorMonitorParams_CanExecute" 
-                        Executed="SetDoorMonitorParams_Executed"/>
-        <CommandBinding Command="local:DoorMonitorCommands.TestRfOffCommand"  
-                        CanExecute="TestRfOffCommand_CanExecute" 
-                        Executed="TestRfOffCommand_Executed"/>
+        <CommandBinding Command="local:DoorMonitorCommands.SetParameters"  
+                        CanExecute="SetParameters_CanExecute" Executed="SetParameters_Executed"/>
+        <CommandBinding Command="local:DoorMonitorCommands.TestCommand" 
+                        CanExecute="TestCommand_CanExecute" Executed="TestCommand_Executed"/>
     </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -105,10 +103,10 @@
                 <Button x:Name="btnSearchSG" Content="Search Signal Generator" Padding="0,2" Background="{StaticResource GrayButton}" Click="btnSearchSG_Click"/>                
                 <TextBox Padding="0,3" Margin="0,6,0,0" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Left" x:Name="tbAddr"
                          IsReadOnly="True" Text="Select the SG address from the following list" Foreground="Blue" Background="Yellow"/>
-                <ComboBox x:Name="cbVisaAddrList" Margin="0,1,0,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>                                
-                <Label Margin="0,5,0,0" Content="SCPI Commands to shut down RF:" FontSize="11" HorizontalContentAlignment="Left" />
+                <ComboBox x:Name="cbVisaAddrList" Margin="0,1,0,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+                <Label Margin="0,5,0,0" Content="SCPI Commands to shut down RF:" FontSize="11" HorizontalContentAlignment="Left"/>
                 <TextBox Padding="0,3" Margin="0,0,0,5" VerticalContentAlignment="Center" x:Name="tbRfOffCmd"/>
-                <Button Margin="80,0" Content="Test" Background="{StaticResource GrayButton}" Foreground="Blue" Command="local:DoorMonitorCommands.TestRfOffCommand"/>
+                <Button Margin="80,0" Content="Test" Background="{StaticResource GrayButton}" Foreground="Black" Command="local:DoorMonitorCommands.TestCommand"/>
             </StackPanel>
         </GroupBox>
         <DockPanel Grid.Row="2" LastChildFill="True" VerticalAlignment="Stretch">
@@ -116,14 +114,11 @@
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="Wrap" x:Name="tbConfigFile"/>
         </DockPanel>
         <StackPanel Grid.Row="3" Margin="10,0,10,0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Stretch">            
-            <Button Margin="0,0,5,8" Width="100" FontWeight="SemiBold"
-                    VerticalContentAlignment="Center" Foreground="White" 
-                    Background="{StaticResource GreenButton}" Content="OK" 
-                    Command="local:DoorMonitorCommands.SetDoorMonitorParams"/>                    
-            <Button  Margin="15,0,5,8" FontWeight="SemiBold"
-                     VerticalContentAlignment="Center" Foreground="White" Width="100"
-                     Background="{StaticResource RedButton}"                     
-                     Content="Cancel" Click="btnStop_Click"/>                       
+            <Button Margin="0,0,5,8" Width="100" FontWeight="SemiBold" VerticalContentAlignment="Center" Foreground="DarkGray" 
+                    Background="{StaticResource GreenButton}" Content="OK" Command="local:DoorMonitorCommands.SetParameters"/>                    
+            <Button Margin="15,0,5,8" FontWeight="SemiBold" VerticalContentAlignment="Center" Foreground="DarkGray" Width="100"
+                    Background="{StaticResource RedButton}"                     
+                    Content="Cancel" Click="btnStop_Click"/>                       
         </StackPanel>        
     </Grid>
 </Window>

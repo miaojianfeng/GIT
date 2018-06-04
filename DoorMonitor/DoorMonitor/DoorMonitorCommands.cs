@@ -9,30 +9,30 @@ namespace DoorMonitor
 {
     class DoorMonitorCommands
     {
-        private static RoutedUICommand setDoorMonitorParams;
-        private static RoutedUICommand testRfOffCmd;
+        private static RoutedUICommand setParams;
+        private static RoutedUICommand testCmd;
 
         // ---------- Constructor ----------
         static DoorMonitorCommands()
         {
             // Initialize commands            
-            setDoorMonitorParams = new RoutedUICommand("Set DoorMonitor Params", "SetDoorMonitorParams", typeof(DoorMonitorCommands));
-            testRfOffCmd = new RoutedUICommand("Test RF OFF Command", "TestRfOffCommand", typeof(DoorMonitorCommands));
+            setParams = new RoutedUICommand("Set Parameters", "SetParameters", typeof(DoorMonitorCommands));
+            testCmd = new RoutedUICommand("Test Command", "TestCommand", typeof(DoorMonitorCommands));
         }
 
-        public static RoutedUICommand SetDoorMonitorParams
+        public static RoutedUICommand SetParameters
         {
             get
             {
-                return setDoorMonitorParams;
+                return setParams;
             }
         }
 
-        public static RoutedUICommand TestRfOffCommand
+        public static RoutedUICommand TestCommand
         {
             get
             {
-                return testRfOffCmd;
+                return testCmd;
             }
         }
     }
