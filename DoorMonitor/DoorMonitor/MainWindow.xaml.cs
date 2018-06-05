@@ -298,45 +298,66 @@ namespace DoorMonitor
                 return;
             }
              
-            SgDriver = new VisaInstrDriver(MonitorParams.SgVisaAddress);
-            AppendTrace(EnumTraceType.Information, string.Format("Connect to SG \"{0}\"...", MonitorParams.SgVisaAddress));
-            SgDriver.Initialize();
+            if(SgDriver==null)
+            {
+                SgDriver = new VisaInstrDriver(MonitorParams.SgVisaAddress);
+                AppendTrace(EnumTraceType.Information, string.Format("Connect to SG \"{0}\"...", MonitorParams.SgVisaAddress));
+                SgDriver.Initialize();
 
-            MonitorParams.InitializedSG = SgDriver.HasInitialized;
+                MonitorParams.InitializedSG = SgDriver.HasInitialized;
+                if (MonitorParams.InitializedSG)
+                {
+                    AppendTrace(EnumTraceType.Information, string.Format("Connect to SG \"{0}\" successfully!", MonitorParams.SgVisaAddress));
+                    AppendTrace(EnumTraceType.Information, string.Format("Send SCPI command <*IDN?> to SG \"{0}\"...", MonitorParams.SgVisaAddress));
+                    SgDriver.SendCommand("*IDN?");
+                    System.Threading.Thread.Sleep(300);
+                    AppendTrace(EnumTraceType.Information, string.Format("Read response of SCPI command <*IDN?> from SG \"{0}\"...", MonitorParams.SgVisaAddress));
+                    MonitorParams.SgID = SgDriver.ReadCommand();
+                    if (MonitorParams.SgID == string.Empty)
+                    {
+                        MonitorParams.SgID = "Failed to read out SG ID!";
+                        string errMsg = string.Format("Failed to read out the ID Information from SG\"{0}\"", MonitorParams.SgVisaAddress);
+                        MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    AppendTrace(EnumTraceType.Information, string.Format("SG \"{0}\" ID readout <{1}>", MonitorParams.SgVisaAddress, MonitorParams.SgID));
+                }
+                else
+                {
+                    AppendTrace(EnumTraceType.Information, string.Format("Failed to connect to SG \"{0}\"!", MonitorParams.SgVisaAddress));
+                    MonitorParams.SgID = string.Empty;
+                    string errMsg = string.Format("Failed to connect to SG \"{0}\"!\nPlease set the correct SG address or check the network connection.", MonitorParams.SgVisaAddress);
+                    MessageBox.Show(this, errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }            
+        }
+
+        private void DisconnectSG()
+        {
+            if(SgDriver!=null)
+            {
+                SgDriver.DeInitialize();
+            }
+        }
+
+        private void ShutDownRF()
+        {
             if(MonitorParams.InitializedSG)
             {
-                AppendTrace(EnumTraceType.Information, string.Format("Connect to SG \"{0}\" successfully!", MonitorParams.SgVisaAddress));
-                AppendTrace(EnumTraceType.Information, string.Format("Send SCPI command <*IDN?> to SG \"{0}\"...", MonitorParams.SgVisaAddress));
-                SgDriver.SendCommand("*IDN?");
-                System.Threading.Thread.Sleep(300);
-                AppendTrace(EnumTraceType.Information, string.Format("Read response of SCPI command <*IDN?> from SG \"{0}\"...", MonitorParams.SgVisaAddress));
-                MonitorParams.SgID = SgDriver.ReadCommand();                   
-                if(MonitorParams.SgID==string.Empty)
-                {
-                    MonitorParams.SgID = "Failed to read out SG ID!";
-                    string errMsg = string.Format("Failed to read out the ID Information from SG\"{0}\"", MonitorParams.SgVisaAddress);
-                    MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                AppendTrace(EnumTraceType.Information, string.Format("SG \"{0}\" ID readout <{1}>", MonitorParams.SgVisaAddress, MonitorParams.SgID));
-            }
-            else
-            {
-                AppendTrace(EnumTraceType.Information, string.Format("Failed to connect to SG \"{0}\"!", MonitorParams.SgVisaAddress));
-                MonitorParams.SgID = string.Empty;
-                string errMsg = string.Format("Failed to connect to SG \"{0}\"!\nPlease set the correct SG address or check the network connection.", MonitorParams.SgVisaAddress);
-                MessageBox.Show(this, errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                AppendTrace(EnumTraceType.Information, string.Format("Shut down RF using SCPI command <{0}> for SG \"{1}\"", MonitorParams.SgRfOffCommand, MonitorParams.SgVisaAddress));
+                SgDriver.SendCommand(MonitorParams.SgRfOffCommand);
             }
         }
 
         private void StartDoorMonitor()
-        {  
-            StartRemoteIO();
+        { 
+            ConnectToSG(MonitorParams.SgVisaAddress);            
+            StartRemoteIO(); 
             StartTileServer();
-            ConnectToSG(MonitorParams.SgVisaAddress);
         }
 
         private void StopDoorMonitor()
         {
+            DisconnectSG();
             StopRemoteIO();
             StopTileServer();
         }
@@ -355,6 +376,7 @@ namespace DoorMonitor
             ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
             ModbusTcpClient.ShowAlertMessage = this.ShowBalloonTip;
             ModbusTcpClient.ShowMainWindow = this.PopupMainWindow;
+            ModbusTcpClient.SwitchOffRF = this.ShutDownRF;
             ModbusTcpClient.Start();
         }
 

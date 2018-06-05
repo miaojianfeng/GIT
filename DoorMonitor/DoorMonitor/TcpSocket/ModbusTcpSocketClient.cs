@@ -175,6 +175,7 @@ namespace ETSL.TcpSocket
 
         public Action ShowAlertMessage { get; set; }
         public Action ShowMainWindow { get; set; }
+        public Action SwitchOffRF { get; set; }
 
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
@@ -222,6 +223,7 @@ namespace ETSL.TcpSocket
                 this.tcpClient = null;
                 ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Disconnected;
                 this.UpdateTrace = null;
+                this.SwitchOffRF = null;
             }
         }
 
@@ -338,6 +340,10 @@ namespace ETSL.TcpSocket
                 
                 if(IsDoor1Open==EnumDoorStatus.Open || IsDoor2Open==EnumDoorStatus.Open)
                 {
+                    if (SwitchOffRF != null)
+                    {
+                        SwitchOffRF();
+                    }
                     ShowAlertMessage();
                 }       
             }
@@ -407,7 +413,10 @@ namespace ETSL.TcpSocket
                         if (msgArray[10].ToUpper() == "00")  // Door Open
                         {
                             IsDoor1Open = EnumDoorStatus.Open;
-                            //System.Threading.Thread.Sleep(200);
+                            if(SwitchOffRF!=null)
+                            {
+                                SwitchOffRF();
+                            }
 
                             ShowAlertMessage();
                             System.Threading.Thread.Sleep(500);
@@ -433,7 +442,10 @@ namespace ETSL.TcpSocket
                         if (msgArray[10].ToUpper() == "00")  // Door Open
                         {
                             IsDoor2Open = EnumDoorStatus.Open;
-                            //System.Threading.Thread.Sleep(200);
+                            if (SwitchOffRF != null)
+                            {
+                                SwitchOffRF();
+                            }
 
                             ShowAlertMessage();
                             System.Threading.Thread.Sleep(500);

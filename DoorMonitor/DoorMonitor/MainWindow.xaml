@@ -7,7 +7,7 @@
         xmlns:socket="clr-namespace:ETSL.TcpSocket"
         xmlns:InstrDrvBase="clr-namespace:ETSL.InstrDriver.Base"
         mc:Ignorable="d"        
-        Title="DoorMonitor" Height="260" Width="300" 
+        Title="DoorMonitor" Height="260" Width="350" 
         WindowStartupLocation="CenterScreen"        
         ShowInTaskbar="False"         
         Closing="Window_Closing" 
@@ -170,8 +170,8 @@
             <Label Content="Remote I/O Link" VerticalContentAlignment="Stretch" FontSize="9"/>
             <Ellipse Width="10" Height="10" Margin="2,2,0,0"
                      Fill="{Binding Source={StaticResource modbusTcpClient}, Path=MsgTransState, Converter={StaticResource msgTransStaToFillColor}, Mode=OneWay}"/>
-            <Label Content="I/O MSG" VerticalContentAlignment="Center" FontSize="9"/>
-            <Ellipse Width="10" Height="10" Margin="5,2,0,0"
+            <Label Content="Remote I/O MSG" VerticalContentAlignment="Center" FontSize="9"/>
+            <Ellipse Width="10" Height="10" Margin="20,2,0,0"
                      Fill="{Binding Source={StaticResource tcpServer}, Path=ServerState, Converter={StaticResource svrStaToFillColor}, Mode=OneWay}"/>
             <Label Content="TILE! Link" VerticalContentAlignment="Center" FontSize="9"/>
             <Ellipse Width="10" Height="10" Margin="2,2,0,0"
