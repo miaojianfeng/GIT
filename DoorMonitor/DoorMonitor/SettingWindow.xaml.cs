@@ -89,7 +89,8 @@ namespace DoorMonitor
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Save <C:\\Temp\\Configuration.xml> Error!");
+                    string errMsg = string.Format("Open \"{0}\" failed!\n{1}", MonitorParams.ConfigFilePath, ex.Message);
+                    MessageBox.Show(this, errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     flag = false;
                 }
 
@@ -201,6 +202,7 @@ namespace DoorMonitor
                     {
                         MonitorParams.VisaAddrListSelIndex = this.cbVisaAddrList.SelectedIndex;
                         rootNode.SetElementValue("VisaAddressListSelIndex", this.cbVisaAddrList.SelectedIndex.ToString());
+                        MonitorParams.SgVisaAddress = MonitorParams.VisaAddressList[this.cbVisaAddrList.SelectedIndex];
                     }
 
                     if (rootNode.Element("VisaAddressList").Value != visaList)
@@ -216,7 +218,8 @@ namespace DoorMonitor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Save <C:\\Temp\\Configuration.xml> Error!");
+                string errMsg = string.Format("Save \"{0}\" failed!\n{1}", MonitorParams.ConfigFilePath, ex.Message);
+                MessageBox.Show(this, errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             e.Handled = true;

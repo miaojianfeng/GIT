@@ -42,6 +42,8 @@ namespace DoorMonitor
         private int visaAddrListSelIndex = -1;
         private string sgVisaAddr = string.Empty;        
         private string sgRfOffCmd = string.Empty;
+        private bool initializedSG = false;
+        private string sgID = string.Empty;
         private string configFilePath = @"C:\Temp\Configuration.xml";
 
         // ---------- Property ----------
@@ -136,6 +138,32 @@ namespace DoorMonitor
             }
         }
 
+        public bool InitializedSG
+        {
+            set
+            {
+                this.initializedSG = value;
+                NotifyPropertyChanged("InitializedSG");
+            }
+            get
+            {
+                return this.initializedSG;
+            }
+        }
+
+        public string SgID
+        {
+            set
+            {
+                this.sgID = value;
+                NotifyPropertyChanged("SgID");
+            }
+            get
+            {
+                return this.sgID;
+            }
+        }
+
         public string ConfigFilePath
         {
             set
@@ -190,7 +218,8 @@ namespace DoorMonitor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Create <C:\\Temp\\Configuration.xml> Error!");
+                string errMsg = string.Format("Create \"C:\\Temp\\Configuration.xml\" Error!\n{0}", ex.Message);
+                MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -231,7 +260,8 @@ namespace DoorMonitor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                string errMsg = string.Format("Load configuration file \"{0}\" failed!\n{1}", ConfigFilePath, ex.Message);
+                MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -491,6 +521,113 @@ namespace DoorMonitor
             {
                 return true;
             }         
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class SgInitStateToFillColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool InitState = (bool)value;
+
+            LinearGradientBrush brush = new LinearGradientBrush();
+            brush.StartPoint = new Point(0, 0);
+            brush.EndPoint = new Point(1, 1);
+
+            // RedLED
+            GradientStopCollection redLED = new GradientStopCollection() { new GradientStop(Colors.Pink, 0),
+                                                                           new GradientStop(Colors.Red, 0.5),
+                                                                           new GradientStop(Colors.DarkRed, 1)};
+
+
+            // LightGreen LED
+            GradientStopCollection lightGreenLED = new GradientStopCollection() { new GradientStop(Colors.White, 0),
+                                                                                  new GradientStop(Colors.LightGreen, 0.35),
+                                                                                  new GradientStop(Colors.LimeGreen, 0.85),
+                                                                                  new GradientStop(Colors.Green, 0.9),
+                                                                                  new GradientStop(Colors.DarkGreen, 1)};
+
+            if(InitState)
+            {
+                brush.GradientStops = new GradientStopCollection(lightGreenLED);
+            }
+            else
+            {                
+                brush.GradientStops = new GradientStopCollection(redLED);
+            }
+                 
+            return brush;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class SgInitStateToForegroundColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool InitState = (bool)value;
+
+            if (InitState)
+            {                
+                return new SolidColorBrush(Colors.Blue);
+            }
+            else
+            {
+                return new SolidColorBrush(Colors.Red);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class SgIdTextToForegroundColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string IdText = (string)value;
+
+            if (IdText== "Failed to read out SG ID!")
+            {
+                return new SolidColorBrush(Colors.Red); 
+            }
+            else
+            {
+                return new SolidColorBrush(Colors.Blue);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class SgInitStateToTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool InitState = (bool)value;
+           
+            if (InitState)
+            {
+                return "SG Connected:";
+            }
+            else
+            {
+                return "Failed to connect to SG!";
+            }            
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

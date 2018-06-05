@@ -85,21 +85,6 @@ namespace ETSL.InstrDriver.Base
         {
             InstrumentDriverList.Add(driver);
             InstrNameList.Add(driver.InstrumentName);
-        }       
-
-        public VisaInstrDriver GetInstrument(EnumInstrumentType type)
-        {
-            VisaInstrDriver driver = null;
-
-            foreach(VisaInstrDriver drv in InstrumentDriverList)
-            {
-                if(drv.InstrumentType==type)
-                {
-                    driver = drv;
-                }
-            }
-
-            return driver;
         }
 
         public bool FindVisaResources()

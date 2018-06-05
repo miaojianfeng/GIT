@@ -36,10 +36,11 @@ namespace DoorMonitor
         private DoorMonitorParams MonitorParams { set; get; }
         private TcpSocketServer TcpServer { set; get; }
         private ModbusTcpSocketClient ModbusTcpClient { set; get; }
-
+        private VisaInstrDriver SgDriver { set; get; }
         public InstrumentManager InstrMgr { private set; get; }
         public VisaInstrDriver InstrDrv { private set; get; }
         public bool ParamsChanged { set; get; }
+        public Action<string> UpdateTrace { get; set; }
 
         /// <summary>
         /// Constructor 
@@ -56,7 +57,9 @@ namespace DoorMonitor
             // Flag used to decide whether to destroy window or just minimize the window
             DestroyMainWnd = false;            
             this.Show();
-                        
+
+            UpdateTrace = this.traceWnd.UpdateTrace;       
+
             InstrMgr = (InstrumentManager)this.FindResource("InstrMgr");
             InstrDrv = (VisaInstrDriver)this.FindResource("VisaInstrDrv");
             MonitorParams = (DoorMonitorParams)this.FindResource("doorMonitorParams");
@@ -124,6 +127,40 @@ namespace DoorMonitor
         {
             this.traceWnd.Hide();
             IsTraceWndOpened = false;           
+        }
+
+        private void AppendTrace(EnumTraceType traceType, string message)
+        {
+            // Add time stamp in the beginning of the trace record
+            string timeStamp = "[ " + Auxiliaries.TimeStampGenerate() + " ]";
+
+            // Trace type
+            string typeStr = string.Empty;
+            switch (traceType)
+            {
+                case EnumTraceType.Information:
+                    typeStr = "[ INF ]";
+                    break;
+                case EnumTraceType.Error:
+                    typeStr = "[ ERR ]";
+                    break;
+                case EnumTraceType.Exception:
+                    typeStr = "[ EXC ]";
+                    break;
+                case EnumTraceType.Message:
+                    typeStr = "[ MSG ]";
+                    break;
+            }
+
+            // Trace body
+            if (!message.EndsWith("\n"))
+            {
+                message += "\n";
+            }
+
+            string traceText = timeStamp + " " + typeStr + "   " + message;
+
+            if (UpdateTrace != null) UpdateTrace(traceText);
         }
 
         private string ProcessCommand(string command)
@@ -253,10 +290,49 @@ namespace DoorMonitor
             }            
         }
 
+        private void ConnectToSG(string visaAddr)
+        {
+            if(MonitorParams.SgVisaAddress==string.Empty)
+            {
+                MessageBox.Show("SG VISA address is empty!\nPlease set the correct SG address.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+             
+            SgDriver = new VisaInstrDriver(MonitorParams.SgVisaAddress);
+            AppendTrace(EnumTraceType.Information, string.Format("Connect to SG \"{0}\"...", MonitorParams.SgVisaAddress));
+            SgDriver.Initialize();
+
+            MonitorParams.InitializedSG = SgDriver.HasInitialized;
+            if(MonitorParams.InitializedSG)
+            {
+                AppendTrace(EnumTraceType.Information, string.Format("Connect to SG \"{0}\" successfully!", MonitorParams.SgVisaAddress));
+                AppendTrace(EnumTraceType.Information, string.Format("Send SCPI command <*IDN?> to SG \"{0}\"...", MonitorParams.SgVisaAddress));
+                SgDriver.SendCommand("*IDN?");
+                System.Threading.Thread.Sleep(300);
+                AppendTrace(EnumTraceType.Information, string.Format("Read response of SCPI command <*IDN?> from SG \"{0}\"...", MonitorParams.SgVisaAddress));
+                MonitorParams.SgID = SgDriver.ReadCommand();                   
+                if(MonitorParams.SgID==string.Empty)
+                {
+                    MonitorParams.SgID = "Failed to read out SG ID!";
+                    string errMsg = string.Format("Failed to read out the ID Information from SG\"{0}\"", MonitorParams.SgVisaAddress);
+                    MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                AppendTrace(EnumTraceType.Information, string.Format("SG \"{0}\" ID readout <{1}>", MonitorParams.SgVisaAddress, MonitorParams.SgID));
+            }
+            else
+            {
+                AppendTrace(EnumTraceType.Information, string.Format("Failed to connect to SG \"{0}\"!", MonitorParams.SgVisaAddress));
+                MonitorParams.SgID = string.Empty;
+                string errMsg = string.Format("Failed to connect to SG \"{0}\"!\nPlease set the correct SG address or check the network connection.", MonitorParams.SgVisaAddress);
+                MessageBox.Show(this, errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void StartDoorMonitor()
         {  
             StartRemoteIO();
             StartTileServer();
+            ConnectToSG(MonitorParams.SgVisaAddress);
         }
 
         private void StopDoorMonitor()

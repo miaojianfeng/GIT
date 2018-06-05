@@ -23,7 +23,7 @@ namespace DoorMonitor
 
             if (!createNew)
             {
-                MessageBox.Show("Application is already running!", "Information");
+                MessageBox.Show("Application is already running!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 App.Current.Shutdown();
                 Environment.Exit(0);
             }

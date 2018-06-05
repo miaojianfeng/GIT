@@ -27,6 +27,10 @@
         <local:SvrStateToFillColorConverter x:Key="svrStaToFillColor"/>
         <local:ZLAN6042LinkStateToFillColorConverter x:Key="zlan6042LinkStaToFillColor"/>
         <local:MsgTransStateToFillColorConverter x:Key="msgTransStaToFillColor"/>
+        <local:SgInitStateToFillColorConverter x:Key="sgInitStateToFillColor"/>
+        <local:SgInitStateToForegroundColorConverter x:Key="sgInitStateToForegroundColor"/>
+        <local:SgIdTextToForegroundColorConverter x:Key="sgIdTextToForegroundColor"/>        
+        <local:SgInitStateToTextConverter x:Key="sgInitStateToText"/>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
@@ -120,9 +124,14 @@
                      IsEnabled="{Binding Source={StaticResource modbusTcpClient}, Path=MonitorDoor2, Mode=OneWay}"/>
             <DockPanel LastChildFill="True" Margin="5,6,5,0" VerticalAlignment="Stretch">
                 <Ellipse DockPanel.Dock="Left" Margin="5,0,0,0" Width="12" Height="12" VerticalAlignment="Stretch" 
-                    Fill="Green"/>
-                <Label Content="SG Connected:" VerticalAlignment="Center" VerticalContentAlignment="Bottom" FontSize="11" FontWeight="SemiBold" Foreground="Green"/>
-                <TextBlock DockPanel.Dock="Right" Margin="0,0,0,0" Text="Keysight N1517x" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" FontSize="11" FontStyle="Italic" FontWeight="SemiBold"/>            
+                         Fill="{Binding Source={StaticResource doorMonitorParams}, Path=InitializedSG, Converter={StaticResource sgInitStateToFillColor}, Mode=OneWay}"/>
+                <Label VerticalAlignment="Center" VerticalContentAlignment="Bottom" FontSize="11" FontWeight="SemiBold" 
+                       Foreground="{Binding Source={StaticResource doorMonitorParams}, Path=InitializedSG, Converter={StaticResource sgInitStateToForegroundColor}, Mode=OneWay}"
+                       Content="{Binding Source={StaticResource doorMonitorParams}, Path=InitializedSG, Converter={StaticResource sgInitStateToText}, Mode=OneWay}"/>
+                <TextBlock DockPanel.Dock="Right" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                           FontSize="11" FontStyle="Italic" TextWrapping="Wrap" x:Name="tblockID"
+                           Foreground="{Binding Source={StaticResource doorMonitorParams}, Path=SgID, Converter={StaticResource sgIdTextToForegroundColor}, Mode=OneWay}" 
+                           Text="{Binding Source={StaticResource doorMonitorParams}, Path=SgID, Mode=OneWay}"/>            
             </DockPanel>
         </StackPanel>
         <Expander x:Name="expdr" IsEnabled="true" DockPanel.Dock="Bottom" Margin="5,0,5,2"

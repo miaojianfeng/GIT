@@ -12,13 +12,6 @@ using NationalInstruments.VisaNS;
 
 namespace ETSL.InstrDriver.Base
 {
-    public enum EnumInstrumentType
-    {
-        VNA,
-        EMControlDevice1,
-        EMControlDevice2
-    }
-
     public class InstrDriverException : Exception
     {
         #pragma warning disable 1591
@@ -86,8 +79,6 @@ namespace ETSL.InstrDriver.Base
                 NotifyPropertyChanged("VisaAddress");
             }
         }
-
-        public EnumInstrumentType InstrumentType { protected set; get; }
 
         public string InstrumentName { protected set; get; }
 
@@ -246,7 +237,7 @@ namespace ETSL.InstrDriver.Base
             {
                 ErrorHandling(string.Format("Sending command <{0}> failed! ==> Exception: {1}", command, ex.Message));
                 //throw new InstrDriverException(LastError);  
-                MessageBox.Show(LastError, "Error");      
+                MessageBox.Show(LastError, "Error", MessageBoxButton.OK, MessageBoxImage.Error);      
             }
         }
 
@@ -264,7 +255,7 @@ namespace ETSL.InstrDriver.Base
                 resp = string.Empty;
                 ErrorHandling(string.Format("Reading command response failed! ==> Exception: {0}", ex.Message));
                 //throw new InstrDriverException(LastError);
-                MessageBox.Show(LastError, "Error");
+                MessageBox.Show(LastError, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             return TrimStringEnd(resp);
@@ -284,7 +275,7 @@ namespace ETSL.InstrDriver.Base
                 resp = string.Empty;
                 ErrorHandling(string.Format("Querying command <{0}> failed! ==> Exception: {1}", command, ex.Message));
                 //throw new InstrDriverException(LastError);  
-                MessageBox.Show(LastError, "Error");
+                MessageBox.Show(LastError, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
             return TrimStringEnd(resp);
