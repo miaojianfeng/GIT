@@ -166,23 +166,23 @@ namespace ETSL.TcpSocket
             {
                 case 1:
                     message = staChangeCase == EnumDIStateChange.LowToHigh ? 
-                              "00 00 00 00 00 08 00 05 00 10 ff 00 8C 2E" :
-                              "00 00 00 00 00 08 00 05 00 10 00 00 CD 2E";
+                              "00 00 00 00 00 08 00 05 00 10 ff 00" :
+                              "00 00 00 00 00 08 00 05 00 10 00 00";
                     break;
                 case 2:
                     message = staChangeCase == EnumDIStateChange.LowToHigh ?
-                              "00 00 00 00 00 08 00 05 00 11 ff 00 DD EE" :
-                              "00 00 00 00 00 08 00 05 00 11 00 00 9C 1E";
+                              "00 00 00 00 00 08 00 05 00 11 ff 00" :
+                              "00 00 00 00 00 08 00 05 00 11 00 00";
                     break;
                 case 3:
                     message = staChangeCase == EnumDIStateChange.LowToHigh ?
-                              "00 00 00 00 00 08 00 05 00 12 ff 00 2D EE" :
-                              "00 00 00 00 00 08 00 05 00 12 00 00 6C 1E";
+                              "00 00 00 00 00 08 00 05 00 12 ff 00" :
+                              "00 00 00 00 00 08 00 05 00 12 00 00";
                     break;
                 case 4:
                     message = staChangeCase == EnumDIStateChange.LowToHigh ?
-                              "00 00 00 00 00 08 00 05 00 13 ff 00 7C 2E" :
-                              "00 00 00 00 00 08 00 05 00 13 00 00 3D DE";
+                              "00 00 00 00 00 08 00 05 00 13 ff 00" :
+                              "00 00 00 00 00 08 00 05 00 13 00 00";
                     break;
             }
 

@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Background="LightBlue"
         Icon="Resources/Settings.ico"
-        Title="DoorMonitor Settings" Height="480" Width="300" ResizeMode="NoResize">
+        Title="DoorMonitor Settings" Height="480" Width="305" ResizeMode="NoResize">
     <Window.Resources>
         <!--Object Definition-->        
         <!--UI Proerty-->
