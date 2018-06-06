@@ -468,6 +468,7 @@ namespace DoorMonitor
                 }
 
                 SaveConfigXmlControlSG();
+                ResetRemoteIO();
             }
         }
 
