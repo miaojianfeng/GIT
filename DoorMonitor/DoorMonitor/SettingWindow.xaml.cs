@@ -89,7 +89,7 @@ namespace DoorMonitor
                 }
                 catch (Exception ex)
                 {
-                    string errMsg = string.Format("Open \"{0}\" failed!\n{1}", MonitorParams.ConfigFilePath, ex.Message);
+                    string errMsg = string.Format("Open <{0}> failed!\n{1}", MonitorParams.ConfigFilePath, ex.Message);
                     MessageBox.Show(this, errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     flag = false;
                 }
@@ -218,7 +218,7 @@ namespace DoorMonitor
             }
             catch (Exception ex)
             {
-                string errMsg = string.Format("Save \"{0}\" failed!\n{1}", MonitorParams.ConfigFilePath, ex.Message);
+                string errMsg = string.Format("Save <{0}> failed!\n{1}", MonitorParams.ConfigFilePath, ex.Message);
                 MessageBox.Show(this, errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 

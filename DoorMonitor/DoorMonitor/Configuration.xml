@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Configuration>
+  <!--More Settings-->
   <RemoteIoAddress>192.168.0.200</RemoteIoAddress>
   <RemoteIoPort>502</RemoteIoPort>
   <TileServerName>TILE! DoorMonitor Server</TileServerName>
   <TileServerPort>8001</TileServerPort>
   <VisaAddressList></VisaAddressList>
   <VisaAddrListSelIndex></VisaAddrListSelIndex>    
-  <SgRfOffCommand>""</SgRfOffCommand>  
+  <SgRfOffCommand>""</SgRfOffCommand>
+  <!--SG Control-->
+  <ControlSG>True</ControlSG>
 </Configuration>

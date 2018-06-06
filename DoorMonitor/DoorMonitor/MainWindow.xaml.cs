@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls.Primitives;
+using System.IO;
+using System.Xml.Linq;
 using ETSL.TcpSocket;
 using ETSL.Utilities;
 using ETSL.InstrDriver.Base;
@@ -65,7 +67,7 @@ namespace DoorMonitor
             MonitorParams = (DoorMonitorParams)this.FindResource("doorMonitorParams");
             TcpServer = (TcpSocketServer)this.FindResource("tcpServer");
             ModbusTcpClient = (ModbusTcpSocketClient)this.FindResource("modbusTcpClient");
-            ParamsChanged = false;
+            ParamsChanged = false;            
             StartDoorMonitor();
         }
 
@@ -292,6 +294,11 @@ namespace DoorMonitor
 
         private void ConnectToSG(string visaAddr)
         {
+            if (MonitorParams.ControlSG == false)
+            {
+                return;
+            }
+
             if(MonitorParams.SgVisaAddress==string.Empty)
             {
                 MessageBox.Show("SG VISA address is empty!\nPlease set the correct SG address.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -316,16 +323,16 @@ namespace DoorMonitor
                     if (MonitorParams.SgID == string.Empty)
                     {
                         MonitorParams.SgID = "Failed to read out SG ID!";
-                        string errMsg = string.Format("Failed to read out the ID Information from SG\"{0}\"", MonitorParams.SgVisaAddress);
+                        string errMsg = string.Format("Failed to read out the ID Information from SG<{0}>", MonitorParams.SgVisaAddress);
                         MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    AppendTrace(EnumTraceType.Information, string.Format("SG \"{0}\" ID readout <{1}>", MonitorParams.SgVisaAddress, MonitorParams.SgID));
+                    AppendTrace(EnumTraceType.Information, string.Format("SG <{0}> ID readout <{1}>", MonitorParams.SgVisaAddress, MonitorParams.SgID));
                 }
                 else
                 {
-                    AppendTrace(EnumTraceType.Information, string.Format("Failed to connect to SG \"{0}\"!", MonitorParams.SgVisaAddress));
+                    AppendTrace(EnumTraceType.Information, string.Format("Failed to connect to SG <{0}>!", MonitorParams.SgVisaAddress));
                     MonitorParams.SgID = string.Empty;
-                    string errMsg = string.Format("Failed to connect to SG \"{0}\"!\nPlease set the correct SG address or check the network connection.", MonitorParams.SgVisaAddress);
+                    string errMsg = string.Format("Failed to connect to SG <{0}>!\nPlease set the correct SG address or check the network connection.", MonitorParams.SgVisaAddress);
                     MessageBox.Show(this, errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }            
@@ -333,15 +340,21 @@ namespace DoorMonitor
 
         private void DisconnectSG()
         {
-            if(SgDriver!=null)
+            if (MonitorParams.ControlSG == false)
+            {
+                return;
+            }
+
+            if (SgDriver!=null)
             {
                 SgDriver.DeInitialize();
+                SgDriver = null;
             }
         }
 
         private void ShutDownRF()
         {
-            if(MonitorParams.InitializedSG)
+            if(MonitorParams.ControlSG && MonitorParams.InitializedSG)
             {
                 AppendTrace(EnumTraceType.Information, string.Format("Shut down RF using SCPI command <{0}> for SG \"{1}\"", MonitorParams.SgRfOffCommand, MonitorParams.SgVisaAddress));
                 SgDriver.SendCommand(MonitorParams.SgRfOffCommand);
@@ -430,6 +443,43 @@ namespace DoorMonitor
                 HideTraceWnd();
             }
         }
+
+        private void SaveConfigXmlControlSG()
+        {
+            XDocument configXmlDoc = XDocument.Load(MonitorParams.ConfigFilePath);
+            XElement rootNode = configXmlDoc.Element("Configuration");
+            rootNode.SetElementValue("ControlSG", MonitorParams.ControlSG? "True":"False");
+            configXmlDoc.Save(MonitorParams.ConfigFilePath);
+        }
+
+        private void chkboxControlSG_Checked(object sender, RoutedEventArgs e)
+        {
+            if (MonitorParams != null)
+            {
+                ConnectToSG(MonitorParams.SgVisaAddress);
+
+                if (SgDriver != null && SgDriver.HasInitialized)
+                {
+                    MonitorParams.ControlSG = true;
+                }
+                else
+                {
+                    MonitorParams.ControlSG = false;
+                }
+
+                SaveConfigXmlControlSG();
+            }
+        }
+
+        private void chkboxControlSG_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (MonitorParams != null)
+            {
+                DisconnectSG();
+
+                SaveConfigXmlControlSG();
+            }
+        }
         #endregion
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -452,7 +502,7 @@ namespace DoorMonitor
         private void chkboxMonitorDoor_Checked(object sender, RoutedEventArgs e)
         {
             if (ModbusTcpClient != null)
-            {
+            { 
                 ResetRemoteIO();
             }
         }        
@@ -460,7 +510,7 @@ namespace DoorMonitor
         private void chkboxMonitorDoor1_Unchecked(object sender, RoutedEventArgs e)
         {
             if (ModbusTcpClient != null)
-            {
+            {                
                 ModbusTcpClient.IsDoor1Open = EnumDoorStatus.Ignore;
             }
         }

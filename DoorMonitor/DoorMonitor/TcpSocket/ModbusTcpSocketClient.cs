@@ -198,11 +198,11 @@ namespace ETSL.TcpSocket
             {
                 this.tcpClient = new TcpClient(IPAddress, Port);
                 ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Connected;
-                AppendTrace(EnumTraceType.Information, string.Format("<< Connect to ZLAN6042({0}::{1}) successfully! >>", IPAddress, Port));
+                AppendTrace(EnumTraceType.Information, string.Format("Connect to ZLAN6042({0}::{1}) successfully!", IPAddress, Port));
             }
             catch
             {
-                AppendTrace(EnumTraceType.Exception, string.Format("<< Connect to ZLAN6042({0}::{1}) failed! >>", IPAddress, Port));
+                AppendTrace(EnumTraceType.Exception, string.Format("Connect to ZLAN6042({0}::{1}) failed!", IPAddress, Port));
                 ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Disconnected;
                 this.tcpClient = null;
                 this.UpdateTrace = null;
@@ -218,7 +218,7 @@ namespace ETSL.TcpSocket
         {
             if (this.tcpClient != null)
             {
-                AppendTrace(EnumTraceType.Information, string.Format("<< Disconnect to ZLAN6042({0}::{1}) >>", IPAddress, Port));
+                AppendTrace(EnumTraceType.Information, string.Format("Disconnect to ZLAN6042({0}::{1})", IPAddress, Port));
                 this.tcpClient.Close();
                 this.tcpClient = null;
                 ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Disconnected;
@@ -265,7 +265,7 @@ namespace ETSL.TcpSocket
                             if (j != i - 1) recMsg.Append(" ");
                         }
 
-                        AppendTrace(EnumTraceType.Message, String.Format("PC <== ZLAN6042:  {0}", recMsg.ToString().ToUpper()));
+                        AppendTrace(EnumTraceType.Message, String.Format("[ PC <== ZLAN6042 ]:  {0}", recMsg.ToString().ToUpper()));
 
                         // Process received message
                         ProcessDiAutoNotificationMsg(recMsg.ToString());
@@ -363,7 +363,7 @@ namespace ETSL.TcpSocket
                 sendMsg.Append(diQueryMsg);
                 byte[] bytesSend = Utilities.Auxiliaries.strToToHexByte(sendMsg.ToString());
                 nwkStream.Write(bytesSend, 0, bytesSend.Length);
-                AppendTrace(EnumTraceType.Message, String.Format("PC ==> ZLAN6042:  {0}", sendMsg.ToString().ToUpper()));
+                AppendTrace(EnumTraceType.Message, String.Format("[ PC ==> ZLAN6042 ]:  {0}", sendMsg.ToString().ToUpper()));
                 MsgTransState = EnumMsgTransState.Working;
                 System.Threading.Thread.Sleep(300);
 
@@ -375,7 +375,7 @@ namespace ETSL.TcpSocket
                     recMsg.Append(bytesReceived[j].ToString("X2"));
                     if (j != i - 1) recMsg.Append(" ");
                 }
-                AppendTrace(EnumTraceType.Message, String.Format("PC <== ZLAN6042:  {0}", recMsg.ToString().ToUpper()));
+                AppendTrace(EnumTraceType.Message, String.Format("[ PC <== ZLAN6042 ]:  {0}", recMsg.ToString().ToUpper()));
                 System.Threading.Thread.Sleep(100);
                 MsgTransState = EnumMsgTransState.Working;
                 

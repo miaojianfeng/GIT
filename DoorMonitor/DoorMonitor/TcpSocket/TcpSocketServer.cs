@@ -254,7 +254,7 @@ namespace ETSL.TcpSocket
                 this.tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), ServerPort);
                 this.tcpListener.Start();
                 ServerState = EnumServerState.ServerStarted;
-                AppendTrace(EnumTraceType.Information, string.Format("<< {0} (localhost::{1}) started... >>\n", ServerName, ServerPort));
+                AppendTrace(EnumTraceType.Information, string.Format("{0} (localhost::{1}) started...\n", ServerName, ServerPort));
 
                 while (true)
                 {
@@ -262,7 +262,7 @@ namespace ETSL.TcpSocket
                     try
                     {
                         TcpClient newClient = await tcpListener.AcceptTcpClientAsync();                        
-                        AppendTrace(EnumTraceType.Information, String.Format("<< Client{0} has conected... >>\n", clientNum));
+                        AppendTrace(EnumTraceType.Information, String.Format("Client{0} has conected...\n", clientNum));
 
                         ServerState = EnumServerState.ClientConnected;                        
                         ReceiveFromClientTask(newClient, clientNum);                        
@@ -279,7 +279,7 @@ namespace ETSL.TcpSocket
         {
             if (ServerState != EnumServerState.ServerStopped)
             {
-                AppendTrace(EnumTraceType.Information, string.Format("<< {0} (localhost::{1}) stopped >>\n", ServerName, ServerPort));
+                AppendTrace(EnumTraceType.Information, string.Format("{0} (localhost::{1}) stopped\n", ServerName, ServerPort));
                 tcpListener.Stop();
                 ProcessMessage = null;
                 UpdateTrace = null;
@@ -327,7 +327,7 @@ namespace ETSL.TcpSocket
                         {
                             traceTextLine.Append(cmdReceived + "\n");
                         }
-                        AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1}:  {2}", num, ServerName, traceTextLine.ToString()));
+                        AppendTrace(EnumTraceType.Message, String.Format("[ Client{0} ==> {1} ]:  {2}", num, ServerName, traceTextLine.ToString()));
 
                         // Process the received message
                         // Remove the \r\n, as well as the ";"   
@@ -378,7 +378,7 @@ namespace ETSL.TcpSocket
                             string respMsg = responseArray.ToString();                            
                             byte[] bytesSend = System.Text.Encoding.ASCII.GetBytes(respMsg);
                             nwkStream.Write(bytesSend, 0, bytesSend.Length);
-                            AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1}:  {2}", num, ServerName, responseArray.ToString()));
+                            AppendTrace(EnumTraceType.Message, String.Format("[ Client{0} <== {1} ]:  {2}", num, ServerName, responseArray.ToString()));
                         }
 
                         MsgTransState = EnumMsgTransState.Silence;
