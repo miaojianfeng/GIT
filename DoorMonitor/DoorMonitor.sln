@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoorMonitor", "DoorMonitor\DoorMonitor.csproj", "{FBE29ED0-E61F-479F-A205-C874EF69EF8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoorSimulator", "DoorSimulator\DoorSimulator.csproj", "{0E726646-A887-4276-AD96-96F5D85700BF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{FBE29ED0-E61F-479F-A205-C874EF69EF8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBE29ED0-E61F-479F-A205-C874EF69EF8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBE29ED0-E61F-479F-A205-C874EF69EF8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E726646-A887-4276-AD96-96F5D85700BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E726646-A887-4276-AD96-96F5D85700BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E726646-A887-4276-AD96-96F5D85700BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E726646-A887-4276-AD96-96F5D85700BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
