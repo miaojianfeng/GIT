@@ -248,6 +248,10 @@ namespace DoorMonitor
             }
 
             // Send SCPI Commands
+            VisaInstrDriver sgDrv = new VisaInstrDriver(MonitorParams.SgVisaAddress);
+            sgDrv.Initialize();
+            sgDrv.SendCommand(tbRfOffCmd.Text);
+            sgDrv.DeInitialize();
 
             // Update Trace to MainWindow
             string msg = string.Format("Send SCPI Command <{0}> to <{1}>.", this.tbRfOffCmd.Text, MonitorParams.SgVisaAddress);
