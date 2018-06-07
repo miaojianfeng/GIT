@@ -42,6 +42,14 @@ namespace ETSL.TcpSocket
             this.port = portNum;
         }
 
+        public ModbusTcpSocketClient(string ipAddress, UInt16 portNum, bool detectDoor1, bool detectDoor2)
+        {
+            this.ipAddr = ipAddress;
+            this.port = portNum;
+            this.monitorDoor1 = detectDoor1;
+            this.monitorDoor2 = detectDoor2;
+        }
+
         // ----- Field -----
         private TcpClient tcpClient;
         private string ipAddr = "192.168.0.200";

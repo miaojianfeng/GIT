@@ -44,8 +44,8 @@ namespace DoorMonitor
         private string sgRfOffCmd = string.Empty;
         private bool initializedSG = false;
         private string sgID = string.Empty;
-        //private bool monitorDoor1 = true;
-        //private bool monitorDoor2 = true;       
+        private bool monitorDoor1 = true;
+        private bool monitorDoor2 = true;
         private bool controlSG = true;
         private string configFilePath = @"C:\Temp\Configuration.xml";
 
@@ -165,33 +165,7 @@ namespace DoorMonitor
             {
                 return this.sgID;
             }
-        }
-
-        //public bool MonitorDoo1
-        //{
-        //    set
-        //    {
-        //        this.monitorDoor1 = value;
-        //        NotifyPropertyChanged("MonitorDoor1");
-        //    }
-        //    get
-        //    {
-        //        return this.monitorDoor1;
-        //    }
-        //}
-
-        //public bool MonitorDoo2
-        //{
-        //    set
-        //    {
-        //        this.monitorDoor2 = value;
-        //        NotifyPropertyChanged("MonitorDoor2");
-        //    }
-        //    get
-        //    {
-        //        return this.monitorDoor2;
-        //    }
-        //}
+        }        
 
         public bool ControlSG
         {
@@ -203,6 +177,32 @@ namespace DoorMonitor
             get
             {
                 return this.controlSG;
+            }
+        }
+
+        public bool MonitorDoor1
+        {
+            set
+            {
+                this.monitorDoor1 = value;
+                NotifyPropertyChanged("MonitorDoor1");
+            }
+            get
+            {
+                return this.monitorDoor1;
+            }
+        }
+
+        public bool MonitorDoor2
+        {
+            set
+            {
+                this.monitorDoor2 = value;
+                NotifyPropertyChanged("MonitorDoor2");
+            }
+            get
+            {
+                return this.monitorDoor2;
             }
         }
 
@@ -247,14 +247,18 @@ namespace DoorMonitor
             try
             {
                 XDocument configXmlDoc = new XDocument(new XElement("Configuration",
+                                                           new XComment("Basic Settings"),
+                                                           new XElement("MonitorDoor1", "True"),
+                                                           new XElement("MonitorDoor2", "True"),
+                                                           new XElement("ControlSG", "True"),
+                                                           new XComment("More Settings"),
                                                            new XElement("RemoteIoAddress", "192.168.0.200"),
                                                            new XElement("RemoteIoPort", "502"),
                                                            new XElement("TileServerName", "TILE! DoorMonitor Server"),
                                                            new XElement("TileServerPort", "8001"),
                                                            new XElement("VisaAddressList", ""),
                                                            new XElement("VisaAddressListSelIndex", "-1"),                                                                                        
-                                                           new XElement("SgRfOffCommand", ""),
-                                                           new XElement("ControlSG", "True")));
+                                                           new XElement("SgRfOffCommand", "")));
 
                 this.configFilePath = @"C:\Temp\Configuration.xml";
                 configXmlDoc.Save(this.configFilePath);                
@@ -279,8 +283,8 @@ namespace DoorMonitor
                 string strVisaAddrList = rootNode.Element("VisaAddressList").Value;
                 string strAddrListSelIndex = rootNode.Element("VisaAddressListSelIndex").Value;                
                 string strSgRfOffCmd = rootNode.Element("SgRfOffCommand").Value;
-                //string strMonitorDoor1 = rootNode.Element("MonitorDoor1").Value;
-                //string strMonitorDoor2 = rootNode.Element("MonitorDoor2").Value;
+                string strMonitorDoor1 = rootNode.Element("MonitorDoor1").Value;
+                string strMonitorDoor2 = rootNode.Element("MonitorDoor2").Value;
                 string strControlSG = rootNode.Element("ControlSG").Value;
 
                 this.remoteIoIpAddr = strRemoteIoAddr;
@@ -289,19 +293,32 @@ namespace DoorMonitor
                 this.TileServerPort = Convert.ToUInt16(strTileSvrPort);                
                 this.sgRfOffCmd = strSgRfOffCmd;
                 this.visaAddrListSelIndex = Convert.ToInt16(strAddrListSelIndex);
-                                
-                if (strVisaAddrList!=string.Empty)
+
+                // Basic Settings
+                if (strMonitorDoor1.ToUpper() == "TRUE")
                 {
-                    string[] list = strVisaAddrList.Split(new string[] { ";" }, StringSplitOptions.None);
-                    foreach(string addr in list)
-                    {
-                        VisaAddressList.Add(addr);
-                    }
+                    this.monitorDoor1 = true;
+                }
+                else if (strMonitorDoor1.ToUpper() == "FALSE")
+                {
+                    this.monitorDoor1 = false;
+                }
+                else
+                {
+                    this.monitorDoor1 = true;
                 }
 
-                if (this.visaAddrListSelIndex != -1)
+                if (strMonitorDoor2.ToUpper() == "TRUE")
                 {
-                    this.sgVisaAddr = VisaAddressList[this.visaAddrListSelIndex];
+                    this.monitorDoor2 = true;
+                }
+                else if (strMonitorDoor2.ToUpper() == "FALSE")
+                {
+                    this.monitorDoor2 = false;
+                }
+                else
+                {
+                    this.monitorDoor2 = true;
                 }
 
                 if (strControlSG.ToUpper() == "TRUE")
@@ -316,6 +333,21 @@ namespace DoorMonitor
                 {
                     this.controlSG = true;
                 }
+
+                // More Settings
+                if (strVisaAddrList!=string.Empty)
+                {
+                    string[] list = strVisaAddrList.Split(new string[] { ";" }, StringSplitOptions.None);
+                    foreach(string addr in list)
+                    {
+                        VisaAddressList.Add(addr);
+                    }
+                }
+
+                if (this.visaAddrListSelIndex != -1)
+                {
+                    this.sgVisaAddr = VisaAddressList[this.visaAddrListSelIndex];
+                }                
             }
             catch (Exception ex)
             {

@@ -34,6 +34,7 @@ namespace DoorMonitor
         private SettingWindow settingWnd;
         private bool isTraceWndOpened = false;
         private WindowState lastWindowState;
+        static private object locker = new object();
 
         private DoorMonitorParams MonitorParams { set; get; }
         private TcpSocketServer TcpServer { set; get; }
@@ -221,7 +222,24 @@ namespace DoorMonitor
                 this.lastWindowState = this.WindowState;
             }
         }
-        
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (DestroyMainWnd)
+            {
+                if (this.traceWnd != null)
+                {
+                    this.traceWnd.DestroyWndFlag = true;
+                    this.traceWnd.Close();
+                }
+            }
+            else
+            {
+                e.Cancel = true;  // Bypass window destroy procedure but just minimize the window
+                WindowState = WindowState.Minimized;
+            }
+        }
+
         public void ShowBalloonTip()
         {
             this.Dispatcher.Invoke(() =>
@@ -386,6 +404,8 @@ namespace DoorMonitor
             // Modbus_TCP with ZL6042
             ModbusTcpClient.IPAddress = MonitorParams.RemoteIoIpAddress; // "192.168.0.200";
             ModbusTcpClient.Port = MonitorParams.RemoteIoPort;           // 502;
+            ModbusTcpClient.MonitorDoor1 = MonitorParams.MonitorDoor1;
+            ModbusTcpClient.MonitorDoor2 = MonitorParams.MonitorDoor2;
             ModbusTcpClient.UpdateTrace = this.traceWnd.UpdateTrace;
             ModbusTcpClient.ShowAlertMessage = this.ShowBalloonTip;
             ModbusTcpClient.ShowMainWindow = this.PopupMainWindow;
@@ -446,10 +466,33 @@ namespace DoorMonitor
 
         private void SaveConfigXmlControlSG()
         {
-            XDocument configXmlDoc = XDocument.Load(MonitorParams.ConfigFilePath);
-            XElement rootNode = configXmlDoc.Element("Configuration");
-            rootNode.SetElementValue("ControlSG", MonitorParams.ControlSG? "True":"False");
-            configXmlDoc.Save(MonitorParams.ConfigFilePath);
+            lock (locker)
+            {
+                XDocument configXmlDoc = XDocument.Load(MonitorParams.ConfigFilePath);
+                XElement rootNode = configXmlDoc.Element("Configuration");
+                rootNode.SetElementValue("ControlSG", MonitorParams.ControlSG ? "True" : "False");
+                configXmlDoc.Save(MonitorParams.ConfigFilePath);
+            }
+        }
+
+        private void SaveConfigXmlDoorMonitor(int doorNum)
+        {
+            lock (locker)
+            {
+                XDocument configXmlDoc = XDocument.Load(MonitorParams.ConfigFilePath);
+                XElement rootNode = configXmlDoc.Element("Configuration");
+
+                if (doorNum == 1)
+                {
+                    rootNode.SetElementValue("MonitorDoor1", MonitorParams.MonitorDoor1 ? "True" : "False");
+                }
+                if (doorNum == 2)
+                {
+                    rootNode.SetElementValue("MonitorDoor2", MonitorParams.MonitorDoor2 ? "True" : "False");
+                }
+
+                configXmlDoc.Save(MonitorParams.ConfigFilePath);
+            }
         }
 
         private void chkboxControlSG_Checked(object sender, RoutedEventArgs e)
@@ -467,8 +510,11 @@ namespace DoorMonitor
                     MonitorParams.ControlSG = false;
                 }
 
-                SaveConfigXmlControlSG();
-                ResetRemoteIO();
+                if (MonitorParams.ControlSG)
+                {
+                    SaveConfigXmlControlSG();
+                    ResetRemoteIO();
+                }
             }
         }
 
@@ -477,42 +523,38 @@ namespace DoorMonitor
             if (MonitorParams != null)
             {
                 DisconnectSG();
-
                 SaveConfigXmlControlSG();
             }
         }
-        #endregion
+        #endregion               
 
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            if(DestroyMainWnd)
-            {
-                if (this.traceWnd != null)
-                {
-                    this.traceWnd.DestroyWndFlag = true;
-                    this.traceWnd.Close();
-                }
-            }
-            else
-            {
-                e.Cancel = true;  // Bypass window destroy procedure but just minimize the window
-                WindowState = WindowState.Minimized;
-            }
-        }
-
-        private void chkboxMonitorDoor_Checked(object sender, RoutedEventArgs e)
+        private void chkboxMonitorDoor1_Checked(object sender, RoutedEventArgs e)
         {
             if (ModbusTcpClient != null)
-            { 
+            {  
                 ResetRemoteIO();
+                ModbusTcpClient.MonitorDoor1 = MonitorParams.MonitorDoor1;
+                SaveConfigXmlDoorMonitor(1);
             }
-        }        
+        }
 
         private void chkboxMonitorDoor1_Unchecked(object sender, RoutedEventArgs e)
         {
             if (ModbusTcpClient != null)
             {                
                 ModbusTcpClient.IsDoor1Open = EnumDoorStatus.Ignore;
+                ModbusTcpClient.MonitorDoor1 = MonitorParams.MonitorDoor1;
+                SaveConfigXmlDoorMonitor(1);
+            }
+        }
+
+        private void chkboxMonitorDoor2_Checked(object sender, RoutedEventArgs e)
+        {
+            if (ModbusTcpClient != null)
+            {
+                ResetRemoteIO();
+                ModbusTcpClient.MonitorDoor2 = MonitorParams.MonitorDoor2;
+                SaveConfigXmlDoorMonitor(2);
             }
         }
 
@@ -520,7 +562,9 @@ namespace DoorMonitor
         {
             if (ModbusTcpClient != null)
             {
-                ModbusTcpClient.IsDoor2Open = EnumDoorStatus.Ignore;                
+                ModbusTcpClient.IsDoor2Open = EnumDoorStatus.Ignore;
+                ModbusTcpClient.MonitorDoor1 = MonitorParams.MonitorDoor1;
+                SaveConfigXmlDoorMonitor(2);
             }
         }
 
