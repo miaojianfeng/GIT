@@ -403,21 +403,58 @@ namespace ETSL.TcpSocket
 
         private void SendNotificationMessageTask(TcpClient client, int num)
         {
+            NetworkStream nwkStream = client.GetStream();
+            byte[] bytesReceived = new byte[1024];
+            int i;
+            StringBuilder recMsg = new StringBuilder();
+            StringBuilder sendMsg = new StringBuilder();
+
+            // Response of the DI Querying message from Client
+            if ((i = nwkStream.Read(bytesReceived, 0, bytesReceived.Length)) != 0)
+            {
+                MsgTransState = EnumMsgTransState.Working;
+
+                recMsg.Clear();
+                for (int j = 0; j < i; j++)
+                {
+                    recMsg.Append(bytesReceived[j].ToString("X2"));
+
+                    if (j != i - 1) recMsg.Append(" ");
+                }
+
+                AppendTrace(EnumTraceType.Message, String.Format("Client{0} ==> {1}:  {2}", num, ServerName, recMsg.ToString().ToUpper()));
+
+                // Process received message
+                sendMsg.Clear();
+                sendMsg.Append(ProcessRecMessage(recMsg.ToString()));
+
+                Thread.Sleep(QueryTimeout_ms);
+
+                byte[] bytesSend = Utilities.Auxiliaries.strToToHexByte(sendMsg.ToString());
+                nwkStream.Write(bytesSend, 0, bytesSend.Length);
+                AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1}:  {2}", num, ServerName, sendMsg.ToString().ToUpper()));
+
+                MsgTransState = EnumMsgTransState.Silence;
+            }
+
+            // AutoNotification Task
             Task.Run(() => SendNotificationMessage(client, num));
         }
 
         private void SendNotificationMessage(TcpClient client, int num)
         {
             NetworkStream nwkStream = client.GetStream();
-            byte[] bytesReceived = new byte[1024];
+            byte[] bytesReceived = new byte[1024];            
+            StringBuilder recMsg = new StringBuilder();
             StringBuilder sendMsg = new StringBuilder();
 
             while (true)
             {
                 try
                 {
-                    MsgTransState = EnumMsgTransState.Silence;
+                    MsgTransState = EnumMsgTransState.Silence;                    
 
+                    // AutoNotification to Client if DI status changed
                     if (IsDIChanged && AutoNotificationMessage!=string.Empty)
                     {
                         sendMsg.Clear();
@@ -431,7 +468,7 @@ namespace ETSL.TcpSocket
                         AppendTrace(EnumTraceType.Message, String.Format("Client{0} <== {1}:  {2}", num, ServerName, sendMsg.ToString().ToUpper()));
                         MsgTransState = EnumMsgTransState.Working;
                         isDIChanged = false;
-                    }                                
+                    }                    
                 }
                 catch
                 {

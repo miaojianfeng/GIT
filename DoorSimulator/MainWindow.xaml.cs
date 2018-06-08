@@ -221,10 +221,9 @@ namespace DoorSimulator
             {
                 TcpSvr.IsAutoNotifyMode = SimParams.IsAutoNotifyMode;
                 AppendTrace(EnumTraceType.Information, string.Format("Set IsAutoNotifyMode: {0}\n", TcpSvr.IsAutoNotifyMode));
-
+                
                 if (!TcpSvr.IsAutoNotifyMode)
-                {
-                    TcpSvr.ProcessMessage = ZL6042Sim.ProcessDIStateQueryMessage;
+                {                   
                     
                     if(IsDoor1Open)
                     {
@@ -421,7 +420,8 @@ namespace DoorSimulator
         {            
             TcpSvr.EnableTrace = true;
             TcpSvr.UpdateTrace = this.traceWnd.UpdateTrace; // Update Trace
-            
+            TcpSvr.ProcessMessage = ZL6042Sim.ProcessDIStateQueryMessage;
+
             await TcpSvr.Start();
         }
 
