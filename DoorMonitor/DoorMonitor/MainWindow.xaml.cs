@@ -333,18 +333,22 @@ namespace DoorMonitor
                 if (MonitorParams.InitializedSG)
                 {
                     AppendTrace(EnumTraceType.Information, string.Format("Connect to SG \"{0}\" successfully!", MonitorParams.SgVisaAddress));
-                    AppendTrace(EnumTraceType.Information, string.Format("Send SCPI command <*IDN?> to SG \"{0}\"...", MonitorParams.SgVisaAddress));
-                    SgDriver.SendCommand("*IDN?");
-                    System.Threading.Thread.Sleep(300);
-                    AppendTrace(EnumTraceType.Information, string.Format("Read response of SCPI command <*IDN?> from SG \"{0}\"...", MonitorParams.SgVisaAddress));
-                    MonitorParams.SgID = SgDriver.ReadCommand();
-                    if (MonitorParams.SgID == string.Empty)
+
+                    if(MonitorParams.SgIdQuery)
                     {
-                        MonitorParams.SgID = "Failed to read out SG ID!";
-                        string errMsg = string.Format("Failed to read out the ID Information from SG<{0}>", MonitorParams.SgVisaAddress);
-                        MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    AppendTrace(EnumTraceType.Information, string.Format("SG <{0}> ID readout <{1}>", MonitorParams.SgVisaAddress, MonitorParams.SgID));
+                        AppendTrace(EnumTraceType.Information, string.Format("Send SCPI command <*IDN?> to SG \"{0}\"...", MonitorParams.SgVisaAddress));
+                        SgDriver.SendCommand("*IDN?");
+                        System.Threading.Thread.Sleep(300);
+                        AppendTrace(EnumTraceType.Information, string.Format("Read response of SCPI command <*IDN?> from SG \"{0}\"...", MonitorParams.SgVisaAddress));
+                        MonitorParams.SgID = SgDriver.ReadCommand();
+                        if (MonitorParams.SgID == string.Empty)
+                        {
+                            MonitorParams.SgID = "Failed to read out SG ID!";
+                            string errMsg = string.Format("Failed to read out the ID Information from SG<{0}>", MonitorParams.SgVisaAddress);
+                            MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        AppendTrace(EnumTraceType.Information, string.Format("SG <{0}> ID readout <{1}>", MonitorParams.SgVisaAddress, MonitorParams.SgID));
+                    }                    
                 }
                 else
                 {

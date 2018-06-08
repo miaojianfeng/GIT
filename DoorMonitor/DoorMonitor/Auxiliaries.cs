@@ -47,6 +47,7 @@ namespace DoorMonitor
         private bool monitorDoor1 = true;
         private bool monitorDoor2 = true;
         private bool controlSG = true;
+        private bool sgIdQuery = true;
         private string configFilePath = @"C:\Temp\Configuration.xml";
 
         // ---------- Property ----------
@@ -180,6 +181,19 @@ namespace DoorMonitor
             }
         }
 
+        public bool SgIdQuery
+        {
+            set
+            {
+                this.sgIdQuery = value;
+                NotifyPropertyChanged("SgIdQuery");
+            }
+            get
+            {
+                return this.sgIdQuery;
+            }
+        }
+
         public bool MonitorDoor1
         {
             set
@@ -251,6 +265,7 @@ namespace DoorMonitor
                                                            new XElement("MonitorDoor1", "True"),
                                                            new XElement("MonitorDoor2", "True"),
                                                            new XElement("ControlSG", "True"),
+                                                           new XElement("SgIdQuery", "True"),
                                                            new XComment("More Settings"),
                                                            new XElement("RemoteIoAddress", "192.168.0.200"),
                                                            new XElement("RemoteIoPort", "502"),
@@ -286,6 +301,7 @@ namespace DoorMonitor
                 string strMonitorDoor1 = rootNode.Element("MonitorDoor1").Value;
                 string strMonitorDoor2 = rootNode.Element("MonitorDoor2").Value;
                 string strControlSG = rootNode.Element("ControlSG").Value;
+                string strSgIdQuery = rootNode.Element("SgIdQuery").Value;
 
                 this.remoteIoIpAddr = strRemoteIoAddr;
                 this.RemoteIoPort = Convert.ToUInt16(strRemoteIoPort);
@@ -332,6 +348,19 @@ namespace DoorMonitor
                 else
                 {
                     this.controlSG = true;
+                }
+
+                if (strSgIdQuery.ToUpper() == "TRUE")
+                {
+                    this.sgIdQuery = true;
+                }
+                else if (strSgIdQuery.ToUpper() == "FALSE")
+                {
+                    this.sgIdQuery = false;
+                }
+                else
+                {
+                    this.sgIdQuery = true;
                 }
 
                 // More Settings

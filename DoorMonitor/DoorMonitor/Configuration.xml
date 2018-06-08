@@ -4,6 +4,7 @@
   <MonitorDoor1>True</MonitorDoor1>
   <MonitorDoor2>True</MonitorDoor2>
   <ControlSG>True</ControlSG>
+  <SgIdQuery>True</SgIdQuery>
   <!--More Settings-->
   <RemoteIoAddress>192.168.0.200</RemoteIoAddress>
   <RemoteIoPort>502</RemoteIoPort>
