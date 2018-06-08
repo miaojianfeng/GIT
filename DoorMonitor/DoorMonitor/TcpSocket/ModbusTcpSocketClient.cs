@@ -214,7 +214,7 @@ namespace ETSL.TcpSocket
                 ZLAN6042LinkStatus = EnumZLAN6042LinkStatus.Disconnected;
                 this.tcpClient = null;
                 this.UpdateTrace = null;
-                MessageBox.Show("Failed to connect to ZLAN6042!\nPlease check network connection.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Failed to connect to ZLAN6042!\nPlease check network connection.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
