@@ -306,7 +306,7 @@ namespace ETSL.TcpSocket
             if (msgArray.Length == 10)
             {
                 // Convert text to nunmber
-                Int16 diValue = Convert.ToInt16(msgArray[9]);
+                Int16 diValue = Convert.ToInt16(msgArray[9], 16);
                 Int16 DI1 = 0x1;
                 Int16 DI2 = 0x2;
                 //Int16 DI3 = 0x4;
