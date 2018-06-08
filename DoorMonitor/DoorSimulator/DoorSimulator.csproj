@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FBE29ED0-E61F-479F-A205-C874EF69EF8C}</ProjectGuid>
+    <ProjectGuid>{0E726646-A887-4276-AD96-96F5D85700BF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DoorMonitor</RootNamespace>
-    <AssemblyName>DoorMonitor</AssemblyName>
+    <RootNamespace>DoorSimulator</RootNamespace>
+    <AssemblyName>DoorSimulator</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,32 +35,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\Door.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\TrafficLight.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common, Version=15.0.40.49154, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Reference\NationalInstruments.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.Common.Native">
-      <HintPath>Reference\NationalInstruments.Common.Native.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.MStudioCLM, Version=15.0.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>Reference\NationalInstruments.MStudioCLM.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.NiLmClientDLL, Version=15.0.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Reference\NationalInstruments.NiLmClientDLL.dll</HintPath>
-    </Reference>
-    <Reference Include="NationalInstruments.VisaNS">
-      <HintPath>Reference\NationalInstruments.VisaNS.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -80,21 +59,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Auxiliaries.cs" />
-    <Compile Include="DoorMonitorCommands.cs" />
-    <Compile Include="NotifyIcon\BalloonTipIcon.cs" />
-    <Compile Include="NotifyIcon\NotifyIcon.cs" />
-    <Compile Include="NotifyIcon\NotifyIcon.Interop.cs" />
-    <Compile Include="SettingWindow.xaml.cs">
-      <DependentUpon>SettingWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TcpSocket\ModbusTcpSocketClient.cs" />
-    <Compile Include="TcpSocket\TcpSocketServer.cs" />
+    <Compile Include="ModbusTcpSocketServer\ZL6042Protocol.cs" />
+    <Compile Include="SimulatorCommands.cs" />
+    <Compile Include="ModbusTcpSocketServer\ModbusTcpSocketServer.cs" />
     <Compile Include="TraceWindow.xaml.cs">
       <DependentUpon>TraceWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities.cs" />
-    <Compile Include="VisaInstrument\InstrumentManager.cs" />
-    <Compile Include="VisaInstrument\VisaInstrDriver.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -107,10 +78,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SettingWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="TraceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -144,22 +111,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Trace.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Door.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Exit.ico" />
-    <Resource Include="Resources\Open.ico" />
+    <Resource Include="Resources\TrafficLight.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Settings.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Configuration.xml" />
+    <Resource Include="Resources\Trace.ico" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
