@@ -110,7 +110,7 @@ namespace ETSL.TcpSocket
         {
             string diStaQueryResult = string.Empty;            
 
-            if (diStaQueryMessage == "00 00 00 00 00 06 01 01 00 10 00 04")
+            if (diStaQueryMessage == "00 00 00 00 00 06 01 01 00 00 00 04")
             {
                 ushort diStaValue = 0x00;
                 string diStaValStr = string.Empty;
@@ -152,7 +152,7 @@ namespace ETSL.TcpSocket
                 }
 
                 diStaValStr = diStaValue.ToString("X2");
-                diStaQueryResult = string.Format("00 00 00 00 00 06 01 01 01 {0} 11 8c", diStaValStr);
+                diStaQueryResult = string.Format("00 00 00 00 00 04 01 01 01 {0}", diStaValStr);
             }
 
             return diStaQueryResult;
