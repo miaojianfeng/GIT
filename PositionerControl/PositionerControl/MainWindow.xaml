@@ -276,7 +276,7 @@
                         Background="{StaticResource RedButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"></Button>
                 </StackPanel>
                 <GroupBox Grid.Row="4" Margin="5,5,5,5" BorderBrush="Black" BorderThickness="1" Header="设置">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="8,0,0,0">
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Label Content="速度(度/秒)"/>
