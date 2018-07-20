@@ -4,9 +4,296 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PositionerControl"
-        mc:Ignorable="d"
-        Title="Positioner Control" Height="450" Width="800">
-    <Grid>
-        
+        mc:Ignorable="d"  
+        Background="LightBlue"
+        Title="Positioner Control" Height="450" Width="800" MinHeight="450" MinWidth="800" Icon="Control.ico">
+    <Window.Resources>
+        <!--UI Elements-->
+        <LinearGradientBrush x:Key="RedLED" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="Pink" Offset="0"/>
+            <GradientStop Color="Red" Offset="0.5"/>
+            <GradientStop Color="DarkRed" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="LightGreenLED" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="White" Offset="0"/>
+            <GradientStop Color="LightGreen" Offset="0.35"/>
+            <GradientStop Color="LimeGreen" Offset="0.85"/>
+            <GradientStop Color="Green" Offset="0.9"/>
+            <GradientStop Color="DarkGreen" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="RedButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="Pink" Offset="0"/>
+            <GradientStop Color="Red" Offset="0.5"/>
+            <GradientStop Color="DarkRed" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GreenButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="LightGreen" Offset="0"/>
+            <GradientStop Color="Green" Offset="0.5"/>
+            <GradientStop Color="DarkGreen" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="YellowButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="LightYellow" Offset="0"/>
+            <GradientStop Color="Yellow" Offset="0.5"/>
+            <GradientStop Color="YellowGreen" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GrayButton" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="LightGray" Offset="0"/>
+            <GradientStop Color="Gray" Offset="0.5"/>
+            <GradientStop Color="DarkGray" Offset="1"/>
+        </LinearGradientBrush>
+        <!--Style-->
+        <Style x:Key="HeaderStyle" TargetType="{x:Type Label}">
+            <Setter Property="Padding" Value="5,2"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>            
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontFamily" Value="FangSong"/>
+            <Setter Property="Background" Value="LightYellow"/>            
+        </Style>
+        <Style x:Key="TextboxStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>            
+        </Style>
+    </Window.Resources>
+    <Grid>        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Grid.Column="0" Margin="10,5,5,10" BorderBrush="Black" BorderThickness="1">
+            <GroupBox.Header>
+                <Border BorderBrush="Black" BorderThickness="0.5">
+                    <Label Content="前后(滑道)" Style="{StaticResource HeaderStyle}" />
+                </Border>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="25*"/>
+                </Grid.RowDefinitions>
+                <GroupBox Margin="5,10,5,0" BorderBrush="Black" BorderThickness="1" Header="当前位置 (毫米)">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Text="0.00"/>
+                        <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="查询" Width="60" Height="22" Margin="5,0,0,0" 
+                                Background="{StaticResource GrayButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (毫米)">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <CheckBox Content="原点位置"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
+                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
+                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Grid.Row="2" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="相对当前位置移动 (毫米)">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <RadioButton Content="向前(正+)"/>
+                            <RadioButton Content="向后(负-)" Margin="30,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
+                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
+                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="5,15,5,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse DockPanel.Dock="Left" Width="20" Height="20" VerticalAlignment="Center" Margin="5,0,0,0"
+                         Fill="{StaticResource RedLED}"/>
+                    <Label VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="Fangsong"
+                           Foreground="Red"
+                           Content="未连接"/>
+                    <Image Source="Stop.png" Stretch="UniformToFill" Height="30" Width="30" Margin="15,0,0,0"/>
+                    <Button VerticalAlignment="Center" HorizontalAlignment="Center" Width="100" Height="30" Margin="5,0,0,0" Content="立即停止"
+                        Background="{StaticResource RedButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"></Button>
+                </StackPanel>                
+                <GroupBox Grid.Row="4" Margin="5,5,5,5" BorderBrush="Black" BorderThickness="1" Header="设置">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Label Content="速度(毫米/秒)"/>
+                                <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="60" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Label Content="偏移量(毫米)"/>
+                                <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="60" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            </StackPanel>                            
+                        </StackPanel>
+                        <Button Content="确定" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Height="48" Margin="5,0,0,0"
+                                Background="{StaticResource GrayButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                    </StackPanel>                    
+                </GroupBox>               
+            </Grid>
+        </GroupBox>        
+        <GroupBox Grid.Column="1" Margin="5,5,5,10" BorderBrush="Black" BorderThickness="1">
+            <GroupBox.Header>
+                <Border BorderBrush="Black" BorderThickness="0.5">
+                    <Label Content="上下(升降台)" Style="{StaticResource HeaderStyle}" />
+                </Border>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="25*"/>
+                </Grid.RowDefinitions>
+                <GroupBox Margin="5,10,5,0" BorderBrush="Black" BorderThickness="1" Header="当前位置 (毫米)">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Text="0.00"/>
+                        <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="查询" Width="60" Height="22" Margin="5,0,0,0" 
+                                Background="{StaticResource GrayButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (毫米)">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <CheckBox Content="原点位置"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
+                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
+                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Grid.Row="2" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="相对当前位置移动 (毫米)">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <RadioButton Content="向上(正+)"/>
+                            <RadioButton Content="向下(负-)" Margin="30,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
+                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
+                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="5,15,5,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse DockPanel.Dock="Left" Width="20" Height="20" VerticalAlignment="Center" Margin="5,0,0,0"
+                         Fill="{StaticResource RedLED}"/>
+                    <Label VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="Fangsong"
+                           Foreground="Red"
+                           Content="未连接"/>
+                    <Image Source="Stop.png" Stretch="UniformToFill" Height="30" Width="30" Margin="15,0,0,0"/>
+                    <Button VerticalAlignment="Center" HorizontalAlignment="Center" Width="100" Height="30" Margin="5,0,0,0" Content="立即停止"
+                        Background="{StaticResource RedButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"></Button>
+                </StackPanel>
+                <GroupBox Grid.Row="4" Margin="5,5,5,5" BorderBrush="Black" BorderThickness="1" Header="设置">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Label Content="速度(毫米/秒)"/>
+                                <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="60" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Label Content="偏移量(毫米)"/>
+                                <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="60" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <Button Content="确定" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Height="48" Margin="5,0,0,0"
+                                Background="{StaticResource GrayButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="2" Margin="5,5,10,10" BorderBrush="Black" BorderThickness="1">
+            <GroupBox.Header>
+                <Border BorderBrush="Black" BorderThickness="0.5">
+                    <Label Content="旋转(转台)" Style="{StaticResource HeaderStyle}"/>
+                </Border>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="25*"/>
+                </Grid.RowDefinitions>
+                <GroupBox Margin="5,10,5,0" BorderBrush="Black" BorderThickness="1" Header="当前位置 (度)">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Text="0.00"/>
+                        <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="查询" Width="60" Height="22" Margin="5,0,0,0" 
+                                Background="{StaticResource GrayButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (度)">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <CheckBox Content="原点位置"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
+                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
+                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Grid.Row="2" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="相对当前位置移动 (度)">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <RadioButton Content="顺时针(正+)"/>
+                            <RadioButton Content="逆时针(负-)" Margin="8,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
+                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
+                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="5,15,5,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse DockPanel.Dock="Left" Width="20" Height="20" VerticalAlignment="Center" Margin="5,0,0,0"
+                         Fill="{StaticResource RedLED}"/>
+                    <Label VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="Fangsong"
+                           Foreground="Red"
+                           Content="未连接"/>
+                    <Image Source="Stop.png" Stretch="UniformToFill" Height="30" Width="30" Margin="15,0,0,0"/>
+                    <Button VerticalAlignment="Center" HorizontalAlignment="Center" Width="100" Height="30" Margin="5,0,0,0" Content="立即停止"
+                        Background="{StaticResource RedButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"></Button>
+                </StackPanel>
+                <GroupBox Grid.Row="4" Margin="5,5,5,5" BorderBrush="Black" BorderThickness="1" Header="设置">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Label Content="速度(度/秒)"/>
+                                <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="60" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Label Content="偏移量(度)"/>
+                                <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="60" Height="22"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <Button Content="确定" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Height="48" Margin="5,0,0,0"
+                                Background="{StaticResource GrayButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>

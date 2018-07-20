@@ -25,7 +25,7 @@ namespace PositionerControl
         public MainWindow()
         {
             InitializeComponent();
-            Test();
+            //Test();
         }
 
         private void Test()
