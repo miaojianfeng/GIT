@@ -67,7 +67,7 @@
         <GroupBox Grid.Column="0" Margin="10,5,5,10" BorderBrush="Black" BorderThickness="1">
             <GroupBox.Header>
                 <Border BorderBrush="Black" BorderThickness="0.5">
-                    <Label Content="前后(滑道)" Style="{StaticResource HeaderStyle}" />
+                    <Label Content="前后(滑轨)" Style="{StaticResource HeaderStyle}" />
                 </Border>
             </GroupBox.Header>
             <Grid>
