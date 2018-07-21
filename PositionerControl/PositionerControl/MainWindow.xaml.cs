@@ -38,10 +38,11 @@ namespace PositionerControl
             //string resp = instrDrv.QueryCommand("AXIS3:*IDN?");
             //resp = instrDrv.QueryCommand("AXIS3:CP?");
 
-            DmdPositioner positioner = new DmdPositioner();
+            DmdPositionerSuite positioner = new DmdPositionerSuite();
             positioner.VisaAddress = "TCPIP0::localhost::9001::SOCKET";
             positioner.Initialize();
             positioner.Slide.Home();
+            positioner.Slide.SeekPosition(20);
         }
     }    
 }
