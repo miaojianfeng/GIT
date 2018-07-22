@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Control.ico</ApplicationIcon>
+    <ApplicationIcon>Pictures\Control.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NationalInstruments.Common, Version=15.0.40.49154, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
@@ -72,14 +72,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Driver\InstrumentManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Positioner Drivers\DmdPositioner.cs" />
-    <Compile Include="Positioner Drivers\VisaInstrDriver.cs" />
+    <Compile Include="Driver\DmdPositioner.cs" />
+    <Compile Include="Driver\VisaInstrDriver.cs" />
+    <Compile Include="PositionerParams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -106,16 +108,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Control.ico" />
+    <Resource Include="Pictures\Stop.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Stop.png" />
+    <Resource Include="Pictures\Control.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="ETSL_Logo.png" />
+    <Resource Include="Pictures\ETSL_Logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="ETSL_Title.png" />
+    <Resource Include="Pictures\ETSL_Title.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
