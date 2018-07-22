@@ -111,5 +111,11 @@
   <ItemGroup>
     <Resource Include="Stop.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ETSL_Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ETSL_Title.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
