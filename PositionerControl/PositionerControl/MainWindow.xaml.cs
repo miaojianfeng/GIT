@@ -118,5 +118,300 @@ namespace PositionerControl
             DmdPositioner.Initialize();
             this.tblockStatus.Text = DmdPositioner.InstrID;
         }
-    }    
+
+        private bool IsCmdCanExecute(EnumPositionerType type)
+        {
+            bool cmdCanExecute = false;
+            switch(type)
+            {
+                case EnumPositionerType.Slide:
+                    if (DmdPositioner!=null && DmdPositioner.Initialized_Slide && DmdPositionerParams.IsMovingStop_Slide)
+                    {
+                        cmdCanExecute = true;
+                    }
+                    else
+                    {
+                        cmdCanExecute = false;
+                    }
+                    break;
+                case EnumPositionerType.Lift:
+                    if (DmdPositioner != null && DmdPositioner.Initialized_Lift && DmdPositionerParams.IsMovingStop_Lift)
+                    {
+                        cmdCanExecute = true;
+                    }
+                    else
+                    {
+                        cmdCanExecute = false;
+                    }
+                    break;
+                case EnumPositionerType.Turntable:
+                    if (DmdPositioner != null && DmdPositioner.Initialized_Turntable && DmdPositionerParams.IsMovingStop_Turntable)
+                    {
+                        cmdCanExecute = true;
+                    }
+                    else
+                    {
+                        cmdCanExecute = false;
+                    }
+                    break;
+            }
+            return cmdCanExecute;
+        }
+
+        // ------------ Commands(CanExecute) ------------
+        // <1> Position querying commands
+        private void QueryPosCmd_Slide_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {            
+            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Slide);
+            e.Handled = true;
+        }
+        private void QueryPosCmd_Lift_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Lift);
+            e.Handled = true;
+        }
+        private void QueryPosCmd_Turntable_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Turntable);
+            e.Handled = true;
+        }
+
+        // <2> Absolute position querying commands
+        private void SeekAbsPosCmd_Slide_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Slide);
+            e.Handled = true;
+        }
+        private void SeekAbsPosCmd_Lift_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Lift);
+            e.Handled = true;
+        }
+        private void SeekAbsPosCmd_Turntable_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Turntable);
+            e.Handled = true;
+        }
+
+        // <3> Relative position querying commands
+        private void SeekRelPosCmd_Slide_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Slide);
+            e.Handled = true;
+        }
+        private void SeekRelPosCmd_Lift_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Lift);
+            e.Handled = true;
+        }
+        private void SeekRelPosCmd_Turntable_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Turntable);
+            e.Handled = true;
+        }
+
+        // <4> Apply Settings commands
+        private void ApplySettingsCmd_Slide_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            bool cmdCanExec = false;
+            if(IsCmdCanExecute(EnumPositionerType.Slide))
+            {
+                int speed = -99999;
+                if (this.tboxSpeed_Slide.Text != string.Empty)
+                {
+                    speed = Convert.ToInt32(this.tboxSpeed_Slide.Text);
+                }
+
+                double offset = 0;
+                if (this.tboxOffset_Slide.Text != string.Empty)
+                {
+                    offset = Convert.ToDouble(this.tboxOffset_Slide.Text);
+                }                
+
+                if(DmdPositionerParams.CurrentSpeed_Slide != speed || DmdPositionerParams.Offset_Slide!=offset)
+                {
+                    cmdCanExec = true;
+                }                 
+            }
+
+            e.CanExecute = cmdCanExec;
+            e.Handled = true;
+        }
+        private void ApplySettingsCmd_Lift_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            bool cmdCanExec = false;
+            if (IsCmdCanExecute(EnumPositionerType.Lift))
+            {
+                int speed = -99999;
+                if (this.tboxSpeed_Lift.Text != string.Empty)
+                {
+                    speed = Convert.ToInt32(this.tboxSpeed_Lift.Text);
+                }
+
+                double offset = 0;
+                if (this.tboxOffset_Lift.Text != string.Empty)
+                {
+                    offset = Convert.ToDouble(this.tboxOffset_Lift.Text);
+                }
+
+                if (DmdPositionerParams.CurrentSpeed_Lift != speed || DmdPositionerParams.Offset_Lift != offset)
+                {
+                    cmdCanExec = true;
+                }
+            }
+
+            e.CanExecute = cmdCanExec;
+            e.Handled = true;
+        }
+        private void ApplySettingsCmd_Turntable_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            bool cmdCanExec = false;
+            if (IsCmdCanExecute(EnumPositionerType.Turntable))
+            {
+                int speed = -99999;
+                if (this.tboxSpeed_Turntable.Text != string.Empty)
+                {
+                    speed = Convert.ToInt32(this.tboxSpeed_Turntable.Text);
+                }
+
+                double offset = 0;
+                if (this.tboxOffset_Turntable.Text != string.Empty)
+                {
+                    offset = Convert.ToDouble(this.tboxOffset_Turntable.Text);
+                }
+
+                if (DmdPositionerParams.CurrentSpeed_Turntable != speed || DmdPositionerParams.Offset_Turntable != offset)
+                {
+                    cmdCanExec = true;
+                }
+            }
+
+            e.CanExecute = cmdCanExec;
+            e.Handled = true;
+        }
+
+        // <5> Stop moving commands
+        private void StopCmd_Slide_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if(DmdPositioner != null && DmdPositioner.HasInitialized && DmdPositioner.Initialized_Slide)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+            e.Handled = true;
+        }
+        private void StopCmd_Lift_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (DmdPositioner != null && DmdPositioner.HasInitialized && DmdPositioner.Initialized_Lift)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+            e.Handled = true;
+        }
+        private void StopCmd_Turntable_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (DmdPositioner != null && DmdPositioner.HasInitialized && DmdPositioner.Initialized_Turntable)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+            e.Handled = true;
+        }
+
+        // ------------ Commands(Executed) ------------
+        // <1> Position querying commands
+        private void QueryPosCmd_Slide_Executed(object sender, ExecutedRoutedEventArgs e)
+        {            
+
+            e.Handled = true;
+        }
+        private void QueryPosCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+        private void QueryPosCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+
+        // <2> Absolute position querying commands
+        private void SeekAbsPosCmd_Slide_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+        private void SeekAbsPosCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+        private void SeekAbsPosCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+
+        // <3> Relative position querying commands
+        private void SeekRelPosCmd_Slide_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+        private void SeekRelPosCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+        private void SeekRelPosCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+
+        // <4> Apply Settings commands
+        private void ApplySettingsCmd_Slide_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+        private void ApplySettingsCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+        private void ApplySettingsCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+
+        // <5> Stop moving commands
+        private void StopCmd_Slide_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+        private void StopCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+        private void StopCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            e.Handled = true;
+        }
+    }
 }

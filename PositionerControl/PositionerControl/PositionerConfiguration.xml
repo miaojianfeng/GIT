@@ -2,8 +2,8 @@
 <Configuration>
   <VisaAddress>TCPIP0::192.168.127.254::4001::SOCKET</VisaAddress>
   <PositionerOffset>
-    <SlideOffset>0</SlideOffset>
-    <LiftOffset>0</LiftOffset>
-    <TurntableOffset>0</TurntableOffset>
+    <Offset_Slide>0</Offset_Slide>
+    <Offset_Lift>0</Offset_Lift>
+    <Offset_Turntable>0</Offset_Turntable>
   </PositionerOffset>  
 </Configuration>

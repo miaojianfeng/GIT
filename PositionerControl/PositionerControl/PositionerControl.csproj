@@ -81,6 +81,7 @@
   <ItemGroup>
     <Compile Include="Driver\DmdPositioner.cs" />
     <Compile Include="Driver\VisaInstrDriver.cs" />
+    <Compile Include="PositionerCtrlCmds.cs" />
     <Compile Include="PositionerParams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
