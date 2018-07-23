@@ -23,7 +23,7 @@ namespace ETSL.InstrDriver
         // Field
         protected DmdPositionerSuite dmdPosSuite;
         private double currentPosition = -999;
-        private string currentPositionString = "Exception!";
+        private string currentPositionString = "Exception!";        
 
         // Property
         protected string Command_Home { set; get; }
@@ -333,17 +333,35 @@ namespace ETSL.InstrDriver
 
                 if (Initialized_Slide && Initialized_Lift && Initialized_Turntable)
                 {
-                    return true;
+                    InstrID = id_Slide;
+                    HasInitialized = true;                    
                 }
                 else
                 {
-                    return false;
+                    InstrID = string.Empty;
+                    HasInitialized = false;                    
                 }
             }
             else
             {
-                return false;
+                InstrID = string.Empty;
+                HasInitialized = false;
             }
+
+            return HasInitialized;
+        }
+
+        public override void DeInitialize()
+        {
+            base.DeInitialize();
+
+            Initialized_Slide = false;
+            Initialized_Lift = false;
+            Initialized_Turntable = false;
+
+            this.slide = null;
+            this.lift = null;
+            this.turntable = null;
         }
     }    
 }

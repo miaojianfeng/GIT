@@ -17,6 +17,15 @@ using System.Xml.Linq;
 
 namespace PositionerControl
 {
+    public enum EnumPositionerParameter
+    {
+        VisaAddress,
+        Slide_Offset,
+        Lift_Offset,
+        Turntable_Offset
+    }
+
+    // Positioner Parameters
     public class PositionerParams: INotifyPropertyChanged
     {
         // Constructor
@@ -38,6 +47,7 @@ namespace PositionerControl
         private double slideOffset = 0;
         private double liftOffset = 0;
         private double turntableOffset = 0;
+        static private object locker = new object();
 
         // Property
         private string ConfigXML { set; get; }
@@ -51,6 +61,7 @@ namespace PositionerControl
             set
             {
                 this.visaAddr = value;
+                SavePositionerParameter(EnumPositionerParameter.VisaAddress);
                 NotifyPropertyChanged("VisaAddress");
             }
 
@@ -64,6 +75,7 @@ namespace PositionerControl
             set
             {
                 this.slideOffset = value;
+                SavePositionerParameter(EnumPositionerParameter.Slide_Offset);
                 NotifyPropertyChanged("SlideOffset");
             }
         }
@@ -76,6 +88,7 @@ namespace PositionerControl
             set
             {
                 this.liftOffset = value;
+                SavePositionerParameter(EnumPositionerParameter.Lift_Offset);
                 NotifyPropertyChanged("LiftOffset");
             }
         }
@@ -88,6 +101,7 @@ namespace PositionerControl
             set
             {
                 this.turntableOffset = value;
+                SavePositionerParameter(EnumPositionerParameter.Turntable_Offset);
                 NotifyPropertyChanged("TurntableOffset");
             }
         }
@@ -183,6 +197,137 @@ namespace PositionerControl
             }
         }
 
-        //private void SaveConfiguration()
+        private void SavePositionerParameter(EnumPositionerParameter parameter)
+        {            
+            lock (locker)
+            {
+                XDocument xml = XDocument.Load(ConfigXML);
+                XElement rootNode = xml.Element("Configuration");
+                switch (parameter)
+                {
+                    case EnumPositionerParameter.VisaAddress:
+                        rootNode.SetElementValue("VisaAddress", this.visaAddr);
+                        break;
+                    case EnumPositionerParameter.Slide_Offset:
+                        rootNode.Element("PositionerOffset").SetElementValue("SlideOffset", this.slideOffset.ToString("#.##"));
+                        break;
+                    case EnumPositionerParameter.Lift_Offset:
+                        rootNode.Element("PositionerOffset").SetElementValue("LiftOffset", this.liftOffset.ToString("#.##"));
+                        break;
+                    case EnumPositionerParameter.Turntable_Offset:
+                        rootNode.Element("PositionerOffset").SetElementValue("TurntableOffset", this.turntableOffset.ToString("#.##"));
+                        break;
+                }
+                xml.Save(ConfigXML);
+            }            
+        }
+    }
+
+    // Converter
+    public class PositionerInitStateToFillColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool InitState = (bool)value;
+
+            LinearGradientBrush brush = new LinearGradientBrush();
+            brush.StartPoint = new Point(0, 0);
+            brush.EndPoint = new Point(1, 1);
+
+            // RedLED
+            GradientStopCollection redLED = new GradientStopCollection() { new GradientStop(Colors.Pink, 0),
+                                                                           new GradientStop(Colors.Red, 0.5),
+                                                                           new GradientStop(Colors.DarkRed, 1)};
+
+
+            // LightGreen LED
+            GradientStopCollection lightGreenLED = new GradientStopCollection() { new GradientStop(Colors.White, 0),
+                                                                                  new GradientStop(Colors.LightGreen, 0.35),
+                                                                                  new GradientStop(Colors.LimeGreen, 0.85),
+                                                                                  new GradientStop(Colors.Green, 0.9),
+                                                                                  new GradientStop(Colors.DarkGreen, 1)};
+
+            if (InitState)
+            {
+                brush.GradientStops = new GradientStopCollection(lightGreenLED);
+            }
+            else
+            {
+                brush.GradientStops = new GradientStopCollection(redLED);
+            }
+
+            return brush;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class PositionerInitStateToForegroundColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool InitState = (bool)value;
+
+            if (InitState)
+            {
+                return new SolidColorBrush(Colors.Green);
+            }
+            else
+            {
+                return new SolidColorBrush(Colors.Red);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class PositionerInitStateToTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool InitState = (bool)value;
+
+            if (InitState)
+            {
+                return "连接成功！";
+            }
+            else
+            {
+                return "连接失败！";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class ComboxSelIndexToButtonEnableConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int selIndex = (int)value;
+
+            if (selIndex==-1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
     }
 }
