@@ -10,45 +10,23 @@ using NationalInstruments.VisaNS;
 
 namespace ETSL.InstrDriver.Base
 {
-    public class InstrumentManager:INotifyPropertyChanged
+    public class InstrDrvUtility:INotifyPropertyChanged
     {
         // ---------- Constructor----------
-        public InstrumentManager()
-        {
-            InstrumentDriverList = new ObservableCollection<VisaInstrDriver>();
-            InstrNameList = new ObservableCollection<string>();
+        public InstrDrvUtility()
+        {            
             VisaAddressList = new ObservableCollection<string>();
             VisaSearchMessage = string.Empty;
-            VisaSearchException = string.Empty;
-            this.currInstrDrv = null;
+            VisaSearchException = string.Empty;            
         }
 
         // ---------- Field --------------        
         private string visaSearchMessage = string.Empty;
-        private string visaSearchException = string.Empty;
-        private VisaInstrDriver currInstrDrv = null;        
+        private string visaSearchException = string.Empty;          
 
-        // ---------- Property ----------
-        public ObservableCollection<string> InstrNameList { private set; get; }   
-        public ObservableCollection<VisaInstrDriver> InstrumentDriverList { private set; get; }
+        // ---------- Property ----------          
         public ObservableCollection<string> VisaAddressList { private set; get; }      
-        
-        public VisaInstrDriver CurrentInstrumentDriver
-        {
-            get
-            {
-                return this.currInstrDrv;
-            }
-            set
-            {
-                if(InstrumentDriverList.Contains(value))
-                {
-                    this.currInstrDrv = value;
-                    NotifyPropertyChanged("CurrentInstrumentDriver");
-                }
-            }
-        } 
-        
+                     
         public string VisaSearchMessage
         {
             private set
@@ -80,13 +58,16 @@ namespace ETSL.InstrDriver.Base
         // ---------- Event ----------
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // ---------- Method ----------  
-        public void AddInstrument(VisaInstrDriver driver)
+        // ---------- Private Method ----------
+        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
-            InstrumentDriverList.Add(driver);
-            InstrNameList.Add(driver.InstrumentName);
+            if (PropertyChanged != null)
+            {
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
+        // ---------- Method ----------
         public bool FindVisaResources()
         {
             bool retValue = false;
@@ -138,15 +119,6 @@ namespace ETSL.InstrDriver.Base
             task.Start();
             await task;
             return task.Result;
-        }
-
-        // ---------- Private Method ----------
-        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        }        
     }    
 }

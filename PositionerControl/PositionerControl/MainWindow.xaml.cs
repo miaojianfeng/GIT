@@ -22,10 +22,30 @@ namespace PositionerControl
     /// </summary>
     public partial class MainWindow : Window
     {
+        // Constructor
         public MainWindow()
         {
             InitializeComponent();
             //Test();
+        }
+
+        // Field
+
+
+        // Property
+        private PositionerParams DmdPositionerParams { set; get; }
+        private InstrDrvUtility DriverUtility { set; get; }
+        private DmdPositionerSuite DmdPositioner { set; get; }
+        
+        // Method
+        private void InitializeDmdPositioner(string visaAddress)
+        {
+            DmdPositionerParams = (PositionerParams)this.FindResource("positionerParams");
+            DriverUtility = (InstrDrvUtility)this.FindResource("instrDrvUtility");
+            DmdPositioner = (DmdPositionerSuite)this.FindResource("dmdPositionerSuite");    
+            
+
+
         }
 
         private void Test()

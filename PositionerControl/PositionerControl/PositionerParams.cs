@@ -17,7 +17,7 @@ using System.Xml.Linq;
 
 namespace PositionerControl
 {
-    class PositionerParams: INotifyPropertyChanged
+    public class PositionerParams: INotifyPropertyChanged
     {
         // Constructor
         public PositionerParams()
