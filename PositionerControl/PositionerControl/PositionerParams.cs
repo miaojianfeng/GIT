@@ -22,7 +22,7 @@ namespace PositionerControl
         // Constructor
         public PositionerParams()
         {
-            ConfigXML = System.IO.Directory.GetCurrentDirectory() + "\\PositionerConfiguration.xml"; 
+            ConfigXML = @"C:\Temp\PositionerConfiguration.xml"; 
 
             // Load Configuration XML file if it exists, otherwise create it            
             if (!File.Exists(ConfigXML))
@@ -145,7 +145,7 @@ namespace PositionerControl
                     VisaAddress = "TCPIP0::192.168.127.254::4001::SOCKET";
                 }
 
-                string offset_Slide = rootNode.Element("SlideOffset").Value;
+                string offset_Slide = rootNode.Element("PositionerOffset").Element("SlideOffset").Value;
                 try
                 {
                     SlideOffset = Convert.ToDouble(offset_Slide);
@@ -155,7 +155,7 @@ namespace PositionerControl
                     SlideOffset = 0;
                 }
 
-                string offset_Lift = rootNode.Element("LiftOffset").Value;
+                string offset_Lift = rootNode.Element("PositionerOffset").Element("LiftOffset").Value;
                 try
                 {
                     LiftOffset = Convert.ToDouble(offset_Lift);
@@ -165,7 +165,7 @@ namespace PositionerControl
                     LiftOffset = 0;
                 }
 
-                string offset_TT = rootNode.Element("TurntableOffset").Value;
+                string offset_TT = rootNode.Element("PositionerOffset").Element("TurntableOffset").Value;
                 try
                 {
                     TurntableOffset = Convert.ToDouble(offset_TT);
