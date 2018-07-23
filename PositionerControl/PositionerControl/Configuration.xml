@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Configuration>
-  <VisaAddress>TCPIP0::192.168.127.254::4001::SOCKET</VisaAddress>
-  <OriginOffset>
-    <Slide>0</Slide>
-    <Lift>0</Lift>
-    <Turntable>0</Turntable>
-  </OriginOffset>  
-</Configuration>

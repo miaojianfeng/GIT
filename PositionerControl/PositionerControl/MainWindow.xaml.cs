@@ -42,10 +42,7 @@ namespace PositionerControl
         {
             DmdPositionerParams = (PositionerParams)this.FindResource("positionerParams");
             DriverUtility = (InstrDrvUtility)this.FindResource("instrDrvUtility");
-            DmdPositioner = (DmdPositionerSuite)this.FindResource("dmdPositionerSuite");    
-            
-
-
+            DmdPositioner = (DmdPositionerSuite)this.FindResource("dmdPositionerSuite");
         }
 
         private void Test()
