@@ -141,12 +141,13 @@
                 </GroupBox>
                 <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (毫米)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <CheckBox x:Name="chkboxHomePos_Slide" Content="原点位置" Checked="chkboxHomePos_Slide_Checked"/>
+                        <CheckBox x:Name="chkboxHomePos_Slide" Content="原点位置" Checked="chkboxHomePos_Slide_Checked" Unchecked="chkboxHomePos_Slide_Unchecked"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
                             <TextBox x:Name="tboxTargetAbsPos_Slide" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
-                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                                    Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
+                                    Command="local:PositionerCtrlCmds.SeekAbsolutePos_Slide"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
@@ -161,7 +162,7 @@
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
                                     Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
-                                    Command="local:PositionerCtrlCmds.SeekAbsolutePos_Slide"/>
+                                    Command="local:PositionerCtrlCmds.SeekRelativePos_Slide"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
@@ -226,12 +227,13 @@
                 </GroupBox>
                 <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (毫米)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <CheckBox x:Name="chkboxHomePos_Lift" Content="原点位置" Checked="chkboxHomePos_Lift_Checked"/>
+                        <CheckBox x:Name="chkboxHomePos_Lift" Content="原点位置" Checked="chkboxHomePos_Lift_Checked" Unchecked="chkboxHomePos_Lift_Unchecked"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
                             <TextBox x:Name="tboxTargetAbsPos_Lift" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
-                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                                    Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
+                                    Command="local:PositionerCtrlCmds.SeekAbsolutePos_Lift"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
@@ -246,7 +248,7 @@
                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
                                     Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
-                                    Command="local:PositionerCtrlCmds.SeekAbsolutePos_Lift"/>
+                                    Command="local:PositionerCtrlCmds.SeekRelativePos_Lift"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
@@ -311,12 +313,13 @@
                 </GroupBox>
                 <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (度)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <CheckBox x:Name="chkboxHomePos_Turntable" Content="原点位置" Checked="chkboxHomePos_Turntable_Checked"/>
+                        <CheckBox x:Name="chkboxHomePos_Turntable" Content="原点位置" Checked="chkboxHomePos_Turntable_Checked" Unchecked="chkboxHomePos_Turntable_Unchecked"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
                             <TextBox x:Name="tboxTargetAbsPos_Turntable" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
-                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
+                                    Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
+                                    Command="local:PositionerCtrlCmds.SeekAbsolutePos_Turntable"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
@@ -331,7 +334,7 @@
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
                                     Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
-                                    Command="local:PositionerCtrlCmds.SeekAbsolutePos_Turntable"/>
+                                    Command="local:PositionerCtrlCmds.SeekRelativePos_Turntable"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>

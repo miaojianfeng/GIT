@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Text.RegularExpressions;
 using System.Threading;
 using ETSL.InstrDriver.Base;
 using ETSL.InstrDriver;
@@ -46,13 +47,17 @@ namespace PositionerControl
         }
 
         // Field
-
+        static private object locker = new object();
 
         // Property
         private PositionerParams DmdPositionerParams { set; get; }
         private InstrDrvUtility DriverUtility { set; get; }
         private DmdPositionerSuite DmdPositioner { set; get; }
-        
+
+        private bool ForceStop_Slide { set; get; }
+        private bool ForceStop_Lift { set; get; }
+        private bool ForceStop_Turntable { set; get; }
+
         // Method
         private void InitializeDmdPositioner()
         {
@@ -92,7 +97,11 @@ namespace PositionerControl
             // Target Relative Position
             this.tboxTargetRelPos_Slide.Text = "0.0";
             this.tboxTargetRelPos_Lift.Text = "0.0";
-            this.tboxTargetRelPos_Turntable.Text = "0.0";            
+            this.tboxTargetRelPos_Turntable.Text = "0.0";
+
+            ForceStop_Slide = false;
+            ForceStop_Lift = false;
+            ForceStop_Turntable = false;
         }
 
         // Search VISA Instruments
@@ -139,7 +148,7 @@ namespace PositionerControl
             InitializeDmdPositioner();
         }
 
-        private bool IsCmdCanExecute(EnumPositionerType type)
+        private bool IsInitializedAndStopped(EnumPositionerType type)
         {
             bool cmdCanExecute = false;
             switch(type)
@@ -182,51 +191,74 @@ namespace PositionerControl
         // <1> Position querying commands
         private void QueryPosCmd_Slide_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {            
-            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Slide);
+            e.CanExecute = IsInitializedAndStopped(EnumPositionerType.Slide);
             e.Handled = true;
         }
         private void QueryPosCmd_Lift_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Lift);
+            e.CanExecute = IsInitializedAndStopped(EnumPositionerType.Lift);
             e.Handled = true;
         }
         private void QueryPosCmd_Turntable_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Turntable);
+            e.CanExecute = IsInitializedAndStopped(EnumPositionerType.Turntable);
             e.Handled = true;
         }
 
         // <2> Absolute position querying commands
         private void SeekAbsPosCmd_Slide_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Slide);
+        {            
+            if (IsInitializedAndStopped(EnumPositionerType.Slide) && this.tboxTargetAbsPos_Slide.Text!=string.Empty)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
             e.Handled = true;
         }
         private void SeekAbsPosCmd_Lift_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Lift);
+        {            
+            if (IsInitializedAndStopped(EnumPositionerType.Lift) && this.tboxTargetAbsPos_Lift.Text!=string.Empty)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
             e.Handled = true;
         }
         private void SeekAbsPosCmd_Turntable_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Turntable);
+            //Regex re = new Regex("[^0-9.-]+");
+            //bool flag = re.IsMatch(this.tboxTargetAbsPos_Turntable.Text);
+            if (IsInitializedAndStopped(EnumPositionerType.Turntable) && this.tboxTargetAbsPos_Turntable.Text!=string.Empty)               
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
             e.Handled = true;
         }
 
         // <3> Relative position querying commands
         private void SeekRelPosCmd_Slide_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Slide);
+            e.CanExecute = IsInitializedAndStopped(EnumPositionerType.Slide);
             e.Handled = true;
         }
         private void SeekRelPosCmd_Lift_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Lift);
+            e.CanExecute = IsInitializedAndStopped(EnumPositionerType.Lift);
             e.Handled = true;
         }
         private void SeekRelPosCmd_Turntable_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = IsCmdCanExecute(EnumPositionerType.Turntable);
+            e.CanExecute = IsInitializedAndStopped(EnumPositionerType.Turntable);
             e.Handled = true;
         }
 
@@ -234,7 +266,7 @@ namespace PositionerControl
         private void ApplySettingsCmd_Slide_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             bool cmdCanExec = false;
-            if(IsCmdCanExecute(EnumPositionerType.Slide))
+            if(IsInitializedAndStopped(EnumPositionerType.Slide))
             {
                 int speed = -99999;
                 if (this.tboxSpeed_Slide.Text != string.Empty)
@@ -260,7 +292,7 @@ namespace PositionerControl
         private void ApplySettingsCmd_Lift_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             bool cmdCanExec = false;
-            if (IsCmdCanExecute(EnumPositionerType.Lift))
+            if (IsInitializedAndStopped(EnumPositionerType.Lift))
             {
                 int speed = -99999;
                 if (this.tboxSpeed_Lift.Text != string.Empty)
@@ -286,7 +318,7 @@ namespace PositionerControl
         private void ApplySettingsCmd_Turntable_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             bool cmdCanExec = false;
-            if (IsCmdCanExecute(EnumPositionerType.Turntable))
+            if (IsInitializedAndStopped(EnumPositionerType.Turntable))
             {
                 int speed = -99999;
                 if (this.tboxSpeed_Turntable.Text != string.Empty)
@@ -350,36 +382,54 @@ namespace PositionerControl
 
         // ------------ Commands(Executed) ------------
         // <1> Position querying commands
-        private void QueryPosCmd_Slide_Executed(object sender, ExecutedRoutedEventArgs e)
-        {            
-
+        private async void QueryPosCmd_Slide_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            await Task.Run(() => UpdateCurrentPositionUI(EnumPositionerType.Slide));
             e.Handled = true;
         }
-        private void QueryPosCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
+        private async void QueryPosCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
+            await Task.Run(() => UpdateCurrentPositionUI(EnumPositionerType.Lift));
             e.Handled = true;
         }
-        private void QueryPosCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
+        private async void QueryPosCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
+            await Task.Run(() => UpdateCurrentPositionUI(EnumPositionerType.Turntable));
             e.Handled = true;
         }
 
         // <2> Absolute position querying commands
-        private void SeekAbsPosCmd_Slide_Executed(object sender, ExecutedRoutedEventArgs e)
+        private async void SeekAbsPosCmd_Slide_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            // Target Value
+            double pos = Convert.ToDouble(this.tboxTargetAbsPos_Slide.Text);
+            pos = Math.Round(pos, 1);
+            DmdPositionerParams.TargetAbsolutePosition_Slide = pos;
+            this.tboxTargetAbsPos_Slide.Text = pos.ToString();
 
+            await Task.Run(() => SeekAbsolutePosition(EnumPositionerType.Slide));
             e.Handled = true;
         }
-        private void SeekAbsPosCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
+        private async void SeekAbsPosCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            // Target Value
+            double pos = Convert.ToDouble(this.tboxTargetAbsPos_Lift.Text);
+            pos = Math.Round(pos, 1);
+            DmdPositionerParams.TargetAbsolutePosition_Lift = pos;
+            this.tboxTargetAbsPos_Lift.Text = pos.ToString();
 
+            await Task.Run(() => SeekAbsolutePosition(EnumPositionerType.Lift));
             e.Handled = true;
         }
-        private void SeekAbsPosCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
+        private async void SeekAbsPosCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
+        {  
+            // Target Value 
+            double pos = Convert.ToDouble(this.tboxTargetAbsPos_Turntable.Text);
+            pos = Math.Round(pos, 1);
+            DmdPositionerParams.TargetAbsolutePosition_Turntable = pos;
+            this.tboxTargetAbsPos_Turntable.Text = pos.ToString();                        
 
+            await Task.Run(() => SeekAbsolutePosition(EnumPositionerType.Turntable));
             e.Handled = true;
         }
 
@@ -420,17 +470,29 @@ namespace PositionerControl
         // <5> Stop moving commands
         private void StopCmd_Slide_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
+            lock (locker)
+            {
+                ForceStop_Slide = true;
+            }
+            //await Task.Run(() => Stop(EnumPositionerType.Slide));
             e.Handled = true;
         }
         private void StopCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
+            lock (locker)
+            {
+                ForceStop_Lift = true;
+            }
+            //await Task.Run(() => Stop(EnumPositionerType.Lift));
             e.Handled = true;
         }
         private void StopCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
+            lock(locker)
+            {
+                ForceStop_Turntable = true;
+            }            
+            //await Task.Run(() => Stop(EnumPositionerType.Turntable));
             e.Handled = true;
         }
 
@@ -439,6 +501,7 @@ namespace PositionerControl
             if(this.chkboxHomePos_Slide.IsChecked == true)
             {
                 this.tboxTargetAbsPos_Slide.Text = "0.0";
+                this.tboxTargetAbsPos_Slide.IsEnabled = false;
             }          
         }
 
@@ -447,6 +510,7 @@ namespace PositionerControl
             if (this.chkboxHomePos_Lift.IsChecked == true)
             {
                 this.tboxTargetAbsPos_Lift.Text = "0.0";
+                this.tboxTargetAbsPos_Lift.IsEnabled = false;
             }
         }
 
@@ -455,6 +519,31 @@ namespace PositionerControl
             if (this.chkboxHomePos_Turntable.IsChecked == true)
             {
                 this.tboxTargetAbsPos_Turntable.Text = "0.0";
+                this.tboxTargetAbsPos_Turntable.IsEnabled = false;
+            }
+        }
+
+        private void chkboxHomePos_Slide_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (this.chkboxHomePos_Slide.IsChecked == false)
+            {               
+                this.tboxTargetAbsPos_Slide.IsEnabled = true;
+            }
+        }
+
+        private void chkboxHomePos_Lift_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (this.chkboxHomePos_Lift.IsChecked == false)
+            {
+                this.tboxTargetAbsPos_Lift.IsEnabled = true;
+            }
+        }
+
+        private void chkboxHomePos_Turntable_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (this.chkboxHomePos_Turntable.IsChecked == false)
+            {
+                this.tboxTargetAbsPos_Turntable.IsEnabled = true;
             }
         }
 
@@ -487,5 +576,190 @@ namespace PositionerControl
         {
             DmdPositionerParams.TargetRelativeDirection_Turntable = false;
         }
+
+        private void UpdateCurrentPositionUI(EnumPositionerType type)
+        {            
+            switch (type)
+            {
+                case EnumPositionerType.Slide:
+                    DmdPositionerParams.CurrentPosition_Slide = DmdPositioner.Slide.GetCurrentPosition();
+                    break;
+                case EnumPositionerType.Lift:
+                    DmdPositionerParams.CurrentPosition_Lift = DmdPositioner.Lift.GetCurrentPosition();
+                    break;
+                case EnumPositionerType.Turntable:
+                    DmdPositionerParams.CurrentPosition_Turntable = DmdPositioner.Turntable.GetCurrentPosition();
+                    break;
+            }
+        }
+
+        private void SeekAbsolutePosition(EnumPositionerType type)
+        {
+            double absPos = 0;
+            bool opcFlag = false;
+            bool forceStop = false;
+            DmdPositionerBase equipment = null;
+
+            switch (type)
+            {
+                case EnumPositionerType.Slide:
+                    absPos = DmdPositionerParams.TargetAbsolutePosition_Slide;
+                    equipment = DmdPositioner.Slide;                    
+                    //DmdPositionerParams.IsStopped_Slide = false;
+                    break;
+                case EnumPositionerType.Lift:
+                    absPos = DmdPositionerParams.TargetAbsolutePosition_Lift;
+                    equipment = DmdPositioner.Lift;
+                    //DmdPositionerParams.IsStopped_Lift = false;
+                    break;
+                case EnumPositionerType.Turntable:
+                    absPos = DmdPositionerParams.TargetAbsolutePosition_Turntable;
+                    equipment = DmdPositioner.Turntable;
+                    //DmdPositionerParams.IsStopped_Turntable= false;
+                    break;                
+            }
+
+            // Seek Position command
+            equipment.SeekPosition(absPos);
+            Thread.Sleep(200);
+
+            // Querying loop for operation complete
+            while(true)
+            {
+                // OPC Flag
+                opcFlag = equipment.OperationComplete;
+
+                lock(locker)
+                {
+                    // Force Stop Flag
+                    if (type == EnumPositionerType.Slide)
+                    {
+                        forceStop = ForceStop_Slide;
+                    }
+                    else if (type == EnumPositionerType.Lift)
+                    {
+                        forceStop = ForceStop_Lift;
+                    }
+                    else
+                    {
+                        forceStop = ForceStop_Turntable;
+                    }
+                }                
+
+                if(opcFlag || forceStop)
+                {
+                    break;
+                }
+                else
+                {
+                    UpdateCurrentPositionUI(type);
+                    Thread.Sleep(100);
+                }
+            }
+
+            if(forceStop)
+            {
+                lock(locker)
+                {
+                    if (type == EnumPositionerType.Slide)
+                    {
+                        ForceStop_Slide = false;
+                    }
+                    else if (type == EnumPositionerType.Lift)
+                    {
+                        ForceStop_Lift = false;
+                    }
+                    else
+                    {
+                        ForceStop_Turntable = false;
+                    }
+                }               
+
+                equipment.Stop();
+                Thread.Sleep(200);
+            }
+
+            UpdateCurrentPositionUI(type);
+        }
+
+        private void SeekRelativePosition(EnumPositionerType type)
+        {            
+            double relPos = 0;                      
+            bool opcFlag = false;
+            DmdPositionerBase equipment = null;
+
+            switch (type)
+            {
+                case EnumPositionerType.Slide:
+                    relPos = DmdPositionerParams.TargetRelativePosition_Slide;
+                    relPos = DmdPositionerParams.TargetRelativeDirection_Slide ? relPos : -1 * relPos;                        
+                    equipment = DmdPositioner.Slide;
+                    //DmdPositionerParams.IsStopped_Slide = false;
+                    break;
+                case EnumPositionerType.Lift:
+                    relPos = DmdPositionerParams.TargetRelativePosition_Lift;
+                    relPos = DmdPositionerParams.TargetRelativeDirection_Lift ? relPos : -1 * relPos;
+                    equipment = DmdPositioner.Lift;
+                    //DmdPositionerParams.IsStopped_Lift = false;
+                    break;
+                case EnumPositionerType.Turntable:
+                    relPos = DmdPositionerParams.TargetRelativePosition_Turntable;
+                    relPos = DmdPositionerParams.TargetRelativeDirection_Turntable? relPos : -1 * relPos;
+                    equipment = DmdPositioner.Turntable;
+                    //DmdPositionerParams.IsStopped_Turntable = false;
+                    break;
+            }
+
+            // Seek Position command           
+            equipment.SeekPositionRelative(relPos);
+
+            // Querying loop for operation complete
+            while (true)
+            {
+                opcFlag = equipment.OperationComplete;
+                if (opcFlag)
+                {
+                    break;
+                }
+                else
+                {
+                    UpdateCurrentPositionUI(type);
+                    Thread.Sleep(100);
+                }
+            }
+
+            UpdateCurrentPositionUI(type);
+
+            //switch (type)
+            //{
+            //    case EnumPositionerType.Slide:
+            //        DmdPositionerParams.IsStopped_Slide = true;
+            //        break;
+            //    case EnumPositionerType.Lift:
+            //        DmdPositionerParams.IsStopped_Lift = true;
+            //        break;
+            //    case EnumPositionerType.Turntable:
+            //        DmdPositionerParams.IsStopped_Turntable = true;
+            //        break;
+            //}
+        }
+
+        private void Stop(EnumPositionerType type)
+        {
+            switch (type)
+            {
+                case EnumPositionerType.Slide:
+                    DmdPositioner.Slide.Stop();
+                    break;
+                case EnumPositionerType.Lift:
+                    DmdPositioner.Lift.Stop();
+                    break;
+                case EnumPositionerType.Turntable:
+                    DmdPositioner.Turntable.Stop();
+                    break;
+            }
+
+            UpdateCurrentPositionUI(type);
+        }        
     }
 }

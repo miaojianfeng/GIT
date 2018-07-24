@@ -80,12 +80,12 @@ namespace ETSL.InstrDriver
 
         public void SeekPosition(double targetPosition)
         {
-            dmdPosSuite.SendCommand(Command_SeekPosition + " " + targetPosition.ToString("#.##"));
+            dmdPosSuite.SendCommand(Command_SeekPosition + " " + targetPosition.ToString());
         }
 
         public void SeekPositionRelative(double targetPosition)
         {
-            dmdPosSuite.SendCommand(Command_SeekPositionRelative + " " + targetPosition.ToString("#.##"));
+            dmdPosSuite.SendCommand(Command_SeekPositionRelative + " " + targetPosition.ToString());
         }
 
         public void SetSpeed(int speed)
