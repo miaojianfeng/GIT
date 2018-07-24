@@ -74,6 +74,24 @@ namespace PositionerControl
         private double currPos_Lift = -99999;
         private double currPos_Turntable = -99999;
 
+        // Target Absolute Position
+        private double targetAbsPos_Slide     = 0.0;
+        private double targetAbsPos_Lift      = 0.0;
+        private double targetAbsPos_Turntable = 0.0;
+
+        // Target Relative Direction: True ==> "+" / False ==> "-"
+        // Slide:     "+": direction Keeping away from the door / "-": direction approching the door 
+        // Lift:      "+": Up / "1": Down
+        // Turntable: "+": Clockwise / "-": CounterClockwise
+        private bool targetRelDir_Slide     = true;
+        private bool targetRelDir_Lift      = true;
+        private bool targetRelDir_Turntable = true;
+
+        // Target Relative Position
+        private double targetRelPos_Slide     = 0.0;
+        private double targetRelPos_Lift      = 0.0;
+        private double targetRelPos_Turntable = 0.0;
+
         // Locker
         static private object locker = new object();
 
@@ -250,6 +268,120 @@ namespace PositionerControl
             {
                 this.currPos_Turntable = value;
                 NotifyPropertyChanged("CurrentPosition_Turntable");
+            }
+        }
+
+        // Target Absolute Postiont
+        public double TargetAbsolutePosition_Slide
+        {
+            get
+            {
+                return this.targetAbsPos_Slide;
+            }
+            set
+            {
+                this.targetAbsPos_Slide = Math.Round(value,1);
+                NotifyPropertyChanged("TargetAbsolutePosition_Slide");
+            }
+        }        
+        public double TargetAbsolutePosition_Lift
+        {
+            get
+            {
+                return this.targetAbsPos_Lift;
+            }
+            set
+            {
+                this.targetAbsPos_Lift = Math.Round(value,1);
+                NotifyPropertyChanged("TargetAbsolutePosition_Lift");
+            }
+        }
+        public double TargetAbsolutePosition_Turntable
+        {
+            get
+            {
+                return this.targetAbsPos_Turntable;
+            }
+            set
+            {
+                this.targetAbsPos_Turntable = Math.Round(value,1);
+                NotifyPropertyChanged("TargetAbsolutePosition_Turntable");
+            }
+        }
+
+        // Target Relative Direction
+        public bool TargetRelativeDirection_Slide
+        {
+            get
+            {
+                return this.targetRelDir_Slide;
+            }
+            set
+            {
+                this.targetRelDir_Slide = value;
+                NotifyPropertyChanged("TargetRelativeDirection_Slide");
+            }
+        }
+        public bool TargetRelativeDirection_Lift
+        {
+            get
+            {
+                return this.targetRelDir_Lift;
+            }
+            set
+            {
+                this.targetRelDir_Lift = value;
+                NotifyPropertyChanged("TargetRelativeDirection_Lift");
+            }
+        }
+        public bool TargetRelativeDirection_Turntable
+        {
+            get
+            {
+                return this.targetRelDir_Turntable;
+            }
+            set
+            {
+                this.targetRelDir_Turntable = value;
+                NotifyPropertyChanged("TargetRelativeDirection_Turntable");
+            }
+        }
+
+        // Target Relative Position
+        public double TargetRelativePosition_Slide
+        {
+            get
+            {
+                return this.targetRelPos_Slide;
+            }
+            set
+            {
+                this.targetRelPos_Slide = Math.Round(value,1);
+                NotifyPropertyChanged("TargetRelativePosition_Slide");
+            }
+        }
+        public double TargetRelativePosition_Lift
+        {
+            get
+            {
+                return this.targetRelPos_Lift;
+            }
+            set
+            {
+                this.targetRelPos_Lift = Math.Round(value, 1);
+                NotifyPropertyChanged("TargetRelativePosition_Lift");
+            }
+        }
+        public double TargetRelativePosition_Turntable
+        {
+            get
+            {
+                return this.targetRelPos_Turntable;
+            }
+            set
+            {
+                this.targetRelPos_Turntable = Math.Round(value, 1);
+                NotifyPropertyChanged("TargetRelativePosition_Turntable");
             }
         }
 
@@ -516,5 +648,5 @@ namespace PositionerControl
         {
             throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
         }
-    }
+    }    
 }

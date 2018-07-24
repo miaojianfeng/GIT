@@ -19,6 +19,7 @@
         <local:PositionerInitStateToForegroundColorConverter x:Key="positionerInitStaToForeground"/>
         <local:PositionerInitStateToTextConverter x:Key="positionerInitStaToText"/>
         <local:ComboxSelIndexToButtonEnableConverter x:Key="comboxSelIndexToBtnEnable"/>
+        <!--<local:TargetPositionValueToText x:Key="targetPosValToText"/>-->
         <!--UI Elements-->
         <LinearGradientBrush x:Key="RedLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="Pink" Offset="0"/>
@@ -140,10 +141,10 @@
                 </GroupBox>
                 <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (毫米)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <CheckBox Content="原点位置"/>
+                        <CheckBox x:Name="chkboxHomePos_Slide" Content="原点位置" Checked="chkboxHomePos_Slide_Checked"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
-                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
-                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            <TextBox x:Name="tboxTargetAbsPos_Slide" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
                                 Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
                         </StackPanel>
@@ -152,11 +153,11 @@
                 <GroupBox Grid.Row="2" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="相对当前位置移动 (毫米)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <RadioButton Content="向前(正+)"/>
-                            <RadioButton Content="向后(负-)" Margin="30,0,0,0"/>
+                            <RadioButton x:Name="radBtnPosDir_Slide" Content="向前(正+)" Checked="radBtnPosDir_Slide_Checked"/>
+                            <RadioButton x:Name="radBtnNegDir_Slide" Content="向后(负-)" Margin="30,0,0,0" Checked="radBtnNegDir_Slide_Checked"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
-                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                            <TextBox x:Name="tboxTargetRelPos_Slide" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
                                     Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
@@ -225,10 +226,10 @@
                 </GroupBox>
                 <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (毫米)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <CheckBox Content="原点位置"/>
+                        <CheckBox x:Name="chkboxHomePos_Lift" Content="原点位置" Checked="chkboxHomePos_Lift_Checked"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
-                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
-                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            <TextBox x:Name="tboxTargetAbsPos_Lift" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
                                 Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
                         </StackPanel>
@@ -237,11 +238,11 @@
                 <GroupBox Grid.Row="2" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="相对当前位置移动 (毫米)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <RadioButton Content="向上(正+)"/>
-                            <RadioButton Content="向下(负-)" Margin="30,0,0,0"/>
+                            <RadioButton x:Name="radBtnPosDir_Lift" Content="向上(正+)" Checked="radBtnPosDir_Lift_Checked"/>
+                            <RadioButton x:Name="radBtnNegDir_Lift" Content="向下(负-)" Margin="30,0,0,0" Checked="radBtnNegDir_Lift_Checked"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
-                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                            <TextBox x:Name="tboxTargetRelPos_Lift" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
                                     Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
@@ -310,10 +311,10 @@
                 </GroupBox>
                 <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (度)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <CheckBox Content="原点位置"/>
+                        <CheckBox x:Name="chkboxHomePos_Turntable" Content="原点位置" Checked="chkboxHomePos_Turntable_Checked"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
-                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
-                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
+                            <TextBox x:Name="tboxTargetAbsPos_Turntable" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
                                 Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"/>
                         </StackPanel>
@@ -322,11 +323,11 @@
                 <GroupBox Grid.Row="2" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="相对当前位置移动 (度)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <RadioButton Content="顺时针(正+)"/>
-                            <RadioButton Content="逆时针(负-)" Margin="8,0,0,0"/>
+                            <RadioButton x:Name="radBtnPosDir_Turntable" Content="顺时针(正+)" Checked="radBtnPosDir_Turntable_Checked"/>
+                            <RadioButton x:Name="radBtnNegDir_Turntable" Content="逆时针(负-)" Margin="8,0,0,0" Checked="radBtnNegDir_Turntable_Checked"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
-                            <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
+                            <TextBox x:Name="tboxTargetRelPos_Turntable" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" Text="0.00"/>
                             <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="执行" Width="60" Height="22" Margin="5,0,0,0" 
                                     Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"

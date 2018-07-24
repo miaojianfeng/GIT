@@ -70,6 +70,29 @@ namespace PositionerControl
             DmdPositioner.Slide.SetSpeed(DmdPositionerParams.Speed_Slide);
             DmdPositioner.Lift.SetSpeed(DmdPositionerParams.Speed_Lift);
             DmdPositioner.Turntable.SetSpeed(DmdPositionerParams.Speed_Turntable);
+
+            // Home Position Checkbox
+            this.chkboxHomePos_Slide.IsChecked = false;
+            this.chkboxHomePos_Lift.IsChecked = false;
+            this.chkboxHomePos_Turntable.IsChecked = false;
+
+            // Target Absolute Position
+            this.tboxTargetAbsPos_Slide.Text     = "0.0";
+            this.tboxTargetAbsPos_Lift.Text      = "0.0";
+            this.tboxTargetAbsPos_Turntable.Text = "0.0";
+
+            // Direction Radio Button
+            this.radBtnPosDir_Slide.IsChecked = true;
+            this.radBtnNegDir_Slide.IsChecked = false;
+            this.radBtnPosDir_Lift.IsChecked = true;
+            this.radBtnNegDir_Lift.IsChecked = false;
+            this.radBtnPosDir_Turntable.IsChecked = true;
+            this.radBtnNegDir_Turntable.IsChecked = false;
+
+            // Target Relative Position
+            this.tboxTargetRelPos_Slide.Text = "0.0";
+            this.tboxTargetRelPos_Lift.Text = "0.0";
+            this.tboxTargetRelPos_Turntable.Text = "0.0";            
         }
 
         // Search VISA Instruments
@@ -409,6 +432,60 @@ namespace PositionerControl
         {
 
             e.Handled = true;
+        }
+
+        private void chkboxHomePos_Slide_Checked(object sender, RoutedEventArgs e)
+        {
+            if(this.chkboxHomePos_Slide.IsChecked == true)
+            {
+                this.tboxTargetAbsPos_Slide.Text = "0.0";
+            }          
+        }
+
+        private void chkboxHomePos_Lift_Checked(object sender, RoutedEventArgs e)
+        {
+            if (this.chkboxHomePos_Lift.IsChecked == true)
+            {
+                this.tboxTargetAbsPos_Lift.Text = "0.0";
+            }
+        }
+
+        private void chkboxHomePos_Turntable_Checked(object sender, RoutedEventArgs e)
+        {
+            if (this.chkboxHomePos_Turntable.IsChecked == true)
+            {
+                this.tboxTargetAbsPos_Turntable.Text = "0.0";
+            }
+        }
+
+        private void radBtnPosDir_Slide_Checked(object sender, RoutedEventArgs e)
+        {
+            DmdPositionerParams.TargetRelativeDirection_Slide = true;
+        }
+
+        private void radBtnNegDir_Slide_Checked(object sender, RoutedEventArgs e)
+        {
+            DmdPositionerParams.TargetRelativeDirection_Slide = false;
+        }
+
+        private void radBtnPosDir_Lift_Checked(object sender, RoutedEventArgs e)
+        {
+            DmdPositionerParams.TargetRelativeDirection_Lift = true;
+        }
+
+        private void radBtnNegDir_Lift_Checked(object sender, RoutedEventArgs e)
+        {
+            DmdPositionerParams.TargetRelativeDirection_Lift = false;
+        }
+
+        private void radBtnPosDir_Turntable_Checked(object sender, RoutedEventArgs e)
+        {
+            DmdPositionerParams.TargetRelativeDirection_Turntable = true;
+        }
+
+        private void radBtnNegDir_Turntable_Checked(object sender, RoutedEventArgs e)
+        {
+            DmdPositionerParams.TargetRelativeDirection_Turntable = false;
         }
     }
 }
