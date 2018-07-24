@@ -132,9 +132,9 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"
-                                 Text="{Binding Source={StaticResource dmdPositionerSuite}, Path=Slide.CurrentPosition, Mode=OneWay}"/>
+                                 Text="{Binding Source={StaticResource positionerParams}, Path=CurrentPosition_Slide, Mode=OneWay}"/>
                         <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="查询" Width="60" Height="22" Margin="5,0,0,0" 
-                                Background="{StaticResource GrayButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
+                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
                                 Command="local:PositionerCtrlCmds.QueryPos_Slide"/>
                     </StackPanel>
                 </GroupBox>
@@ -181,12 +181,14 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Label Content="速度(毫米/秒)"/>
                                 <TextBox x:Name="tboxSpeed_Slide" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" 
-                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
+                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"
+                                         Text="{Binding Source={StaticResource positionerParams}, Path=Speed_Slide, Mode=OneWay}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Label Content="偏移量(毫米)"/>
                                 <TextBox x:Name="tboxOffset_Slide" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" 
-                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
+                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"
+                                         Text="{Binding Source={StaticResource positionerParams}, Path=Offset_Slide, Mode=OneWay}"/>
                             </StackPanel>                            
                         </StackPanel>
                         <Button Content="确定" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Height="48" Margin="5,0,0,0"
@@ -215,9 +217,9 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"
-                                 Text="{Binding Source={StaticResource dmdPositionerSuite}, Path=Lift.CurrentPosition, Mode=OneWay}"/>
+                                 Text="{Binding Source={StaticResource positionerParams}, Path=CurrentPosition_Lift, Mode=OneWay}"/>
                         <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="查询" Width="60" Height="22" Margin="5,0,0,0" 
-                                Background="{StaticResource GrayButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
+                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
                                 Command="local:PositionerCtrlCmds.QueryPos_Lift"/>
                     </StackPanel>
                 </GroupBox>
@@ -264,12 +266,14 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Label Content="速度(毫米/秒)"/>
                                 <TextBox x:Name="tboxSpeed_Lift" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" 
-                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
+                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"
+                                         Text="{Binding Source={StaticResource positionerParams}, Path=Speed_Lift, Mode=OneWay}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Label Content="偏移量(毫米)"/>
                                 <TextBox x:Name="tboxOffset_Lift" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" 
-                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
+                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"
+                                         Text="{Binding Source={StaticResource positionerParams}, Path=Offset_Lift, Mode=OneWay}"/>
                             </StackPanel>
                         </StackPanel>
                         <Button Content="确定" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Height="48" Margin="5,0,0,0"
@@ -298,9 +302,9 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"
-                                 Text="{Binding Source={StaticResource dmdPositionerSuite}, Path=Turntable.CurrentPosition, Mode=OneWay}"/>
+                                 Text="{Binding Source={StaticResource positionerParams}, Path=CurrentPosition_Turntable, Mode=OneWay}"/>
                         <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Content="查询" Width="60" Height="22" Margin="5,0,0,0" 
-                                Background="{StaticResource GrayButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
+                                Background="{StaticResource GreenButton}" FontWeight="Bold" FontFamily="Fangsong" Foreground="Black"
                                 Command="local:PositionerCtrlCmds.QueryPos_Turntable"/>
                     </StackPanel>
                 </GroupBox>
@@ -347,12 +351,14 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Label Content="速度(度/秒)"/>
                                 <TextBox x:Name="tboxSpeed_Turntable" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" 
-                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" />
+                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False" 
+                                         Text="{Binding Source={StaticResource positionerParams}, Path=Speed_Turntable, Mode=OneWay}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Label Content="偏移量(度)"/>
                                 <TextBox x:Name="tboxOffset_Turntable" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" 
-                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
+                                         Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"
+                                         Text="{Binding Source={StaticResource positionerParams}, Path=Offset_Turntable, Mode=OneWay}"/>
                             </StackPanel>
                         </StackPanel>
                         <Button Content="确定" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Height="48" Margin="5,0,0,0"
@@ -375,8 +381,8 @@
                 <Button x:Name="Search" Content="搜索" Margin="0,0,5,0" Width="60" Height="20" Background="{StaticResource YellowButton}" FontFamily="FangSong" Click="Search_Click" />
                 <ComboBox x:Name="cbVisaAddrList" Width="320" Margin="0,0,0,0" Height="21"
                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Stretch"/>
-                <Button Content="重新连接" Margin="5,0,5,0" Width="60" Height="20" Background="{StaticResource GreenButton}" FontFamily="FangSong" 
-                        IsEnabled="{Binding ElementName=cbVisaAddrList, Path=SelectedIndex, Converter={StaticResource comboxSelIndexToBtnEnable}, Mode=OneWay}" Click="Button_Click"/>
+                <Button x:Name="ReConnect" Content="重新连接" Margin="5,0,5,0" Width="60" Height="20" Background="{StaticResource GreenButton}" FontFamily="FangSong" 
+                        IsEnabled="{Binding ElementName=cbVisaAddrList, Path=SelectedIndex, Converter={StaticResource comboxSelIndexToBtnEnable}, Mode=OneWay}" Click="ReConnect_Click"/>
             </StackPanel>
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Image Width="100" Stretch="Uniform" Source="Pictures/ETSL_Title.png" />

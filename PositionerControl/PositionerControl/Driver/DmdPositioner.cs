@@ -12,7 +12,7 @@ using ETSL.InstrDriver.Base;
 
 namespace ETSL.InstrDriver
 {
-    public class DmdPositionerBase: INotifyPropertyChanged
+    public class DmdPositionerBase/*: INotifyPropertyChanged*/
     {
         // Constructor
         public DmdPositionerBase(DmdPositionerSuite positioner)
@@ -21,9 +21,7 @@ namespace ETSL.InstrDriver
         }
 
         // Field
-        protected DmdPositionerSuite dmdPosSuite;
-        private double currentPosition = -99999;        
-        private int currentSpeed = -99999;        
+        protected DmdPositionerSuite dmdPosSuite;        
 
         // Property
         protected string Command_Home { set; get; }
@@ -33,23 +31,7 @@ namespace ETSL.InstrDriver
         protected string Command_QueryOPC { set; get; }
         protected string Command_Stop { set; get; }
         protected string Command_SetSpeed { set; get; }
-        protected string Command_QuerySpeed { set; get; }
-
-        public double CurrentPosition
-        {
-            get
-            {
-                return this.currentPosition;
-            }
-        }        
-
-        public double CurrentSpeed
-        {
-            get
-            {
-                return this.currentSpeed;
-            }
-        }        
+        //protected string Command_QuerySpeed { set; get; }  
 
         public bool OperationComplete
         {
@@ -57,47 +39,21 @@ namespace ETSL.InstrDriver
             {
                 return GetOpcState();
             }
-        }
-
-        // ---------- Event ----------
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // Protected/Private Method
-        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        }        
         
         public double GetCurrentPosition()
-        {            
+        {
+            double pos = -99999;
             dmdPosSuite.SendCommand(Command_QueryPosition);
             Thread.Sleep(50);
             string resp = dmdPosSuite.ReadCommand();
             if (resp != string.Empty && resp.Contains("CP"))
             {
                 string[] tmp = resp.Split(new string[] { " " }, StringSplitOptions.None);                
-                this.currentPosition = Convert.ToDouble(tmp[1]);
-                NotifyPropertyChanged("CurrentPosition");
+                pos = Convert.ToDouble(tmp[1]);                
             }
-            return this.currentPosition;
+            return pos;
             
-        }
-
-        public int GetCurrentSpeed()
-        {                  
-            dmdPosSuite.SendCommand(Command_QuerySpeed);
-            Thread.Sleep(50);
-            string resp = dmdPosSuite.ReadCommand();
-            if (resp != string.Empty && resp.Contains("S"))
-            {
-                string[] tmp = resp.Split(new string[] { " " }, StringSplitOptions.None);
-                this.currentSpeed =  Convert.ToInt32(tmp[1]);
-                NotifyPropertyChanged("CurrentSpeed");
-            }
-            return this.currentSpeed;
         }
 
         protected bool GetOpcState()
@@ -153,8 +109,7 @@ namespace ETSL.InstrDriver
                 Command_SeekPositionRelative = "AXIS1:SKR";
                 Command_QueryPosition = "AXIS1:CP?";
                 Command_QueryOPC = "AXIS1:*OPC?";
-                Command_SetSpeed = "AXIS1:S";
-                Command_QuerySpeed = "AXIS1:S?";
+                Command_SetSpeed = "AXIS1:S";                
             }
         }
 
@@ -170,8 +125,7 @@ namespace ETSL.InstrDriver
                 Command_SeekPositionRelative = "AXIS2:SKR";
                 Command_QueryPosition = "AXIS2:CP?";
                 Command_QueryOPC = "AXIS2:*OPC?";
-                Command_SetSpeed = "AXIS2:S";
-                Command_QuerySpeed = "AXIS2:S?";
+                Command_SetSpeed = "AXIS2:S";                
             }
 
         }
@@ -188,8 +142,7 @@ namespace ETSL.InstrDriver
                 Command_SeekPositionRelative = "AXIS3:SKR";
                 Command_QueryPosition = "AXIS3:CP?";
                 Command_QueryOPC = "AXIS3:*OPC?";
-                Command_SetSpeed = "AXIS3:S";
-                Command_QuerySpeed = "AXIS3:S?";
+                Command_SetSpeed = "AXIS3:S";                
             }
         }
 

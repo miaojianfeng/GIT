@@ -5,5 +5,10 @@
     <Offset_Slide>0</Offset_Slide>
     <Offset_Lift>0</Offset_Lift>
     <Offset_Turntable>0</Offset_Turntable>
-  </PositionerOffset>  
+  </PositionerOffset>
+  <PositionerSpeed>
+    <Speed_Slide>20</Speed_Slide>
+    <Speed_Lift>20</Speed_Lift>
+    <Speed_Turntable>20</Speed_Turntable>
+  </PositionerSpeed>
 </Configuration>

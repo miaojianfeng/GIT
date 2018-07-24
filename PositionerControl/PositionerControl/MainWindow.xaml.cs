@@ -27,8 +27,21 @@ namespace PositionerControl
         public MainWindow()
         {
             InitializeComponent();
-            //Test();
 
+            // ---------- Positioner Initialization ---------- 
+            DmdPositionerParams = (PositionerParams)this.FindResource("positionerParams");
+            DriverUtility = (InstrDrvUtility)this.FindResource("instrDrvUtility");
+            DmdPositioner = (DmdPositionerSuite)this.FindResource("dmdPositionerSuite");
+
+            // Positioner VISA Address Setting
+            DmdPositioner.VisaAddress = DmdPositionerParams.VisaAddress;
+            if (this.cbVisaAddrList.Items.IsEmpty)
+            {
+                this.cbVisaAddrList.Items.Add(DmdPositioner.VisaAddress);
+            }
+            this.cbVisaAddrList.SelectedIndex = 0;
+
+            // Initialization Operation
             InitializeDmdPositioner();
         }
 
@@ -43,36 +56,20 @@ namespace PositionerControl
         // Method
         private void InitializeDmdPositioner()
         {
-            DmdPositionerParams = (PositionerParams)this.FindResource("positionerParams");
-            DriverUtility = (InstrDrvUtility)this.FindResource("instrDrvUtility");
-            DmdPositioner = (DmdPositionerSuite)this.FindResource("dmdPositionerSuite");
-
-            // Open Positioner Suite
-            DmdPositioner.VisaAddress = DmdPositionerParams.VisaAddress;
-            if(this.cbVisaAddrList.Items.IsEmpty)
-            {
-                this.cbVisaAddrList.Items.Add(DmdPositioner.VisaAddress);
-            }            
-            this.cbVisaAddrList.SelectedIndex = 0;
+            // Init
             DmdPositioner.Initialize();
+            Thread.Sleep(200);
             this.tblockStatus.Text = DmdPositioner.InstrID;
-        }
 
-        private void Test()
-        {
-            //VisaInstrDriver instrDrv = new VisaInstrDriver();
-            //instrDrv.VisaAddress = "TCPIP0::192.168.127.254::4001::SOCKET";
-            //instrDrv.Initialize();
-            ////instrDrv.SendCommand("AXIS3:*IDN?");
-            ////string resp = instrDrv.ReadCommand();
-            //string resp = instrDrv.QueryCommand("AXIS3:*IDN?");
-            //resp = instrDrv.QueryCommand("AXIS3:CP?");
+            // Query current position for Slide, Lift and Turntable and update UI accordingly.
+            DmdPositionerParams.CurrentPosition_Slide     = DmdPositioner.Slide.GetCurrentPosition();
+            DmdPositionerParams.CurrentPosition_Lift      = DmdPositioner.Lift.GetCurrentPosition();
+            DmdPositionerParams.CurrentPosition_Turntable = DmdPositioner.Turntable.GetCurrentPosition();
 
-            DmdPositionerSuite positioner = new DmdPositionerSuite();
-            positioner.VisaAddress = "TCPIP0::localhost::9001::SOCKET";
-            positioner.Initialize();
-            positioner.Slide.Home();
-            positioner.Slide.SeekPosition(20);
+            // Set Speed 
+            DmdPositioner.Slide.SetSpeed(DmdPositionerParams.Speed_Slide);
+            DmdPositioner.Lift.SetSpeed(DmdPositionerParams.Speed_Lift);
+            DmdPositioner.Turntable.SetSpeed(DmdPositionerParams.Speed_Turntable);
         }
 
         // Search VISA Instruments
@@ -108,15 +105,15 @@ namespace PositionerControl
         }
 
         // Re-Initialize Positioner
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ReConnect_Click(object sender, RoutedEventArgs e)
         {
             DmdPositioner.DeInitialize();
             Thread.Sleep(200);
+            this.tblockStatus.Text = DmdPositioner.InstrID;
 
             // Open Positioner Suite            
-            DmdPositioner.VisaAddress = DmdPositionerParams.VisaAddress = this.cbVisaAddrList.SelectedItem.ToString();            
-            DmdPositioner.Initialize();
-            this.tblockStatus.Text = DmdPositioner.InstrID;
+            DmdPositioner.VisaAddress = DmdPositionerParams.VisaAddress = this.cbVisaAddrList.SelectedItem.ToString();
+            InitializeDmdPositioner();
         }
 
         private bool IsCmdCanExecute(EnumPositionerType type)
@@ -125,7 +122,7 @@ namespace PositionerControl
             switch(type)
             {
                 case EnumPositionerType.Slide:
-                    if (DmdPositioner!=null && DmdPositioner.Initialized_Slide && DmdPositionerParams.IsMovingStop_Slide)
+                    if (DmdPositioner!=null && DmdPositioner.Initialized_Slide && DmdPositionerParams.IsStopped_Slide)
                     {
                         cmdCanExecute = true;
                     }
@@ -135,7 +132,7 @@ namespace PositionerControl
                     }
                     break;
                 case EnumPositionerType.Lift:
-                    if (DmdPositioner != null && DmdPositioner.Initialized_Lift && DmdPositionerParams.IsMovingStop_Lift)
+                    if (DmdPositioner != null && DmdPositioner.Initialized_Lift && DmdPositionerParams.IsStopped_Lift)
                     {
                         cmdCanExecute = true;
                     }
@@ -145,7 +142,7 @@ namespace PositionerControl
                     }
                     break;
                 case EnumPositionerType.Turntable:
-                    if (DmdPositioner != null && DmdPositioner.Initialized_Turntable && DmdPositionerParams.IsMovingStop_Turntable)
+                    if (DmdPositioner != null && DmdPositioner.Initialized_Turntable && DmdPositionerParams.IsStopped_Turntable)
                     {
                         cmdCanExecute = true;
                     }
@@ -228,7 +225,7 @@ namespace PositionerControl
                     offset = Convert.ToDouble(this.tboxOffset_Slide.Text);
                 }                
 
-                if(DmdPositionerParams.CurrentSpeed_Slide != speed || DmdPositionerParams.Offset_Slide!=offset)
+                if(DmdPositionerParams.Speed_Slide != speed || DmdPositionerParams.Offset_Slide!=offset)
                 {
                     cmdCanExec = true;
                 }                 
@@ -254,7 +251,7 @@ namespace PositionerControl
                     offset = Convert.ToDouble(this.tboxOffset_Lift.Text);
                 }
 
-                if (DmdPositionerParams.CurrentSpeed_Lift != speed || DmdPositionerParams.Offset_Lift != offset)
+                if (DmdPositionerParams.Speed_Lift != speed || DmdPositionerParams.Offset_Lift != offset)
                 {
                     cmdCanExec = true;
                 }
@@ -280,7 +277,7 @@ namespace PositionerControl
                     offset = Convert.ToDouble(this.tboxOffset_Turntable.Text);
                 }
 
-                if (DmdPositionerParams.CurrentSpeed_Turntable != speed || DmdPositionerParams.Offset_Turntable != offset)
+                if (DmdPositionerParams.Speed_Turntable != speed || DmdPositionerParams.Offset_Turntable != offset)
                 {
                     cmdCanExec = true;
                 }

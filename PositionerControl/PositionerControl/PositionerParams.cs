@@ -27,8 +27,11 @@ namespace PositionerControl
     public enum EnumPositionerParameter
     {
         VisaAddress,
+        Slide_Speed,
         Slide_Offset,
+        Lift_Speed,
         Lift_Offset,
+        Turntable_Speed,
         Turntable_Offset
     }
 
@@ -49,23 +52,32 @@ namespace PositionerControl
             LoadConfigXML(); // load Configuration XML file
         }
 
-        // Field
+        // ------------ Field ------------
         private string visaAddr = string.Empty;
+        // Speed
+        private int speed_Slide = 20;
+        private int speed_Lift = 20;
+        private int speed_Turntable = 20;
+        
+        // Offset
         private double offset_Slide     = 0;
         private double offset_Lift      = 0;
         private double offset_Turntable = 0;
 
-        private bool isMovingStop_Slide     = true;
-        private bool isMovingStop_Lift      = true;
-        private bool isMovingStop_Turntable = true;
+        // Stopped Flag
+        private bool isStopped_Slide     = true;
+        private bool isStopped_Lift      = true;
+        private bool isStopped_Turntable = true;
 
-        private int currentSpeed_Slide = -99999;
-        private int currentSpeed_Lift = -99999;
-        private int currentSpeed_Turntable = -99999;
+        // Current Position
+        private double currPos_Slide = -99999;
+        private double currPos_Lift = -99999;
+        private double currPos_Turntable = -99999;
 
+        // Locker
         static private object locker = new object();
 
-        // Property
+        // ------------ Property ------------
         private string ConfigXML { set; get; }
 
         public string VisaAddress
@@ -82,6 +94,49 @@ namespace PositionerControl
             }
 
         }
+
+        // Speed
+        public int Speed_Slide
+        {
+            get
+            {
+                return this.speed_Slide;
+            }
+            set
+            {
+                this.speed_Slide = value;
+                SavePositionerParameter(EnumPositionerParameter.Slide_Speed);
+                NotifyPropertyChanged("Speed_Slide");
+            }
+        }
+        public int Speed_Lift
+        {
+            get
+            {
+                return this.speed_Lift;
+            }
+            set
+            {
+                this.speed_Lift = value;
+                SavePositionerParameter(EnumPositionerParameter.Lift_Speed);
+                NotifyPropertyChanged("Speed_Lift");
+            }
+        }
+        public int Speed_Turntable
+        {
+            get
+            {
+                return this.speed_Turntable;
+            }
+            set
+            {
+                this.speed_Turntable = value;
+                SavePositionerParameter(EnumPositionerParameter.Turntable_Speed);
+                NotifyPropertyChanged("Speed_Turntable");
+            }
+        }
+
+        // OffSet
         public double Offset_Slide
         {
             get
@@ -122,81 +177,79 @@ namespace PositionerControl
             }
         }
         
-        public bool IsMovingStop_Slide
+        // Stopped Flag
+        public bool IsStopped_Slide
         {
             get
             {
-                return this.isMovingStop_Slide;
+                return this.isStopped_Slide;
             }
             set
             {
-                this.isMovingStop_Slide = value;
-                NotifyPropertyChanged("IsMovingStop_Slide");
+                this.isStopped_Slide = value;
+                NotifyPropertyChanged("IsStopped_Slide");
+            }
+        }
+        public bool IsStopped_Lift
+        {
+            get
+            {
+                return this.isStopped_Lift;
+            }
+            set
+            {
+                this.isStopped_Lift = value;
+                NotifyPropertyChanged("IsStopped_Lift");
+            }
+        }
+        public bool IsStopped_Turntable
+        {
+            get
+            {
+                return this.isStopped_Turntable;
+            }
+            set
+            {
+                this.isStopped_Turntable = value;
+                NotifyPropertyChanged("IsStopped_Turntable");
             }
         }
 
-        public bool IsMovingStop_Lift
+        // Current Position
+        public double CurrentPosition_Slide
         {
             get
             {
-                return this.isMovingStop_Lift;
+                return this.currPos_Slide;
             }
             set
             {
-                this.isMovingStop_Lift = value;
-                NotifyPropertyChanged("IsMovingStop_Lift");
+                this.currPos_Slide = value;
+                NotifyPropertyChanged("CurrentPosition_Slide");
             }
         }
-
-        public bool IsMovingStop_Turntable
+        public double CurrentPosition_Lift
         {
             get
             {
-                return this.isMovingStop_Turntable;
+                return this.currPos_Lift;
             }
             set
             {
-                this.isMovingStop_Turntable = value;
-                NotifyPropertyChanged("IsMovingStop_Turntable");
+                this.currPos_Lift = value;
+                NotifyPropertyChanged("CurrentPosition_Lift");
             }
         }
-
-        public int CurrentSpeed_Slide
+        public double CurrentPosition_Turntable
         {
             get
             {
-                return this.currentSpeed_Slide;
+                return this.currPos_Turntable;
             }
             set
             {
-                this.currentSpeed_Slide = value;
-                NotifyPropertyChanged("CurrentSpeed_Slide");
-            }
-        }
-
-        public int CurrentSpeed_Lift
-        {
-            get
-            {
-                return this.currentSpeed_Lift;
-            }
-            set
-            {
-                this.currentSpeed_Lift = value;
-                NotifyPropertyChanged("CurrentSpeed_Lift");
-            }
-        }
-
-        public int CurrentSpeed_Turntable
-        {
-            get
-            {
-                return this.currentSpeed_Turntable;
-            }
-            set
-            {
-                this.currentSpeed_Turntable = value;
-                NotifyPropertyChanged("CurrentSpeed_Turntable");
+                this.currPos_Turntable = value;
+                NotifyPropertyChanged("CurrentPosition_Turntable");
             }
         }
 
@@ -225,9 +278,13 @@ namespace PositionerControl
                 XDocument configXmlDoc = new XDocument(new XElement("Configuration",                                                           
                                                            new XElement("VisaAddress", "TCPIP0::192.168.127.254::4001::SOCKET"),
                                                            new XElement("PositionerOffset",
-                                                               new XElement("offset_Slide", "0"),
+                                                               new XElement("Offset_Slide", "0"),
                                                                new XElement("Offset_Lift", "0"),
-                                                               new XElement("offset_Turntable","0"))));                
+                                                               new XElement("Offset_Turntable","0")),
+                                                            new XElement("PositionerSpeed",
+                                                               new XElement("Speed_Slide", "20"),
+                                                               new XElement("Speed_Lift", "20"),
+                                                               new XElement("Speed_Turntable", "20"))));                
                 configXmlDoc.Save(ConfigXML);
             }
             catch (Exception ex)
@@ -244,7 +301,7 @@ namespace PositionerControl
                 XDocument configXmlDoc = XDocument.Load(ConfigXML);
                 XElement rootNode  = configXmlDoc.Element("Configuration");
 
-                // VISA Address
+                // ------------ VISA Address ------------
                 string addr = rootNode.Element("VisaAddress").Value;
                 if(addr!=string.Empty)
                 {
@@ -254,8 +311,8 @@ namespace PositionerControl
                 {
                     VisaAddress = "TCPIP0::192.168.127.254::4001::SOCKET";
                 }
-                
-                // Offset_Slide
+
+                // ------------ Offset ------------                
                 try
                 {
                     Offset_Slide = Convert.ToDouble(rootNode.Element("PositionerOffset").Element("Offset_Slide").Value);
@@ -264,8 +321,7 @@ namespace PositionerControl
                 {
                     Offset_Slide = 0;
                 }
-
-                // Offset_Lift
+                
                 try
                 {
                     Offset_Lift = Convert.ToDouble(rootNode.Element("PositionerOffset").Element("Offset_Lift").Value);
@@ -275,7 +331,6 @@ namespace PositionerControl
                     Offset_Lift = 0;
                 }
 
-                // Offset_Turntable
                 try
                 {
                     Offset_Turntable = Convert.ToDouble(rootNode.Element("PositionerOffset").Element("Offset_Turntable").Value);
@@ -285,6 +340,33 @@ namespace PositionerControl
                     Offset_Turntable = 0;
                 }
 
+                // ------------ Speed ------------
+                try
+                {
+                    speed_Slide = Convert.ToInt32(rootNode.Element("PositionerSpeed").Element("Speed_Slide").Value);
+                }
+                catch
+                {
+                    speed_Slide = 20;
+                }
+
+                try
+                {
+                    speed_Lift = Convert.ToInt32(rootNode.Element("PositionerSpeed").Element("Speed_Lift").Value);
+                }
+                catch
+                {
+                    speed_Lift = 20;
+                }
+
+                try
+                {
+                    speed_Turntable = Convert.ToInt32(rootNode.Element("PositionerSpeed").Element("Speed_Turntable").Value);
+                }
+                catch
+                {
+                    speed_Turntable = 20;
+                }
             }
             catch (Exception ex)
             {
@@ -305,13 +387,22 @@ namespace PositionerControl
                         rootNode.SetElementValue("VisaAddress", this.visaAddr);
                         break;
                     case EnumPositionerParameter.Slide_Offset:
-                        rootNode.Element("PositionerOffset").SetElementValue("offset_Slide", this.offset_Slide.ToString("#.##"));
+                        rootNode.Element("PositionerOffset").SetElementValue("Offset_Slide", this.offset_Slide.ToString());
                         break;
                     case EnumPositionerParameter.Lift_Offset:
-                        rootNode.Element("PositionerOffset").SetElementValue("Offset_Lift", this.Offset_Lift.ToString("#.##"));
+                        rootNode.Element("PositionerOffset").SetElementValue("Offset_Lift", this.Offset_Lift.ToString());
                         break;
                     case EnumPositionerParameter.Turntable_Offset:
-                        rootNode.Element("PositionerOffset").SetElementValue("offset_Turntable", this.offset_Turntable.ToString("#.##"));
+                        rootNode.Element("PositionerOffset").SetElementValue("Offset_Turntable", this.offset_Turntable.ToString());
+                        break;
+                    case EnumPositionerParameter.Slide_Speed:
+                        rootNode.Element("PositionerOffset").SetElementValue("Speed_Slide", this.speed_Slide.ToString());
+                        break;
+                    case EnumPositionerParameter.Lift_Speed:
+                        rootNode.Element("PositionerOffset").SetElementValue("Speed_Lift", this.speed_Lift.ToString());
+                        break;
+                    case EnumPositionerParameter.Turntable_Speed:
+                        rootNode.Element("PositionerOffset").SetElementValue("Speed_Turntable", this.speed_Turntable.ToString());
                         break;
                 }
                 xml.Save(ConfigXML);
