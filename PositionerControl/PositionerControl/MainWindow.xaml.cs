@@ -524,22 +524,36 @@ namespace PositionerControl
 
             e.Handled = true;
         }
-        private void StopCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
+        private async void StopCmd_Lift_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            lock (locker)
+            if (DmdPositionerParams.IsStopped_Lift)
             {
-                ForceStop_Lift = true;
+                await Task.Run(() => Stop(EnumPositionerType.Lift));
             }
-            //await Task.Run(() => Stop(EnumPositionerType.Lift));
+            else
+            {
+                lock (locker)
+                {
+                    ForceStop_Lift = true;
+                }
+            }
+
             e.Handled = true;
         }
-        private void StopCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
+        private async void StopCmd_Turntable_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            lock(locker)
+            if (DmdPositionerParams.IsStopped_Turntable)
             {
-                ForceStop_Turntable = true;
-            }            
-            //await Task.Run(() => Stop(EnumPositionerType.Turntable));
+                await Task.Run(() => Stop(EnumPositionerType.Turntable));
+            }
+            else
+            {
+                lock (locker)
+                {
+                    ForceStop_Turntable = true;
+                }
+            }
+
             e.Handled = true;
         }
 
