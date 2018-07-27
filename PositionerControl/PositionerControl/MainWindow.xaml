@@ -193,7 +193,7 @@
                                          Text="{Binding Source={StaticResource positionerParams}, Path=Speed_Slide, Mode=OneWay}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                <Label Content="偏移量(毫米)"/>
+                                <Label Content="原点位置(毫米)"/>
                                 <TextBox x:Name="tboxOffset_Slide" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" 
                                          Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"
                                          Text="{Binding Source={StaticResource positionerParams}, Path=Offset_Slide, Mode=OneWay}"/>
@@ -279,7 +279,7 @@
                                          Text="{Binding Source={StaticResource positionerParams}, Path=Speed_Lift, Mode=OneWay}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                <Label Content="偏移量(毫米)"/>
+                                <Label Content="原点位置(毫米)"/>
                                 <TextBox x:Name="tboxOffset_Lift" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" 
                                          Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"
                                          Text="{Binding Source={StaticResource positionerParams}, Path=Offset_Lift, Mode=OneWay}"/>
@@ -319,7 +319,7 @@
                 </GroupBox>
                 <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (度)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <CheckBox x:Name="chkboxTargetHome_Turntable" Content="原点位置" Checked="CheckBox_Checked_1"/>
+                        <CheckBox x:Name="chkboxTargetHome_Turntable" Content="原点位置" Checked="chkboxTargetHome_Lift_Turntable"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
                             <TextBox x:Name="tboxTargetAbsPos_Turntable" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Width="100" Height="22"
                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"/>
@@ -365,7 +365,7 @@
                                          Text="{Binding Source={StaticResource positionerParams}, Path=Speed_Turntable, Mode=OneWay}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                <Label Content="偏移量(度)"/>
+                                <Label Content="原点位置(度)"/>
                                 <TextBox x:Name="tboxOffset_Turntable" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" 
                                          Width="60" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="False"
                                          Text="{Binding Source={StaticResource positionerParams}, Path=Offset_Turntable, Mode=OneWay}"/>

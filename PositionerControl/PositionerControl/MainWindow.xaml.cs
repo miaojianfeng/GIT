@@ -129,6 +129,21 @@ namespace PositionerControl
         {
             if(DmdPositioner!=null)
             {
+                if(DmdPositioner.Initialized_Slide)
+                {
+                    DmdPositioner.Slide.Stop();
+                }
+
+                if (DmdPositioner.Initialized_Lift)
+                {
+                    DmdPositioner.Lift.Stop();
+                }
+
+                if (DmdPositioner.Initialized_Turntable)
+                {
+                    DmdPositioner.Turntable.Stop();
+                }
+
                 DmdPositioner.DeInitialize();
             }            
         }
@@ -437,6 +452,11 @@ namespace PositionerControl
             if(ChangeOffset_Slide)
             {
                 DmdPositionerParams.Offset_Slide = this.tboxOffset_Slide.Text;
+                if(this.chkboxTargetHome_Slide.IsChecked==true)
+                {
+                    this.tboxTargetAbsPos_Slide.Text = DmdPositionerParams.Offset_Slide;
+                    DmdPositionerParams.TargetAbsolutePosition_Slide = Convert.ToDouble(DmdPositionerParams.Offset_Slide);
+                }
                 ChangeOffset_Slide = false;
             }
 
@@ -454,6 +474,11 @@ namespace PositionerControl
             if (ChangeOffset_Lift)
             {
                 DmdPositionerParams.Offset_Lift = this.tboxOffset_Lift.Text;
+                if (this.chkboxTargetHome_Lift.IsChecked == true)
+                {
+                    this.tboxTargetAbsPos_Lift.Text = DmdPositionerParams.Offset_Lift;
+                    DmdPositionerParams.TargetAbsolutePosition_Lift = Convert.ToDouble(DmdPositionerParams.Offset_Lift);
+                }
                 ChangeOffset_Lift = false;
             }
 
@@ -471,6 +496,11 @@ namespace PositionerControl
             if (ChangeOffset_Turntable)
             {
                 DmdPositionerParams.Offset_Turntable = this.tboxOffset_Turntable.Text;
+                if (this.chkboxTargetHome_Turntable.IsChecked == true)
+                {
+                    this.tboxTargetAbsPos_Turntable.Text = DmdPositionerParams.Offset_Turntable;
+                    DmdPositionerParams.TargetAbsolutePosition_Turntable = Convert.ToDouble(DmdPositionerParams.Offset_Turntable);
+                }
                 ChangeOffset_Turntable = false;
             }
 
@@ -556,7 +586,14 @@ namespace PositionerControl
             }
 
             // Seek Position command
-            equipment.SeekPosition(absPos);
+            if(absPos!=0)
+            {
+                equipment.SeekPosition(absPos);
+            }
+            else
+            {
+                equipment.Home();
+            }
             Thread.Sleep(200);
 
             // Querying loop for operation complete
@@ -703,17 +740,23 @@ namespace PositionerControl
 
         private void chkboxTargetHome_Slide_Checked(object sender, RoutedEventArgs e)
         {
-            DmdPositionerParams.TargetAbsolutePosition_Slide = 0;
+            double pos = Convert.ToDouble(DmdPositionerParams.Offset_Slide);
+            pos = Math.Round(pos, 1);
+            DmdPositionerParams.TargetAbsolutePosition_Slide = pos;           
         }
 
         private void chkboxTargetHome_Lift_Checked(object sender, RoutedEventArgs e)
         {
-            DmdPositionerParams.TargetAbsolutePosition_Lift = 0;
+            double pos = Convert.ToDouble(DmdPositionerParams.Offset_Lift);
+            pos = Math.Round(pos, 1);
+            DmdPositionerParams.TargetAbsolutePosition_Lift = pos;
         }
 
-        private void CheckBox_Checked_1(object sender, RoutedEventArgs e)
+        private void chkboxTargetHome_Lift_Turntable(object sender, RoutedEventArgs e)
         {
-            DmdPositionerParams.TargetAbsolutePosition_Turntable = 0;
+            double pos = Convert.ToDouble(DmdPositionerParams.Offset_Turntable);
+            pos = Math.Round(pos, 1);
+            DmdPositionerParams.TargetAbsolutePosition_Turntable = pos;
         }
     }
 }
