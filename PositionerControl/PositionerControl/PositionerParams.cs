@@ -41,7 +41,13 @@ namespace PositionerControl
         // Constructor
         public PositionerParams()
         {
-            ConfigXML = @"C:\Temp\PositionerConfiguration.xml"; 
+            ConfigXmlFolder = @"C:\Temp";             
+            ConfigXML = ConfigXmlFolder + "\\" + "PositionerConfiguration.xml";
+
+            if (!Directory.Exists(ConfigXmlFolder))
+            {
+                Directory.CreateDirectory(ConfigXmlFolder);
+            }
 
             // Load Configuration XML file if it exists, otherwise create it            
             if (!File.Exists(ConfigXML))
@@ -97,6 +103,7 @@ namespace PositionerControl
 
         // ------------ Property ------------
         private string ConfigXML { set; get; }
+        private string ConfigXmlFolder { set; get; }
 
         public string VisaAddress
         {
@@ -406,7 +413,7 @@ namespace PositionerControl
         private void CreateConfigXML()
         {            
             try
-            {
+            {  
                 XDocument configXmlDoc = new XDocument(new XElement("Configuration",                                                           
                                                            new XElement("VisaAddress", "TCPIP0::192.168.127.254::4001::SOCKET"),
                                                            new XElement("PositionerOffset",

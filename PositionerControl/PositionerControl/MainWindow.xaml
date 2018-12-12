@@ -140,7 +140,7 @@
                                 Command="local:PositionerCtrlCmds.QueryPos_Slide"/>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (毫米)">
+                <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 [ 0 ~ 2476.10 ] (毫米)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <CheckBox x:Name="chkboxTargetHome_Slide" Content="原点位置" Checked="chkboxTargetHome_Slide_Checked"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
@@ -231,7 +231,7 @@
                                 Command="local:PositionerCtrlCmds.QueryPos_Lift"/>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 (毫米)">
+                <GroupBox Grid.Row="1" Margin="5,5,5,0" BorderBrush="Black" BorderThickness="1" Header="绝对位置移动 [0 ~ 858.56] (毫米)">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <CheckBox x:Name="chkboxTargetHome_Lift" Content="原点位置" Checked="chkboxTargetHome_Lift_Checked"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
