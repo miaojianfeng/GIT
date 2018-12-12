@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:input="clr-namespace:System.Windows.Input;assembly=PresentationCore"
         xmlns:local="clr-namespace:EMPower"
         mc:Ignorable="d"
         Background="LightBlue"
@@ -10,8 +11,10 @@
     <Window.Resources>
         <!--Object Definition-->
         <local:EMPowerParams x:Key="Params"/>
+        <!--Converter-->
         <local:ConnectStateToFillColorConverter x:Key="connStaToFillColor"/>
-        <!--<local:ConnectStatusToTextConverter x:Key="connStaToText"/>-->
+        <local:TboxTextToButtonEnabledConverter x:Key="tboxTextToBtnEnabled"/>
+        <local:ConnStaMsgToFontColorConverter x:Key="connStaMsgToFontColor"/>
         <!--UI Proerty-->
         <LinearGradientBrush x:Key="YellowLED" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="LightYellow" Offset="0"/>
@@ -93,7 +96,7 @@
             </Grid.ColumnDefinitions>
             <Label Content="串口" Style="{StaticResource SettingsLabel}"/>
             <ComboBox Grid.Column="1" x:Name="cboxSerialPort" Margin="0,5" Style="{StaticResource SettingsComboBox}" SelectedIndex="0" SelectionChanged="CboxSerialPort_SelectionChanged">
-                <ComboBoxItem Content="请选择相应的串口"/>
+                <ComboBoxItem Content="请选择"/>
             </ComboBox>
             <Button Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="1" Margin="5,5,10,5" x:Name="btnConnect" Content="连接" 
                     Background="{StaticResource GreenButton}" Style="{StaticResource SettingsButton}" 
@@ -103,6 +106,7 @@
                      Fill="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay, Converter={StaticResource connStaToFillColor}}"/>
             <Label Grid.Row="1" Grid.Column="1" Margin="0,6,0,0" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" 
                    Padding="0" x:Name="lblCommStatus" FontSize="10" 
+                   Foreground="{Binding Source={StaticResource Params}, Path=ConnectStatusMessage, Mode=OneWay, Converter={StaticResource connStaMsgToFontColor} }"
                    Content="{Binding Source={StaticResource Params}, Path=ConnectStatusMessage, Mode=OneWay}"/>
             <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,6,15,0" FontSize="10" 
                        TextWrapping="WrapWithOverflow" HorizontalAlignment="Right" VerticalAlignment="Center" 
@@ -142,6 +146,7 @@
                 <ComboBox Grid.Column="1" Margin="0,5" x:Name="cboxFilter" Style="{StaticResource SettingsComboBox}" 
                           IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay}"
                           SelectedIndex="0">
+                    <ComboBoxItem Content="请选择"/>
                     <ComboBoxItem Content="自动"/>
                     <ComboBoxItem Content="1"/>
                     <ComboBoxItem Content="2"/>
@@ -154,10 +159,11 @@
                 </ComboBox>
                 <Image Grid.Column="2" Grid.ColumnSpan="2" Margin="10,0,5,0" Source="ETSL_Title.png" />
                 <Label Grid.Row="1" Content="频率" Style="{StaticResource SettingsLabel}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,5" Style="{StaticResource SettingsTextBox}"
-                         IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,5" Style="{StaticResource SettingsTextBox}" x:Name="tboxFreqNum"
+                         IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay}"
+                         PreviewTextInput="tboxFreqNum_PreviewTextInput" input:InputMethod.IsInputMethodEnabled="False"/>
                 <ComboBox Grid.Row="1" Grid.Column="2" Margin="5,5" x:Name="cboxFreqUnit" 
-                          Style="{StaticResource SettingsComboBox}" SelectedIndex="2"
+                          Style="{StaticResource SettingsComboBox}" SelectedIndex="1"
                           IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay}">
                     <ComboBoxItem Content="Hz"/>
                     <ComboBoxItem Content="kHz"/>
@@ -166,7 +172,7 @@
                 </ComboBox>
                 <Button Grid.Row="1" Grid.Column="3" Margin="0,5" Content="确定" Background="{StaticResource GrayButton}" 
                         Style="{StaticResource SettingsButton}"
-                        IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay}"/>                
+                        IsEnabled="{Binding ElementName=tboxFreqNum, Path=Text, Mode=OneWay, Converter={StaticResource tboxTextToBtnEnabled}}"/>                
             </Grid>
         </GroupBox>
     </DockPanel>

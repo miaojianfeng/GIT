@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using Ivi.Visa;
 using NationalInstruments.Visa;
 
@@ -30,6 +31,14 @@ namespace EMPower
             SetGenericParams,
             SetSerialPortParams,
             IdnQuerying
+        }
+
+        enum EnumFrequencyUnit
+        {
+            Hz,
+            kHz,
+            MHz,
+            GHz
         }
 
         private Dictionary<string, string> dictSerialPort = new Dictionary<string, string>();
@@ -76,6 +85,13 @@ namespace EMPower
                 }
             }
         }
+        private string LastSelectedComPort { set; get; }
+
+        private int SelComPortIndex { set; get; }
+        private int LastSelComPortIndex { set; get; }
+
+        private double FrequencyNumber { set; get; }
+        private EnumFrequencyUnit FrequencyUnit { set; get; }
 
         private string GetVisaAddrString(string serialPortName)
         {
@@ -88,7 +104,8 @@ namespace EMPower
 
             Params = (EMPowerParams)this.FindResource("Params");
             ConnectStep = EnumConnectStep.Unknown;
-
+            LastSelectedComPort = SelectedComPort = string.Empty;
+            LastSelComPortIndex = SelComPortIndex = 0;
             FindSerialPorts();
         }
 
@@ -116,7 +133,7 @@ namespace EMPower
                 {
                     string errMsg = "没有检测到串口！\n\n" + "详细原因：\n" + ex.Message;
                     Params.ErrorMessage = errMsg;
-                    MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, errMsg, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -200,30 +217,38 @@ namespace EMPower
         }
 
         private async void BtnConnect_Click(object sender, RoutedEventArgs e)
-        {            
-            Params.IsConnected = false;
-            Params.FirmwareVersion = string.Empty;
-            Params.ConnectStatusMessage = "连接中...";
+        {        
+            if(LastSelectedComPort!=SelectedComPort)
+            {
+                DisconnectEMPower();
 
-            bool result = await ConnectEMPowerAsync();
-            if(result)
-            {
-                Params.IsConnected = true;
-                Params.FirmwareVersion = InfoText;
-                Params.ConnectStatusMessage = "已连接";
-            }
-            else
-            {
                 Params.IsConnected = false;
                 Params.FirmwareVersion = string.Empty;
-                Params.ConnectStatusMessage = "未连接";
+                Params.ConnectStatusMessage = "连接中...";
+                this.tboxFreqNum.Text = string.Empty;
+                LastSelectedComPort = SelectedComPort;
+                LastSelComPortIndex = SelComPortIndex;
 
-                string errMsg = "连接EMPower失败！\n\n" + "详细原因：\n" + InfoText;
-                MessageBox.Show(errMsg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+                bool result = await ConnectEMPowerAsync();
+                if (result)
+                {
+                    Params.IsConnected = true;
+                    Params.FirmwareVersion = InfoText;
+                    Params.ConnectStatusMessage = "已连接";                    
+                }
+                else
+                {
+                    Params.IsConnected = false;
+                    Params.FirmwareVersion = string.Empty;
+                    Params.ConnectStatusMessage = "未连接";
+
+                    string errMsg = "连接EMPower失败！\n\n" + "详细原因：\n" + InfoText;
+                    MessageBox.Show(this, errMsg, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }            
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void DisconnectEMPower()
         {
             if (mbSession != null)
             {
@@ -231,14 +256,24 @@ namespace EMPower
             }
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            DisconnectEMPower();
+        }
+
         private void CboxSerialPort_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(Params!=null)
             {
-                if (this.cboxSerialPort.SelectedIndex != 0)
+                if (this.cboxSerialPort.SelectedIndex!=0)
                 {
                     Params.IsComPortListExists = true;
                     SelectedComPort = this.cboxSerialPort.SelectedItem.ToString();
+                    SelComPortIndex = this.cboxSerialPort.SelectedIndex;
+                }
+                else if(this.cboxSerialPort.SelectedIndex==0)
+                {
+                    this.cboxSerialPort.SelectedIndex = LastSelComPortIndex;
                 }
                 else
                 {
@@ -246,6 +281,13 @@ namespace EMPower
                     SelectedComPort = string.Empty;
                 }
             }            
+        }
+
+        //using System.Text.RegularExpressions
+        private void tboxFreqNum_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex re = new Regex("[^0-9.-]+");
+            e.Handled = re.IsMatch(e.Text);
         }
     }
 }
