@@ -114,13 +114,14 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="1,5">
                     <Label Content="功率" Style="{StaticResource SettingsLabel}"/>
                     <TextBox Padding="0" Height="25" Width="100" Margin="0,5,0,5" IsReadOnly="True" Style="{StaticResource SettingsTextBox}"
-                             Background="Black" Foreground="LightGreen" FontWeight="Bold"
+                             Background="Black" Foreground="LightGreen" FontWeight="Bold" x:Name="tboxPower"
                              IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay}"/>
-                    <Button Height="25" Width="60" Margin="5,5,2.5,5" Content="单次" 
+                    <Button Height="25" Width="60" Margin="5,5,2.5,5" Content="单次" x:Name="btnSingle"
                             Background="{StaticResource GrayButton}" Style="{StaticResource SettingsButton}"
-                            IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay}"/>
+                            IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay}"
+                            Click="btnSingle_Click"/>
                     <ToggleButton Height="25" Width="60" Margin="2.5,5,5,5" Content="连续" Background="{StaticResource GrayButton}"
-                            VerticalContentAlignment="Center" HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center" HorizontalContentAlignment="Center" x:Name="btnContinue"
                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                             IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay}"/>
                 </StackPanel>

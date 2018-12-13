@@ -30,7 +30,8 @@ namespace EMPower
             OpenSerialPort,
             SetGenericParams,
             SetSerialPortParams,
-            IdnQuerying
+            IdnQuerying,
+            Reset
         }
 
         enum EnumFrequencyUnit
@@ -43,6 +44,9 @@ namespace EMPower
 
         private Dictionary<string, string> dictSerialPort = new Dictionary<string, string>();
         private MessageBasedSession mbSession;
+        ResourceManager rmSession = null;
+        ISerialSession serialSession = null;
+
         private string infoText = string.Empty;
         private string selComPort = string.Empty;
         static private object locker = new object();
@@ -141,7 +145,8 @@ namespace EMPower
         private bool ConnectEMPower()
         {
             bool retValue = false;
-            ResourceManager rmSession = new ResourceManager();
+            string resp = string.Empty;
+            
             string comPort = SelectedComPort;
             string visaName = GetVisaAddrString(comPort);
 
@@ -149,8 +154,8 @@ namespace EMPower
             {
                 //Open session
                 ConnectStep = EnumConnectStep.OpenSerialPort;
-                mbSession = (MessageBasedSession)rmSession.Open(visaName);
-
+                rmSession = new ResourceManager();
+                mbSession = (MessageBasedSession)rmSession.Open(visaName);                
                 ConnectStep = EnumConnectStep.SetGenericParams;
                 mbSession.TerminationCharacterEnabled = true;
                 byte termChar = 0b1010;  // 0xA
@@ -159,7 +164,7 @@ namespace EMPower
 
                 // Serial params settings
                 ConnectStep = EnumConnectStep.SetSerialPortParams;
-                ISerialSession serialSession = (ISerialSession)mbSession;
+                serialSession = (ISerialSession)mbSession;
                 serialSession.BaudRate = 115200;
                 serialSession.Parity = SerialParity.None;
                 serialSession.DataBits = 8;
@@ -169,7 +174,7 @@ namespace EMPower
                 // *IDN? querying 
                 ConnectStep = EnumConnectStep.IdnQuerying;
                 serialSession.RawIO.Write("*IDN?\n");
-                string resp = serialSession.RawIO.ReadString().TrimEnd("\r\n".ToCharArray());
+                resp = serialSession.RawIO.ReadString().TrimEnd("\r\n".ToCharArray());
                 if (resp.ToUpper().Contains("ETS-LINDGREN"))
                 {
                     InfoText = resp;
@@ -178,8 +183,26 @@ namespace EMPower
                 else
                 {
                     InfoText = "EMPower ID 信息错误！";
-                    retValue = false; 
+                    return false;
                 }
+
+                // Reset
+                ConnectStep = EnumConnectStep.Reset;
+                serialSession.RawIO.Write("RESET\n");
+                System.Threading.Thread.Sleep(200);
+                resp = serialSession.RawIO.ReadString().TrimEnd("\r\n".ToCharArray());
+                if(resp.ToUpper()=="OK")
+                {
+                    retValue = true;
+                }
+                else
+                {
+                    InfoText = "重置设备失败";
+                    return false;
+                }
+
+                // 选择滤波器：自动
+                serialSession.RawIO.Write("FILTER AUTO\n");
 
                 return retValue;
             }
@@ -188,7 +211,7 @@ namespace EMPower
                 switch (ConnectStep)
                 {
                     case EnumConnectStep.OpenSerialPort:
-                        InfoText = string.Format("打开串口{0}失败", SelectedComPort);
+                        InfoText = string.Format("打开串口{0}失败\n请检查串口是否已被占用或者串口号指定错误", SelectedComPort);
                         break;
                     case EnumConnectStep.SetGenericParams:
                         InfoText = "设置VISA通信端口参数失败";
@@ -198,6 +221,9 @@ namespace EMPower
                         break;
                     case EnumConnectStep.IdnQuerying:
                         InfoText = "查询EMPower ID信息失败";
+                        break;
+                    case EnumConnectStep.Reset:
+                        InfoText = "重置设备失败";
                         break;
                     default:
                         InfoText = "未知错误";
@@ -234,14 +260,15 @@ namespace EMPower
                 {
                     Params.IsConnected = true;
                     Params.FirmwareVersion = InfoText;
-                    Params.ConnectStatusMessage = "已连接";                    
+                    Params.ConnectStatusMessage = "已连接";
+                    this.cboxFilter.SelectedIndex = 1;
                 }
                 else
                 {
                     Params.IsConnected = false;
                     Params.FirmwareVersion = string.Empty;
                     Params.ConnectStatusMessage = "未连接";
-
+                    ResetUIElements();
                     string errMsg = "连接EMPower失败！\n\n" + "详细原因：\n" + InfoText;
                     MessageBox.Show(this, errMsg, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -303,6 +330,12 @@ namespace EMPower
         private void BtnSearchComPort_Click(object sender, RoutedEventArgs e)
         {
             DisconnectEMPower();
+            ResetUIElements();
+            FindSerialPorts();
+        }
+
+        private void ResetUIElements()
+        {
             ConnectStep = EnumConnectStep.Unknown;
             Params.IsConnected = false;
             Params.IsComPortListExists = false;
@@ -314,7 +347,6 @@ namespace EMPower
             SelComPortIndex = 0;
             LastSelComPortIndex = 0;
             this.cboxSerialPort.SelectedIndex = 0;
-            FindSerialPorts();
         }
 
         private void InitUiElements()
@@ -322,6 +354,21 @@ namespace EMPower
             ConnectStep = EnumConnectStep.Unknown;
             LastSelectedComPort = SelectedComPort = string.Empty;
             LastSelComPortIndex = SelComPortIndex = 0;
+        }
+
+        private string ReadEMPower()
+        {            
+            string resp = string.Empty;
+            serialSession.RawIO.Write("POWER?\n");
+            serialSession.Flush(IOBuffers.Read, true);
+            resp = serialSession.RawIO.ReadString().TrimEnd("\r\n".ToCharArray());
+            return resp;
+        }
+
+        private void btnSingle_Click(object sender, RoutedEventArgs e)
+        {
+            string resp = ReadEMPower();
+            this.tboxPower.Text = resp;
         }
     }
 }
