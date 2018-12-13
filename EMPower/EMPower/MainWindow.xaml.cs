@@ -47,7 +47,6 @@ namespace EMPower
         private string selComPort = string.Empty;
         static private object locker = new object();
 
-
         private EnumConnectStep ConnectStep { set; get; }
         private string InfoText
         {
@@ -288,6 +287,16 @@ namespace EMPower
         {
             Regex re = new Regex("[^0-9.-]+");
             e.Handled = re.IsMatch(e.Text);
+        }
+
+        private void ExpdrSettings_Collapsed(object sender, RoutedEventArgs e)
+        {
+            this.Height = 185;
+        }
+
+        private void ExpdrSettings_Expanded(object sender, RoutedEventArgs e)
+        {
+            this.Height = 250;
         }
     }
 }
