@@ -102,9 +102,7 @@ namespace EMPower
             InitializeComponent();
 
             Params = (EMPowerParams)this.FindResource("Params");
-            ConnectStep = EnumConnectStep.Unknown;
-            LastSelectedComPort = SelectedComPort = string.Empty;
-            LastSelComPortIndex = SelComPortIndex = 0;
+            InitUiElements();
             FindSerialPorts();
         }
 
@@ -120,11 +118,14 @@ namespace EMPower
                     IEnumerable<string> resources = rm.Find("ASRL?*INSTR");
                     foreach (string s in resources)
                     {
-                        ParseResult parseResult = rm.Parse(s);
-                        if(parseResult.AliasIfExists.ToUpper().Contains("COM"))
+                        ParseResult parseResult = rm.Parse(s);                        
+                        if (parseResult.AliasIfExists.ToUpper().Contains("COM"))
                         {
-                            this.dictSerialPort.Add(parseResult.AliasIfExists, s);
-                            this.cboxSerialPort.Items.Add(parseResult.AliasIfExists);
+                            if(!this.dictSerialPort.ContainsKey(parseResult.AliasIfExists))
+                            {
+                                this.dictSerialPort.Add(parseResult.AliasIfExists, s);
+                                this.cboxSerialPort.Items.Add(parseResult.AliasIfExists);
+                            }                            
                         }
                     }
                 }
@@ -297,6 +298,30 @@ namespace EMPower
         private void ExpdrSettings_Expanded(object sender, RoutedEventArgs e)
         {
             this.Height = 250;
+        }
+
+        private void BtnSearchComPort_Click(object sender, RoutedEventArgs e)
+        {
+            DisconnectEMPower();
+            ConnectStep = EnumConnectStep.Unknown;
+            Params.IsConnected = false;
+            Params.IsComPortListExists = false;
+            Params.ConnectStatusMessage = "未连接";
+            Params.ErrorMessage = string.Empty;
+            Params.FirmwareVersion = string.Empty;
+            SelectedComPort = "请选择";
+            LastSelectedComPort = "请选择";
+            SelComPortIndex = 0;
+            LastSelComPortIndex = 0;
+            this.cboxSerialPort.SelectedIndex = 0;
+            FindSerialPorts();
+        }
+
+        private void InitUiElements()
+        {
+            ConnectStep = EnumConnectStep.Unknown;
+            LastSelectedComPort = SelectedComPort = string.Empty;
+            LastSelComPortIndex = SelComPortIndex = 0;
         }
     }
 }

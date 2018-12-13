@@ -96,8 +96,8 @@
                         IsEnabled="{Binding Source={StaticResource Params}, Path=IsComPortListExists, Mode=OneWay}"
                         Click="BtnConnect_Click"/>
                 <Button Height="22" Width="60" Margin="2.5,5,5,5" x:Name="btnSearchComPort" Content="搜索串口" 
-                        Background="{StaticResource GrayButton}" Style="{StaticResource SettingsButton}" 
-                        IsEnabled="{Binding Source={StaticResource Params}, Path=IsComPortListExists, Mode=OneWay}"/>
+                        Background="{StaticResource GrayButton}" Style="{StaticResource SettingsButton}"
+                        Click="BtnSearchComPort_Click"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="6,0" HorizontalAlignment="Center">
                 <Ellipse Width="12" Height="12" Margin="26,0,5,0" HorizontalAlignment="Center" VerticalAlignment="Center" 
