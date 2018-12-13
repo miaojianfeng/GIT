@@ -24,6 +24,7 @@ namespace EMPower
     /// </summary>
     public partial class MainWindow : Window
     {
+        // ---------- Type Definition ---------- 
         enum EnumConnectStep
         {
             Unknown,
@@ -33,7 +34,6 @@ namespace EMPower
             IdnQuerying,
             Reset
         }
-
         enum EnumFrequencyUnit
         {
             Hz,
@@ -42,15 +42,34 @@ namespace EMPower
             GHz
         }
 
+        // ---------- Field ----------
+        static private object locker = new object();
+        private string comPortName = string.Empty;
         private Dictionary<string, string> dictSerialPort = new Dictionary<string, string>();
+        private string infoText = string.Empty;        
         private MessageBasedSession mbSession;
         ResourceManager rmSession = null;
         ISerialSession serialSession = null;
 
-        private string infoText = string.Empty;
-        private string selComPort = string.Empty;
-        static private object locker = new object();
-
+        // ---------- Property ----------
+        private EMPowerParams Params { set; get; }
+        private string ComPortName
+        {
+            set
+            {
+                lock (locker)
+                {
+                    this.comPortName = value;
+                }
+            }
+            get
+            {
+                lock (locker)
+                {
+                    return this.comPortName;
+                }
+            }
+        }
         private EnumConnectStep ConnectStep { set; get; }
         private string InfoText
         {
@@ -69,48 +88,27 @@ namespace EMPower
                 }
             }
         }
-
-        private EMPowerParams Params { set; get; }
-        private string SelectedComPort
-        {
-            set
-            {
-                lock(locker)
-                {
-                    this.selComPort = value;
-                }
-            }
-            get
-            {
-                lock(locker)
-                {
-                    return this.selComPort;
-                }
-            }
-        }
-        private string LastSelectedComPort { set; get; }
-
-        private int SelComPortIndex { set; get; }
-        private int LastSelComPortIndex { set; get; }
-
         private double FrequencyNumber { set; get; }
         private EnumFrequencyUnit FrequencyUnit { set; get; }
+        private double Frequency_kHz { set; get; }
 
-        private string GetVisaAddrString(string serialPortName)
-        {
-            return this.dictSerialPort[serialPortName];
-        }
-
+        // ---------- Constructor ---------- 
         public MainWindow()
         {
             InitializeComponent();
 
             Params = (EMPowerParams)this.FindResource("Params");
             InitUiElements();
-            FindSerialPorts();
+            FindComPorts();
         }
 
-        private void FindSerialPorts()
+        // ---------- Method ---------- 
+        private string GetVisaAddrString(string serialPortName)
+        {
+            return this.dictSerialPort[serialPortName];
+        }
+
+        private void FindComPorts()
         {
             // This example uses an instance of the NationalInstruments.Visa.ResourceManager class to find resources on the system.
             // Alternatively, static methods provided by the Ivi.Visa.ResourceManager class may be used when an application
@@ -146,15 +144,14 @@ namespace EMPower
         {
             bool retValue = false;
             string resp = string.Empty;
-            
-            string comPort = SelectedComPort;
-            string visaName = GetVisaAddrString(comPort);
+            string visaName = string.Empty;
 
             try
             {
-                //Open session
+                //Open session                
                 ConnectStep = EnumConnectStep.OpenSerialPort;
-                rmSession = new ResourceManager();
+                visaName = GetVisaAddrString(ComPortName);
+                rmSession = new ResourceManager();                
                 mbSession = (MessageBasedSession)rmSession.Open(visaName);                
                 ConnectStep = EnumConnectStep.SetGenericParams;
                 mbSession.TerminationCharacterEnabled = true;
@@ -182,7 +179,7 @@ namespace EMPower
                 }
                 else
                 {
-                    InfoText = "EMPower ID 信息错误！";
+                    InfoText = string.Format("查询EMPower({0})信息失败", ComPortName); 
                     return false;
                 }
 
@@ -197,7 +194,7 @@ namespace EMPower
                 }
                 else
                 {
-                    InfoText = "重置设备失败";
+                    InfoText = string.Format("重置EMPower{0}失败", ComPortName); ;
                     return false;
                 }
 
@@ -211,19 +208,19 @@ namespace EMPower
                 switch (ConnectStep)
                 {
                     case EnumConnectStep.OpenSerialPort:
-                        InfoText = string.Format("打开串口{0}失败\n请检查串口是否已被占用或者串口号指定错误", SelectedComPort);
+                        InfoText = string.Format("打开串口{0}失败\n请检查串口是否已被占用或者串口号指定错误", ComPortName);
                         break;
                     case EnumConnectStep.SetGenericParams:
-                        InfoText = "设置VISA通信端口参数失败";
+                        InfoText = string.Format("设置VISA通信端口{0}参数失败", ComPortName);
                         break;
                     case EnumConnectStep.SetSerialPortParams:
-                        InfoText = "设置串口参数失败";
+                        InfoText = string.Format("设置串口{0}参数失败", ComPortName);
                         break;
                     case EnumConnectStep.IdnQuerying:
-                        InfoText = "查询EMPower ID信息失败";
+                        InfoText = string.Format("查询EMPower({0})信息失败", ComPortName);
                         break;
                     case EnumConnectStep.Reset:
-                        InfoText = "重置设备失败";
+                        InfoText = string.Format("重置EMPower{0}失败", ComPortName);
                         break;
                     default:
                         InfoText = "未知错误";
@@ -242,18 +239,31 @@ namespace EMPower
             return task.Result;
         }
 
-        private async void BtnConnect_Click(object sender, RoutedEventArgs e)
-        {        
-            if(LastSelectedComPort!=SelectedComPort)
+        private async void btnConnect_Click(object sender, RoutedEventArgs e)
+        {
+            if(Params.IsConnected)  // Disconnect
             {
                 DisconnectEMPower();
-
+                Params.ComPortIndex = this.cboxSerialPort.SelectedIndex;
+                Params.IsConnected = false;
+                Params.FirmwareVersion = string.Empty;
+                Params.ConnectStatusMessage = "未连接";
+                Params.ErrorMessage = string.Empty;
+                Params.PowerResult = string.Empty;
+                Params.FilterIndex = 0;
+                this.cboxSerialPort.IsEnabled = true;
+                this.btnConnect.Content = "连接";
+            }
+            else  // Connect
+            {
+                ComPortName = this.cboxSerialPort.SelectedItem.ToString();
+                Params.ComPortIndex = this.cboxSerialPort.SelectedIndex;
                 Params.IsConnected = false;
                 Params.FirmwareVersion = string.Empty;
                 Params.ConnectStatusMessage = "连接中...";
-                this.tboxFreqNum.Text = string.Empty;
-                LastSelectedComPort = SelectedComPort;
-                LastSelComPortIndex = SelComPortIndex;
+                Params.ErrorMessage = string.Empty;
+                Params.PowerResult = string.Empty;
+                Params.FilterIndex = 0;                
 
                 bool result = await ConnectEMPowerAsync();
                 if (result)
@@ -261,18 +271,23 @@ namespace EMPower
                     Params.IsConnected = true;
                     Params.FirmwareVersion = InfoText;
                     Params.ConnectStatusMessage = "已连接";
-                    this.cboxFilter.SelectedIndex = 1;
+                    Params.FilterIndex = 1;
+                    this.cboxSerialPort.IsEnabled = false;
+                    this.btnConnect.Content = "断开";
                 }
-                else
+                else 
                 {
                     Params.IsConnected = false;
                     Params.FirmwareVersion = string.Empty;
                     Params.ConnectStatusMessage = "未连接";
-                    ResetUIElements();
+                    Params.FilterIndex = 0;
+                    this.cboxSerialPort.IsEnabled = true;
+                    this.btnConnect.Content = "连接";
+
                     string errMsg = "连接EMPower失败！\n\n" + "详细原因：\n" + InfoText;
                     MessageBox.Show(this, errMsg, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-            }            
+            }                       
         }
 
         private void DisconnectEMPower()
@@ -286,28 +301,6 @@ namespace EMPower
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             DisconnectEMPower();
-        }
-
-        private void CboxSerialPort_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if(Params!=null)
-            {
-                if (this.cboxSerialPort.SelectedIndex!=0)
-                {
-                    Params.IsComPortListExists = true;
-                    SelectedComPort = this.cboxSerialPort.SelectedItem.ToString();
-                    SelComPortIndex = this.cboxSerialPort.SelectedIndex;
-                }
-                else if(this.cboxSerialPort.SelectedIndex==0)
-                {
-                    this.cboxSerialPort.SelectedIndex = LastSelComPortIndex;
-                }
-                else
-                {
-                    Params.IsComPortListExists = false;
-                    SelectedComPort = string.Empty;
-                }
-            }            
         }
 
         //using System.Text.RegularExpressions
@@ -329,31 +322,19 @@ namespace EMPower
 
         private void BtnSearchComPort_Click(object sender, RoutedEventArgs e)
         {
-            DisconnectEMPower();
-            ResetUIElements();
-            FindSerialPorts();
-        }
-
-        private void ResetUIElements()
-        {
-            ConnectStep = EnumConnectStep.Unknown;
-            Params.IsConnected = false;
-            Params.IsComPortListExists = false;
-            Params.ConnectStatusMessage = "未连接";
-            Params.ErrorMessage = string.Empty;
-            Params.FirmwareVersion = string.Empty;
-            SelectedComPort = "请选择";
-            LastSelectedComPort = "请选择";
-            SelComPortIndex = 0;
-            LastSelComPortIndex = 0;
+            this.dictSerialPort.Clear();
             this.cboxSerialPort.SelectedIndex = 0;
+            int count = this.cboxSerialPort.Items.Count;
+            for (int i = count-1; i > 0; i--)
+            {                
+                this.cboxSerialPort.Items.RemoveAt(i);       
+            }
+            FindComPorts();
         }
 
         private void InitUiElements()
         {
-            ConnectStep = EnumConnectStep.Unknown;
-            LastSelectedComPort = SelectedComPort = string.Empty;
-            LastSelComPortIndex = SelComPortIndex = 0;
+            ConnectStep = EnumConnectStep.Unknown;            
         }
 
         private string ReadEMPower()

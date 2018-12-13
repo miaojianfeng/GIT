@@ -20,30 +20,43 @@ namespace EMPower
     // ---------- UI Binding Source ----------
     public class EMPowerParams : INotifyPropertyChanged
     {
+        // ---------- Field ----------
+        private static object locker = new object();  
+        
         // ---------- Constructor ---------- 
         public EMPowerParams()           
         {
 
         }
 
-        // ---------- Property ----------
-        private bool isComPortListExists = false;
-        private bool isConnected = false;        
+        // ---------- Field ----------
+        private int comPortIndex = 0;
+        private int filterIndex = 0;
+        private bool isConnected = false;
+        private bool isComPortsExist = false;
         private string firmwareVer = string.Empty;
         private string connStaMsg = "未连接";
         private string errMsg = string.Empty;
+        private string pwrResult = string.Empty;
 
         // ---------- Property ----------
-        public bool IsComPortListExists
+        public bool IsComPortsExist
         {
             set
             {
-                this.isComPortListExists = value;
-                NotifyPropertyChanged("IsComPortListExists");
+                lock(locker)
+                {
+                    this.isComPortsExist = value;
+                    NotifyPropertyChanged("IsComPortsExist");
+                }
+                
             }
             get
             {
-                return this.isComPortListExists;
+                lock (locker)
+                {
+                    return this.isComPortsExist;
+                }                
             }
         }
 
@@ -51,12 +64,18 @@ namespace EMPower
         {
             set
             {
-                this.isConnected = value;
-                NotifyPropertyChanged("IsConnected");
+                lock (locker)
+                {
+                    this.isConnected = value;
+                    NotifyPropertyChanged("IsConnected");
+                }                
             }
             get
             {
-                return this.isConnected;
+                lock (locker)
+                {
+                    return this.isConnected;
+                }                
             }
         }               
 
@@ -64,12 +83,18 @@ namespace EMPower
         {
             set
             {
-                this.firmwareVer = value;
-                NotifyPropertyChanged("FirmwareVersion");
+                lock (locker)
+                {
+                    this.firmwareVer = value;
+                    NotifyPropertyChanged("FirmwareVersion");
+                }                
             }
             get
             {
-                return this.firmwareVer;
+                lock (locker)
+                {
+                    return this.firmwareVer;
+                }                
             }
         }
 
@@ -77,12 +102,18 @@ namespace EMPower
         {
             set
             {
-                this.connStaMsg = value;
-                NotifyPropertyChanged("ConnectStatusMessage");
+                lock (locker)
+                {
+                    this.connStaMsg = value;
+                    NotifyPropertyChanged("ConnectStatusMessage");
+                }                
             }
             get
             {
-                return this.connStaMsg;
+                lock (locker)
+                {
+                    return this.connStaMsg;
+                }                
             }
         }
 
@@ -90,12 +121,75 @@ namespace EMPower
         {
             set
             {
-                this.errMsg = value;
-                NotifyPropertyChanged("ErrorMessage");
+                lock (locker)
+                {
+                    this.errMsg = value;
+                    NotifyPropertyChanged("ErrorMessage");
+                }                
             }
             get
             {
-                return this.errMsg;
+                lock (locker)
+                {
+                    return this.errMsg;
+                }                
+            }
+        }
+
+        public string PowerResult
+        {
+            set
+            {
+                lock(locker)
+                {
+                    this.pwrResult = value;
+                    NotifyPropertyChanged("PowerResult");
+                }
+            }
+            get
+            {
+                lock(locker)
+                {
+                    return this.pwrResult;
+                }
+            }
+        }
+
+        public int FilterIndex
+        {
+            set
+            {
+                lock(locker)
+                {
+                    this.filterIndex = value;
+                    NotifyPropertyChanged("FilterIndex");
+                }
+            }
+            get
+            {
+                lock (locker)
+                {
+                    return this.filterIndex;
+                }
+            }
+        }
+
+        public int ComPortIndex
+        {
+            set
+            {
+                lock(locker)
+                {
+                    this.comPortIndex = value;
+                    NotifyPropertyChanged("ComPortIndex");
+                }
+            }
+            get
+            {
+                lock(locker)
+                {
+                    return this.comPortIndex;
+                }
             }
         }
 
@@ -202,6 +296,79 @@ namespace EMPower
                 default:
                     return (System.Windows.Media.Brush)brushConverter.ConvertFromString("Black");
             }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class ComboxSelectedIndexToButtonEnabledConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int index = (int)value;
+            if (index!=-1 && index!=0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class InstConnStaToFillColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool isConnected = (bool)value;
+
+            LinearGradientBrush brush = new LinearGradientBrush();
+            brush.StartPoint = new Point(0, 0);
+            brush.EndPoint = new Point(0, 1);
+
+            // RedButton
+            GradientStopCollection redButton = new GradientStopCollection() { new GradientStop(Colors.Pink, 0),
+                                                                           new GradientStop(Colors.Red, 0.5),
+                                                                           new GradientStop(Colors.DarkRed, 1)};
+
+            // GreenButton
+            GradientStopCollection greenButton = new GradientStopCollection() { new GradientStop(Colors.LightGreen, 0),
+                                                                                new GradientStop(Colors.Green, 0.9),
+                                                                                new GradientStop(Colors.DarkGreen, 1)};
+            
+            if(isConnected)
+            {
+                brush.GradientStops = new GradientStopCollection(redButton);
+            }
+            else
+            {
+                brush.GradientStops = new GradientStopCollection(greenButton);
+            }
+            
+            return brush;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException("Not implement <IValueConverter.ConverBack> function");
+        }
+    }
+
+    public class BoolReverseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool result = (bool)value;
+            return !result;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
