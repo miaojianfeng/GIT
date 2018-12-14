@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:EMPower"
         mc:Ignorable="d"
         Background="LightBlue"
-        Title="EMPower" Height="185" Width="300" ResizeMode="CanMinimize" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
+        Title="EMPower" Height="180" Width="300" ResizeMode="CanMinimize" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <!--Object Definition-->
         <local:EMPowerParams x:Key="Params"/>
@@ -94,7 +94,7 @@
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2,5,0,5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2,5,2,0">
                 <Label Content="串口" Style="{StaticResource SettingsLabel}"/>
                 <ComboBox x:Name="cboxSerialPort" Height="22" Width="100" Margin="0,5,0,5" Style="{StaticResource SettingsComboBox}" 
                       SelectedIndex="0">
@@ -110,18 +110,23 @@
                         IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay, Converter={StaticResource boolReverse}}"
                         Click="BtnSearchComPort_Click"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="6,0" HorizontalAlignment="Center">
-                <Ellipse Width="12" Height="12" Margin="26,0,5,0" HorizontalAlignment="Center" VerticalAlignment="Center" 
+            <Grid Margin="5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="15*"/>
+                    <ColumnDefinition Width="25*"/>
+                    <ColumnDefinition Width="60*"/>
+                </Grid.ColumnDefinitions>
+                <Ellipse Width="12" Height="12" HorizontalAlignment="Center" VerticalAlignment="Center" 
                          Fill="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay, Converter={StaticResource connStaToFillColor}}"/>
-                <Label HorizontalContentAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                       x:Name="lblCommStatus" FontSize="10" Padding="5,0,0,0"
+                <Label Grid.Column="1" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                       x:Name="lblCommStatus" FontSize="10"
                        Foreground="{Binding Source={StaticResource Params}, Path=ConnectStatusMessage, Mode=OneWay, Converter={StaticResource connStaMsgToFontColor} }"
                        Content="{Binding Source={StaticResource Params}, Path=ConnectStatusMessage, Mode=OneWay}"/>
-                <Label FontSize="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
-                       FontStyle="Italic" Foreground="DarkBlue" Padding="0"
-                       Content="{Binding Source={StaticResource Params}, Path=FirmwareVersion, Mode=OneWay}" Width="220"/>
-            </StackPanel>
-            <Border BorderBrush="White" BorderThickness="0.5" CornerRadius="2" Margin="8,8,8,5">
+                <Label Grid.Column="2" FontSize="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                       FontStyle="Italic" Foreground="DarkBlue" 
+                       Content="{Binding Source={StaticResource Params}, Path=FirmwareVersion, Mode=OneWay}"/>
+            </Grid>            
+            <Border BorderBrush="White" BorderThickness="0.5" CornerRadius="2" Margin="8,5,8,0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="1,5">
                     <Label Content="功率" Style="{StaticResource SettingsLabel}"/>
                     <TextBox Padding="0" Height="25" Width="100" Margin="0,5,0,5" IsReadOnly="True" Style="{StaticResource SettingsTextBox}"
@@ -139,8 +144,19 @@
                 </StackPanel>
             </Border>
         </StackPanel>
-        <Expander Margin="8,5" Header="设置" Padding="0" FlowDirection="RightToLeft"
+        <Expander Margin="8,0" Padding="0" FlowDirection="RightToLeft" VerticalAlignment="Center"
                   x:Name="expdrSettings" Collapsed="ExpdrSettings_Collapsed" Expanded="ExpdrSettings_Expanded">
+            <Expander.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>                    
+                    <Label Content="设置"/>
+                    <Label Grid.Column="1" Margin="70,0,0,0" Content="ETS-Lindgren EMPower" 
+                           FontStyle="Italic" FontWeight="Bold" Foreground="DarkBlue"/>
+                </Grid>
+            </Expander.Header>
             <Border Margin="0,3,0,0" BorderThickness="0.5" BorderBrush="White" CornerRadius="2">
                 <Grid FlowDirection="LeftToRight">
                     <Grid.RowDefinitions>
@@ -168,7 +184,7 @@
                         <ComboBoxItem Content="7"/>
                         <ComboBoxItem Content="8"/>
                     </ComboBox>
-                    <Image Grid.Column="2" Grid.ColumnSpan="2" Margin="5,5,5,2" Height="22" Source="ETSL_Title.png" />
+                    <!--<Image Grid.Column="2" Grid.ColumnSpan="2" Margin="5,5,5,2" Height="22" Source="ETSL_Title.png" />-->
                     <Label Grid.Row="1" Margin="0,2,0,5" Content="频率" Style="{StaticResource SettingsLabel}"/>
                     <TextBox Grid.Row="1" Grid.Column="1" Margin="0,2,0,5" Height="22" Style="{StaticResource SettingsTextBox}" x:Name="tboxFreqNum"
                          IsEnabled="{Binding Source={StaticResource Params}, Path=IsConnected, Mode=OneWay}"

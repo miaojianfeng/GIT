@@ -312,7 +312,7 @@ namespace EMPower
 
         private void ExpdrSettings_Collapsed(object sender, RoutedEventArgs e)
         {
-            this.Height = 185;
+            this.Height = 180;
         }
 
         private void ExpdrSettings_Expanded(object sender, RoutedEventArgs e)
