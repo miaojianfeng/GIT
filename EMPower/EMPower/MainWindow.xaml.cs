@@ -312,7 +312,7 @@ namespace EMPower
 
         private void ExpdrSettings_Collapsed(object sender, RoutedEventArgs e)
         {
-            this.Height = 180;
+            this.Height = 185;
         }
 
         private void ExpdrSettings_Expanded(object sender, RoutedEventArgs e)
@@ -334,7 +334,9 @@ namespace EMPower
 
         private void InitUiElements()
         {
-            ConnectStep = EnumConnectStep.Unknown;            
+            ConnectStep = EnumConnectStep.Unknown;
+            this.expdrSettings.IsExpanded = false;
+            this.Height = 185;
         }
 
         private string ReadEMPower()

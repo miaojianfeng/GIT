@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:EMPower"
         mc:Ignorable="d"
         Background="LightBlue"
-        Title="EMPower" Height="180" Width="300" ResizeMode="CanMinimize" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
+        Title="EMPower" Height="250" Width="300" ResizeMode="CanMinimize" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <!--Object Definition-->
         <local:EMPowerParams x:Key="Params"/>
@@ -144,7 +144,7 @@
                 </StackPanel>
             </Border>
         </StackPanel>
-        <Expander Margin="8,0" Padding="0" FlowDirection="RightToLeft" VerticalAlignment="Center"
+        <Expander Margin="8,3,8,3" Padding="0" FlowDirection="RightToLeft" VerticalAlignment="Center" IsExpanded="True"
                   x:Name="expdrSettings" Collapsed="ExpdrSettings_Collapsed" Expanded="ExpdrSettings_Expanded">
             <Expander.Header>
                 <Grid>
@@ -157,7 +157,7 @@
                            FontStyle="Italic" FontWeight="Bold" Foreground="DarkBlue"/>
                 </Grid>
             </Expander.Header>
-            <Border Margin="0,3,0,0" BorderThickness="0.5" BorderBrush="White" CornerRadius="2">
+            <Border Margin="0,5,0,2" BorderThickness="0.5" BorderBrush="White" CornerRadius="2">
                 <Grid FlowDirection="LeftToRight">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50*"/>
